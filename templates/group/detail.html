@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}{{ object.name }} - Groups{% endblock %}
+
+{% block content %}
+    <h2>Group: {{ object.name }}</h2>
+
+    <h3>Our Events</h3>
+    <ul>
+    {% for eg in eventgroup_list %}
+        <li><a href="{{eg.event.get_absolute_url}}/">{{eg.event.name}}</a></li>
+    {% endfor %}
+    </ul>
+
+    <h3>Members</h3>
+    <ul>
+    {% for gu in groupuser_list %}
+        <li><a href="{{gu.user.get_absolute_url}}">{{gu.user.username}}</a>
+	    {% if gu.admin %}(admin){% endif %}
+        </li>
+    {% endfor %}
+    </ul>
+    
+        
+    {% if my_membership %}
+	{% if my_membership.admin %}
+            You are an admin of this group!
+        {% else %}
+	    You are already a member of this group!
+	    <a href="{{object.get_absolute_url}}leave">Leave Group</a>
+        {% endif %}
+    {% else %}
+	<a href="{{object.get_absolute_url}}join">Join Group</a>
+    {% endif %}
+
+{% endblock %}

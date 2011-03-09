@@ -13,5 +13,6 @@ class EventForm(ModelForm):
         is_new = self.instance.pk is None
         r = super(EventForm, self).save(commit)
         if is_new:
-            Event.objects.add_admin(self.instance,self.request.user)
+            self.instance.add_admin(self.request.user)
+#            Event.objects.add_admin(self.instance,self.request.user)
         return r

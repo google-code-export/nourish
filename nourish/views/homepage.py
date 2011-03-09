@@ -15,7 +15,7 @@ def homepage(request):
 
 	events_att = [ ]
 	for ge in EventGroup.objects.filter(group__id__in=group_ids):
-		events.append(Event.objects.get(pk=ge.event.id));
+		events_att.append(Event.objects.get(pk=ge.event.id));
 	
 	return render_to_response('nourish/homepage.html', { 
 		'request': request,

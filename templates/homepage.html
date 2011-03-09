@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+<h2>Upcoming Events</h2>
+{% if events %}
+  <ul>
+  {% for event in events %}
+    <li><a href="/events/{{ event.id }}/">{{ event.name }}</a></li>
+  {% endfor %}
+  </ul>
+{% else %}
+  <p>You aren't currently attending any events.</p>
+{% endif %}
+
+<a href="/events/">Join an Event</a>
+<a href="/events/create/">Create an Event</a>
+
+<h2>Groups I belong to</h2>
+{% if groups %}
+  <ul>
+  {% for group in groups %}
+    <li><a href="/groups/{{ group.id }}/">{{ group.name }}</a></li>
+  {% endfor %}
+  </ul>
+{% else %}
+  <p>You aren't currently a members of any groups</p>
+{% endif %}
+
+
+<a href="/groups/">Join a Group</a>
+<a href="/groups/create/">Create a Group</a>
+
+{% endblock %}

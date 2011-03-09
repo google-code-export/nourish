@@ -4,12 +4,6 @@ from django.contrib.auth.models import User
 from django import forms
 from nourish.models.group import Group
 
-# Create your models here.
-
-class EventManager(models.Manager):
-	def add_admin(self, event, admin):
-		EventUser.objects.create(event=event, user=admin,admin=True)
-
 class Event(models.Model):
 	name = models.CharField(max_length=100, unique=True)
 	start_date = models.DateField()
@@ -18,8 +12,10 @@ class Event(models.Model):
 		return self.name
 	def get_absolute_url(self):
 		return '/events/%i/' % self.id
-	objects = EventManager()
-		
+	def add_admin(self, admin):
+		EventUser.objects.create(event=self, user=admin, admin=True, attend='M')
+#	def attend(self, user, arrive):
+#		EventUser.objects.create(event=self, user=user, attend='Y')
 
 class EventUser(models.Model):
 	ATTEND_CHOICES = (
@@ -32,6 +28,8 @@ class EventUser(models.Model):
 	admin = models.BooleanField()
 	group = models.ForeignKey(Group, null=True)
 	attending = models.CharField(max_length=1, choices=ATTEND_CHOICES)
+	arrival_date = models.DateField(null=True)
+	departure_date = models.DateField(null=True)
 	def __unicode__(self):
 		return self.event.name + ' : ' + self.user.username
 

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load adminmedia %}
+{% block title %}Event{% endblock %}
+{% block extra-head %}
+{% endblock %}
+
+{% block content %}
+
+<h2>Group</h2>
+<form method="post">
+{{ form.as_p }}
+<input type="submit" value="Submit">
+</form>
+{% endblock %}
