@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 {% load adminmedia %}
-{% block title %}GroupUser{% endblock %}
+{% block title %}Leave {{ object.name }}{% endblock %}
 {% block extra-head %}
 {% endblock %}
 
 {% block content %}
 
-<h2>GroupUser</h2>
+<h2>Leave {{ object.name }}</h2>
 <form method="post">
-{{ form.as_p }}
+confirm: <input type="checkbox" name="confirm"><br>
 <input type="submit" value="Submit">
 </form>
 {% endblock %}

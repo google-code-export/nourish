@@ -13,11 +13,18 @@ class GroupForm(ModelForm):
             Group.objects.add_admin(self.instance,self.request.user)
         return r
 
-class GroupUserForm(ModelForm):
+class GroupJoinForm(ModelForm):
     class Meta:
         model = GroupUser
 
     def save(self,commit=True):
+	print self.request.pk
         if self.instance.pk is None:
             self.instance.user = self.request.user
+            self.instance.admin = False
         return super(GroupJoinForm, self).save(commit)
+
+class GroupStubForm(GroupForm):
+    role = forms.CharField(widget=forms.HiddenInput)
+    members = forms.IntegerField(widget=forms.HiddenInput, required=False)
+    description = forms.CharField(widget=forms.Textarea(attrs={'rows':3}))

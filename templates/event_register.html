@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Register - {{event.name}}{% endblock %}
+
+{% block content %}
+{% if role == 'guest' %}
+<h2>Register an Artist Group at {{event.name}}</h2>
+{% endif %}
+{% if role == 'host' %}
+<h2>Register a Theme Camp at {{event.name}}</h2>
+{% endif %}
+
+<form action="{{event.get_absolute_url}}register/{{ role }}/" method="post">{% csrf_token %}
+{{ form.non_field_errors }}
+{{ form.role }}
+<h3>Info about you</h3>
+<div class="fieldWrapper">
+    {{ form.username.errors }}
+    <label for="id_username">Username:</label>
+    {{ form.username }}
+</div>
+<div class="fieldWrapper">
+    {{ form.url.errors }}
+    <label for="id_url">URL:</label>
+    {{ form.url }}
+</div>
+<div class="fieldWrapper">
+    {{ form.email.errors }}
+    <label for="id_email">Email:</label>
+    {{ form.email }}
+</div>
+<div class="fieldWrapper">
+    {{ form.password.errors }}
+    <label for="id_password">Password:</label>
+    {{ form.password }}
+</div>
+<div class="fieldWrapper">
+    {{ form.password2.errors }}
+    <label for="id_password2">Password Again:</label>
+    {{ form.password2 }}
+</div>
+<h3>Info about your group</h3>
+<div class="fieldWrapper">
+    {{ form.group_name.errors }}
+    <label for="id_group_name">Name:</label>
+    {{ form.group_name }}
+</div>
+<div class="fieldWrapper">
+    {{ form.group_url.errors }}
+    <label for="id_group_url">URL:</label>
+    {{ form.group_url }}
+</div>
+<div class="fieldWrapper">
+    {{ form.arrival_date.errors }}
+    <label for="id_arrival_date">Arrival Date:</label>
+    {{ form.arrival_date }}
+</div>
+<div class="fieldWrapper">
+    {{ form.departure_date.errors }}
+    <label for="id_departure_date">Departure Date:</label>
+    {{ form.departure_date }}
+</div>
+{% if role == 'guest' %}
+<div class="fieldWrapper">
+    {{ form.members.errors }}
+    <label for="id_members">Participants:</label>
+    {{ form.members }}
+</div>
+{% endif %}
+{% if role == 'host' %}
+<div class="fieldWrapper">
+    {{ form.dinner_time.errors }}
+    <label for="id_dinner_time">Dinner Time:</label>
+    {{ form.dinner_time }}
+</div>
+{% endif %}
+<div class="fieldWrapper">
+    {{ form.features.errors }}
+    <label for="id_features">Details:</label>
+    {{ form.features }}
+</div>
+{% if role == 'guest' %}
+<div class="fieldWrapper">
+    {{ form.notes.errors }}
+    <label for="id_notes">Notes:</label>
+    {{ form.notes }}
+</div>
+{% endif %}
+<input type="submit" value="Register" />
+</form>
+{% endblock %}

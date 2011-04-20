@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Register an Artist Group at {{event.name}}{% endblock %}
+
+{% block content %}
+<h2>Register an Artist Group at {{event.name}}</h2>
+<p>This page is for artists groups that would like to be invited to dinner at {{event.name}}.  Registering doesn't guarantee you a meal, but we certainly hope it will get you invited to one (or more) on the playa...</p>
+
+<form action="{{event.get_absolute_url}}register/guest/" method="post">{% csrf_token %}
+{{ user_formset.management_form }}
+{{ group_formset.management_form }}
+{{ meal_formset.management_form }}
+<h3>Info about you</h3>
+<p>We presume that you are the person who will be coordinating meals for your group.  We need the information below so that we can contact you with updates about your reservations, as well as other FtA-related communications.  Plus, you'll need to be able to log back into the site later to confirm your invitations, etc.</p>
+<table class="regform">
+{{user_formset.as_table }}
+</table>
+
+<h3>Info about your group</h3>
+<p>The following information will be shared with theme camps who are looking for artists to invite.  The description is a good place for a brief description of your project and any overall dietary restrictions that you may have.</p>
+<table class="regform">
+{{group_formset.as_table }}
+</table>
+</ul>
+
+<h3>Meals</h3>
+<p>Here's where you tell us how many crew members are looking for dinner each night of the event.  Please specify each night that there will be crew with special dietary restrictions.</p>
+<table border=0 class="regtable">
+<tr><th>Date</th><th>Crew</th><th>Restrictions</th><th>Notes</th></tr>
+{% for form in meal_formset %}
+  <tr>
+    <td class="regdate">{{ dates.next|date:"N j" }} <em>({{ days.next|date:"D." }})</em>{{ form.date }}</td>
+    <td>{{ form.members.errors }} {{ form.members }}</td>
+    <td class="features">{{ form.features.errors }} {{ form.features }}</td>
+    <td>{{ form.notes.errors }} {{ form.notes }}</td>
+  </tr>
+{% endfor %}
+</table>
+
+{% if role == 'guest' %}
+<div class="fieldWrapper">
+    {{ form.notes.errors }}
+    <label for="id_notes">Notes:</label>
+    {{ form.notes }}
+</div>
+{% endif %}
+<input type="submit" value="Register" />
+</form>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Attend {{ object.name }}{% endblock %}
+
+{% block content %}
+    <h2>Attend {{ object.name }}</h2>
+
+<form method="POST">
+{{ form.as_p }}
+<label for="id_group">Group:</label> <select name="group" id="id_group">
+{% for group in member_groups %}
+<option {% if group == form.instance.group %}SELECTED{% endif %} value="{{ group.pk }}">{{ group.name }}</option>
+{% endfor %}
+<option {% if form.instance.group.pk == '' %}SELECTED{% endif %} value="">(Attending Solo)</option>
+</select>
+
+<h2>groups i admin</h2>
+<ul>
+{% for eg in event_admin_groups %}
+<li><input type=checkbox {% if eg.attending == 'Y' %}checked{% endif %} name="group_{{eg.group.pk}}">{{ eg.group.name }}</li>
+{% endfor %}
+</ul>
+
+<input name="confirm" type="submit">
+</form>
+
+{% endblock %}

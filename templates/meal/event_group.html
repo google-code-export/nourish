@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Meals{% endblock %}
+
+{% block content %}
+
+<h2>Manage Meals</h2>
+
+<form action="{{eg.get_absolute_url}}meals/" method="post">{% csrf_token %}
+{{ formset.management_form }}
+<ul>
+<table border=0>
+<tr><th>Date</th><th>Diners</th><th>Host Camp</th></tr>
+{% for form in formset %} 
+<tr><td colspan=3>
+<hr>
+{{ form.non_field_errors }}
+</td>
+<tr>
+<td>{{ form.meal_id }} {{form.date}} {{ form.date.value }}</td>
+<div class="fieldWrapper">
+<td>{{ form.members.errors }}
+    {{ form.members }}</td>
+<td>
+    {{ form.invite.errors }}
+    {{ form.invite }}</td>
+</td>
+</tr>
+{{ form.non_field_errors }}
+{% endfor %}
+<tr><td colspan=3><hr></td>
+</table>
+<input type="submit" value="Save Changes" />
+</form>
+{% endblock %}
