@@ -1,0 +1,237 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    dir="{% if LANGUAGE_BIDI %}rtl{% else %}ltr{% endif %}"
+    xml:lang="{% firstof LANGUAGE_CODE 'en' %}"
+    lang="{% firstof LANGUAGE_CODE 'en' %}">
+  <head>
+    <link rel="icon" href="http://www.feedtheartists.net/images/favicon.ico">
+    <style type="text/css">
+    body,
+    html {
+        margin:0;
+        padding:0;
+        color:#000;
+        background:#ffffff;
+        font-family: sans-serif;
+    }
+    p {
+    }
+    A {
+        text-decoration: none;
+        color: #888;
+    }
+    A:hover {
+        text-decoration: underline;
+        color: red;
+    }
+    #wrap {
+        width:800px;
+        margin:0 auto;
+        background:#ffffff;
+    }
+    #header {
+        padding:5px 10px;
+        background:#ffffff;
+    }
+    #header h1 {
+        font-size: 12pt;
+        display:inline;
+    }
+    h1 {
+        margin:0;
+    }
+    ul#sidebar_links {
+        list-style:none;
+    }
+    #nav {
+        padding-left: 10px;
+        display:inline;
+    }
+    #auth {
+        padding-right: 10px;
+        padding-bottom: 10px;
+        float: right;
+        text-align: right;
+    }
+    #nav ul {
+        margin:0;
+        padding:0;
+        list-style:none;
+        display: inline;
+    }
+    #nav li {
+        display:inline;
+        margin:0;
+        padding:0;
+        padding-right: 10px;
+    }
+    td.features ul {
+        margin:0;
+        padding:0;
+        list-style:none;
+    }
+    td.features li {
+        margin:0;
+        padding:0;
+        display: inline;
+    }
+    td.features {
+        text-align: center;
+    }
+    #left_wrap {
+        width:580px;
+        float:left;
+    }
+    ul#event_details {
+        margin-top: 0;
+        list-style: none;
+    }
+    #main {
+        padding:10px;
+        background:#ffffff;
+        border-top: 1px solid black;
+    }
+    h2 {
+        margin:0 0 0.25em;
+        color:#b00;
+    }
+    h3 {
+    }
+    #sidebar {
+        float:right;
+        width:200px;
+        padding:10px;
+        background:#ffffff;
+    }
+    #footer {
+        clear:both;
+        padding:5px 10px;
+        background:#ccc;
+    }
+    #footer p {
+        margin:0;
+    }
+    * html #footer {
+        height:1px;
+    }
+    #footer_links {
+        float: left;
+        color: black;
+    }
+    #footer_links A {
+        color: black;
+        text-decoration: underline;
+    }
+    #footer_links A:hover {
+        color: red;
+    }
+    #attribution {
+        float: right;
+        font-size: small;
+        color: #eee;
+    }
+    #attribution A {
+        text-decoration: underline;
+        color: #eee;
+    }
+    #attribution A:hover {
+        text-decoration: underline;
+        color: #b00;
+    }
+
+    .regform th {
+        text-align: left;
+        color: #600;
+    }
+
+    .regtable th {
+        color: #600;
+    }
+
+    .regdate {
+        color: #600;
+    }
+    
+    
+    </style>
+
+    <title>{% block title %}{% endblock %} - Nourish</title>
+
+    {% block css %}
+    {% endblock %}
+
+    {% block preload_js %}
+    {% endblock %}
+
+    {% block extra-head %}{% endblock %}
+  </head>
+
+  <body>
+   <div id="wrap">
+    <div id="left_wrap">
+    <div id="header">
+        <h1>FtA Online Reservation System</h1>
+    <div id="nav">
+    <ul>
+      {% if request.user.username %}
+        <li><a id="logo" href="/home/">Home</a></li>
+      {% else %}
+        <li><a id="logo" href="/">Home</a></li>
+      {% endif %}
+      <li><a id="logo" href="/events/">Events</a></li>
+      <li><a id="logo" href="/groups/">Groups</a></li>
+    </ul>
+    </div>
+    </div>
+
+      <div id="main">
+        {% block content-header %}
+          {% if error %}<div class="error">{{ error }}</div>{% endif %}
+          {% if info %}<div class="info">{{ info }}</div>{% endif %}
+          {% if messages %}
+            {% for message in messages %}
+              <div class="info">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endblock %}
+
+        {% block content %}{% endblock %}
+      </div>
+
+    </div>
+      <div id="sidebar" class="column">
+    <div id="auth">
+    {% if request.user.is_authenticated %}
+        Logged in as {{ request.user.username }}<br> [<a href="/logout">logout</a>]
+    {% else %} 
+        [<a href="/login">login</a>]
+    {% endif %}
+    </div>
+        <a href="http://www.feedtheartists.net"><img src="http://feedtheartists.net/images/logo1.gif"></a>
+        {% block sidebar %}
+            <h3>Feed The Artists</h3>
+            <ul id="sidebar_links">
+                <li><a href="http://feedtheartists.net/">Homepage</a></li>
+                <li><a href="http://www.kickstarter.com/projects/feedtheartists/evolving-the-burning-man-community-with-culinary-l">Kickstarter 2011</a></li>
+                <li><a href="http://www.kickstarter.com/projects/feedtheartists/communal-art-grant-through-food">Kickstarter 2010</a></li>
+            </ul> 
+        {% endblock %}
+      </div>
+
+    <div id="footer">
+      <div id="footer_links">
+      <a href="http://feedtheartists.net/contactus.html">Contact Us</a>
+      </div>
+      <div id="attribution">
+      <p>Powered by <a href="http://www.allbuttonspressed.com/projects/django-nonrel">Django-nonrel</a></p>
+      </div>
+    <div style="clear:both"></div>
+    </div>
+
+    {% block js %}
+    {% endblock %}
+   </div>
+  </body>
+</html>
