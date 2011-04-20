@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm
-from nourish.models.group import Group, GroupUser
+from nourish.models import Group, GroupUser
 
 class GroupForm(ModelForm):
     class Meta:

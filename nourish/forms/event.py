@@ -1,8 +1,8 @@
 from django import forms
 from django.forms import ModelForm
 from django.forms.extras.widgets import SelectDateWidget
-from nourish.models.event import Event, EventUser
-from nourish.models.group import Group
+from nourish.models import Event, EventUser
+from nourish.models import Group
 
 class EventForm(ModelForm):
     class Meta:
@@ -21,7 +21,7 @@ class EventForm(ModelForm):
 class EventAttendForm(ModelForm):
     class Meta:
         model = EventUser
-	exclude = [ 'group' ]
+    exclude = [ 'group' ]
 
     arrival_date = forms.DateField(widget=SelectDateWidget)
     departure_date = forms.DateField(widget=SelectDateWidget)

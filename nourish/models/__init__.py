@@ -48,10 +48,10 @@ class Group(models.Model):
         return gu
 
 class Event(models.Model):
-    name = models.CharField(max_length=100, unique=True)
-    start_date = models.DateField()
-    end_date = models.DateField()
-    url = models.URLField()
+    name = models.CharField(max_length=100, unique=True, verbose_name='Event Name')
+    start_date = models.DateField(verbose_name='Event Begins')
+    end_date = models.DateField(verbose_name='Event Ends')
+    url = models.URLField(verbose_name='Event Website')
 #    logo = models.FileField(upload_to='uploads/%Y-%m-%d')
     def __unicode__(self):
         return self.name

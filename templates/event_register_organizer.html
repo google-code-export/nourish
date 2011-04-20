@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Register an Event{% endblock %}
+
+{% block content %}
+<h2>Register an Event</h2>
+<p>say something</p>
+
+<form action="/register/event/" method="post">
+{% csrf_token %}
+<pre>{% csrf_token %}</pre>
+{{ user_formset.management_form }}
+{{ event_formset.management_form }}
+<h3>Info about you</h3>
+<p>say something else</p>
+<table class="regform">
+{{user_formset.as_table }}
+</table>
+
+<h3>Info about your event</h3>
+<p>say more stuff</p>
+<table class="regform">
+{{event_formset.as_table }}
+</table>
+</ul>
+
+<input type="submit" value="Register" />
+</form>
+{% endblock %}

@@ -1,8 +1,12 @@
+#from django.core.context_processors import csrf_protect
+from django.template import RequestContext
+
 from django.shortcuts import render_to_response
 from nourish.models import EventUser, Event, GroupUser, Group, EventGroup, UserProfile, User, Meal
 from nourish.forms.register import RegistrationStubForm, EventRegistrationForm
 from nourish.forms.group import GroupStubForm
 from nourish.forms.meal import MealStubForm
+from nourish.forms.event import EventForm
 from django.http import HttpResponseRedirect
 from django.contrib.auth import login, authenticate
 from datetime import timedelta
@@ -29,52 +33,6 @@ def register(request):
 
     return render_to_response('nourish/register.html', {
         'form': form,
-    })
-
-def event_register_guest(request, event_id):
-    event = Event.objects.get(id=event_id)
-    initial = []
-    dates = []
-    date = event.start_date
-    while date <= event.end_date:
-        initial.append({
-            'date' : date,
-            'meal' : 'D',
-            'event' : event,
-            'eg' : None,
-            'state' : 'N',
-        })
-        dates.append(date)
-        date += timedelta(days=1)
-#    feature_choices = [ ('R', 'Yes' ) ]
-    RegistrationFormset = formset_factory(RegistrationStubForm, extra=0)
-    GroupFormset = formset_factory(GroupStubForm, extra=0)
-    MealFormset = formset_factory(MealStubForm, extra=0)
-    if request.method == 'POST':
-        user_formset = RegistrationFormset(request.POST, prefix='user')
-        group_formset = GroupFormset(request.POST, prefix='group')
-        meal_formset = MealFormset(request.POST, prefix='meal')
-#        for form in meal_formset:
-#            form.fields['features'].choices = feature_choices
-    else:
-        user_formset = RegistrationFormset(prefix='user', initial=[{
-            'role' : 'A',
-        }])
-        group_formset = GroupFormset(prefix='group', initial=[{
-            'role' : 'A',
-        }])
-        meal_formset = MealFormset(prefix='meal', initial=initial)
-#        for form in meal_formset:
-#            form.fields['features'].choices = feature_choices
-
-    return render_to_response('nourish/event_register_guest.html', {
-        'request' : request,
-        'user_formset' : user_formset,
-        'group_formset' : group_formset,
-        'meal_formset' : meal_formset,
-        'event': event,
-        'dates': iter(dates),
-        'days': iter(dates),
     })
 
 def event_register(request, pk, role):
@@ -201,3 +159,66 @@ def login_redir(request):
             return HttpResponseRedirect(egs[0].get_absolute_url())
         return HttpResponseRedirect('/home')
     return HttpResponseRedirect('/home')
+
+def register_event_organizer(request):
+    RegistrationFormset = formset_factory(RegistrationStubForm, extra=0)
+    EventFormset = formset_factory(EventForm, extra=0)
+    if request.method == 'POST':
+        user_formset = RegistrationFormset(request.POST, prefix='user')
+        event_formset = EventFormset(request.POST, prefix='event')
+        if user_formset.is_valid() and event_formset.is_valid():
+            user_data = user_formset.cleaned_data[0];
+            event_data = event_formset.cleaned_data[0];
+
+            user = User.objects.create_user(
+                user_data['username'], 
+                user_data['email'], 
+                user_data['password']
+            )
+
+            authuser = authenticate(
+                username=user_data['username'], 
+                password=user_data['password']
+            )
+            login(request, authuser)
+
+            profile = UserProfile.objects.create(
+                user            = user,
+                role            = 'E',
+            )
+
+            event = Event.create(
+                name = event_data['name'],
+                start_date = event_data['start_date'],
+                end_data = event_data['end_date'],
+                url = event_data['url'],
+            )
+
+            eu = EventUser.create(
+                event = event,
+                user = user,
+                admin = True,
+                group = None,
+                attending = 'Y'
+                arrival_date = event_data['start_date']
+                departure_data = event_data['end_date']
+                arrival_meal = 'B'
+                departure_meal = 'D'
+            )
+
+        else:
+            print "not valid"
+
+    else:
+        user_formset = RegistrationFormset(prefix='user', initial=[{
+            'role' : 'E',
+        }])
+        event_formset = EventFormset(prefix='event', initial=[{
+        }])
+
+    return render_to_response('nourish/event_register_organizer.html', {
+        'request' : request,
+        'user_formset' : user_formset,
+        'event_formset' : event_formset,
+    }, context_instance=RequestContext(request))
+

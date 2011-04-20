@@ -1,14 +1,14 @@
-from nourish.models.group import Group
-from nourish.models.group import GroupUser
+from nourish.models import Group
+from nourish.models import GroupUser
 
-from nourish.models.event import Event
-from nourish.models.event import EventUser
-from nourish.models.event import EventGroup
+from nourish.models import Event
+from nourish.models import EventUser
+from nourish.models import EventGroup
 
-from nourish.models.meal import Meal
-from nourish.models.meal import MealInvite
+from nourish.models import Meal
+from nourish.models import MealInvite
 
-from nourish.models.userprofile import UserProfile
+from nourish.models import UserProfile
 
 from django.contrib import admin
 

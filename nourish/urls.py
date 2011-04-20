@@ -13,6 +13,7 @@ from nourish.forms.group import GroupForm, GroupJoinForm
 urlpatterns = patterns('',
     url('^logged-in/$', 'nourish.views.login_redir'),
     url('^register/$', 'nourish.views.register'),
+    url('^register/event/$', 'nourish.views.register_event_organizer'),
     url('^home/$', 'nourish.views.homepage'),
 
     url(r'^events/$', ListView.as_view(
