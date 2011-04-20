@@ -1,9 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
 #from django.forms import ModelForm
-from django import forms
+#from django import forms
 from nourish.models.group import Group
-from nourish.models.meal import Meal
+#from nourish.models.meal import Meal
 
 class Event(models.Model):
     name = models.CharField(max_length=100, unique=True)

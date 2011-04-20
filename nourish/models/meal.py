@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 #from django.forms import ModelForm
 from django import forms
 from nourish.models.group import Group
-#from nourish.models.event import Event, EventGroup
+from nourish.models.event import Event, EventGroup
 
 class MealInvite(models.Model):
     STATE_CHOICES = (
@@ -69,7 +69,7 @@ class Meal(models.Model):
     eg = models.ForeignKey('EventGroup')
     state = models.CharField(max_length=1, choices=STATE_CHOICES)
     members = models.IntegerField()
-    features = models.CharField()
+    features = models.CharField(max_length=40)
     notes = models.CharField(max_length=100)
     invite = models.ForeignKey('MealInvite', null=True, blank=True)
     def __unicode__(self):

@@ -12,7 +12,7 @@ from django import forms
 
 def register(request):
     if request.method == 'POST': # If the form has been submitted...
-        form = RegistrationForm(request.POST) # A form bound to the POST data
+        form = RegistrationStubForm(request.POST) # A form bound to the POST data
         if form.is_valid(): # All validation rules pass
             data = form.cleaned_data
             user = User.objects.create_user(data['username'], data['email'], data['password'])
@@ -25,7 +25,7 @@ def register(request):
             )
             return HttpResponseRedirect('/logged-in/') # Redirect after POST
     else:
-        form = RegistrationForm() # An unbound form
+        form = RegistrationStubForm() # An unbound form
 
     return render_to_response('nourish/register.html', {
         'form': form,
