@@ -1,9 +1,6 @@
-from django.views.generic import DetailView, CreateView, UpdateView
-from nourish.models import EventGroup, EventUser, Event
+from django.views.generic import DetailView
+from nourish.models import EventGroup, Event, GroupUser, Meal, MealInvite
 from nourish.forms.event import EventAttendForm
-from nourish.models import EventUser, Event, EventGroup
-from nourish.models import GroupUser, Group
-from nourish.models import Meal, MealInvite
 from django.shortcuts import get_object_or_404, redirect
 from datetime import timedelta
 

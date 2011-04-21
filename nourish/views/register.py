@@ -1,18 +1,16 @@
 #from django.core.context_processors import csrf_protect
 from django.template import RequestContext
 
-from django.shortcuts import render_to_response
-from nourish.models import EventUser, Event, GroupUser, Group, EventGroup, UserProfile, User, Meal
-from nourish.forms.register import RegistrationKeyStubForm, EventRegistrationForm, RegistrationStubForm
+from django.shortcuts import render_to_response, redirect
+from nourish.models import Event, Group, UserProfile, User
+from nourish.forms.register import RegistrationKeyStubForm, RegistrationStubForm
 from nourish.forms.group import GroupStubForm
 from nourish.forms.meal import MealStubForm
 from nourish.forms.event import EventForm
-from django.http import HttpResponseRedirect
 from django.contrib.auth import login, authenticate
 from datetime import timedelta
 from django.forms.formsets import formset_factory
 import array
-from django import forms
 
 def register_event(request):
     RegistrationFormset = formset_factory(RegistrationKeyStubForm, extra=0)
@@ -52,7 +50,7 @@ def register_event(request):
             eu.admin = True;
             eu.save()
 
-            return HttpResponseRedirect('/logged-in/') 
+            return redirect('/logged-in/') 
 
     else:
         user_formset = RegistrationFormset(prefix='user', initial=[{
@@ -129,7 +127,7 @@ def register_event_guest(request, event_id):
                     meal.notes = m['notes']
                     meal.save()
         
-            return HttpResponseRedirect('/logged-in/') # Redirect after POST
+            return redirect('/logged-in/') # Redirect after POST
     else:
         user_formset = RegistrationFormset(prefix='user', initial=[{
             'role': 'A',

@@ -1,16 +1,15 @@
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, redirect
 from django.core.exceptions import PermissionDenied
-from nourish.models import EventUser, Event, GroupUser, Group, EventGroup, UserProfile, User, Meal, MealInvite
+from nourish.models import GroupUser, EventGroup, Meal, MealInvite
 from nourish.forms.meal import EventGroupInviteForm, EventGroupMealForm, EventGroupInvitesForm
-from django.http import HttpResponseRedirect
 from django.forms.formsets import formset_factory
 from django.contrib.auth.decorators import login_required
 from datetime import timedelta
 
-def event_guest_invite(request, event_id, event_group_id, host_eg_id):
-    eg = EventGroup.objects.get(id=event_group_id)
+def event_guest_invite(request, pk, host_eg_id):
+    eg = EventGroup.objects.get(id=pk)
     host_eg = EventGroup.objects.get(id=host_eg_id)
-    event = Event.objects.get(id=event_id)
+    event = eg.event
     meals = Meal.objects.filter(eg=eg,state__in=['N','I','S'])
     if request.method == 'POST': # If the form has been submitted...
         form = EventGroupInviteForm(request.POST) # A form bound to the POST data
@@ -30,7 +29,7 @@ def event_guest_invite(request, event_id, event_group_id, host_eg_id):
                         continue
                     invite.rescind()
 #
-            return HttpResponseRedirect(eg.get_absolute_url()) # Redirect after POST
+            return redirect(eg.get_absolute_url()) # Redirect after POST
 
     else:
         form = EventGroupInviteForm() # An unbound form
@@ -141,7 +140,7 @@ def event_guest_meals(request, pk):
                 meal.notes = ''.join(form['notes'])
                 meal.save()
 
-            return HttpResponseRedirect(eg.get_absolute_url()) 
+            return redirect(eg.get_absolute_url()) 
     else:
         formset = MealFormSet(initial=initial)
         i = iter(choices)
@@ -158,9 +157,9 @@ def event_guest_meals(request, pk):
         'days' : iter(dates),
     })
 
-def event_group_invites(request, event_id, event_group_id):
-    eg = EventGroup.objects.get(id=event_group_id)
-    event = Event.objects.get(id=event_id)
+def event_host_invites(request, pk):
+    eg = EventGroup.objects.get(id=pk)
+    event = eg.event
     
     initial = [] 
     invites = { }
@@ -186,7 +185,7 @@ def event_group_invites(request, event_id, event_group_id):
                         invite.confirm()
                     else:
                         invite.rescind()
-            return HttpResponseRedirect(eg.get_absolute_url()) 
+            return redirect(eg.get_absolute_url()) 
 
     else:
         formset = InvitesFormSet(initial=initial)

@@ -1,7 +1,5 @@
-from django.views.generic import DetailView, CreateView, FormView
+from django.views.generic import DetailView
 from nourish.models import Group, EventGroup, GroupUser
-from django.shortcuts import get_object_or_404, redirect
-#from nourish.forms.group import GroupUserForm
 
 class GroupDetailView(DetailView):
     context_object_name = 'group'

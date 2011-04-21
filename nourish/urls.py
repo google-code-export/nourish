@@ -17,13 +17,13 @@ urlpatterns = patterns('',
 
     url(r'^events/(?P<event_id>\d+)/register/guest/$', 
         'nourish.views.register_event_guest'),
-    url(r'^events/(?P<event_id>\d+)/group/(?P<pk>\d+)(-[^/]+)?/$', 
+    url(r'^events/\d+/group/(?P<pk>\d+)(-[^/]+)?/$', 
         EventGroupView.as_view()),
     url(r'^events/\d+/group/(?P<pk>\d+)/meals/$', 
         'nourish.views.event_guest_meals'),
-    url(r'^events/(?P<event_id>\d+)/group/(?P<pk>\d+)/invite/(?P<host_eg_id>\d+)/$', 
+    url(r'^events/\d+/group/(?P<pk>\d+)/invite/(?P<host_eg_id>\d+)/$', 
         'nourish.views.event_guest_invite'),
-    url(r'^events/(?P<event_id>\d+)/group/(?P<pk>\d+)/invites/$', 
+    url(r'^events/\d+/group/(?P<pk>\d+)/invites/$', 
         'nourish.views.event_host_invites'),
 
     url(r'^groups/$', ListView.as_view(
