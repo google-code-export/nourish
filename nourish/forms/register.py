@@ -20,7 +20,7 @@ class RegistrationForm(forms.Form):
         raise ValidationError("This username already exists")
 
     username = forms.CharField(validators=[validate_username])
-    url = forms.URLField(required=False, label="Personal Website")
+    url = forms.URLField(required=False, label="Personal Website", widget=forms.HiddenInput)
     email = forms.EmailField()
     phone = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput)

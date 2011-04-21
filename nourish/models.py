@@ -8,7 +8,7 @@ class UserProfile(models.Model):
         ('T', 'Theme Camp Organizer'),
         ('A', 'Art Project Organizer'),
     )
-    url = models.URLField()
+    url = models.URLField(blank=True, null=True, default='')
     role = models.CharField(max_length=1, choices=ROLE_CHOICES, default='U')
     user = models.ForeignKey(User, unique=True)
     def __unicode__(self):
