@@ -22,12 +22,8 @@ class MealForm(ModelForm):
     class Meta:
         model = Meal
 
-class MealStubForm(MealForm):
-    eg = forms.IntegerField(widget=forms.HiddenInput)
-    event = forms.IntegerField(widget=forms.HiddenInput)
-    date = forms.DateField(widget=forms.HiddenInput)
-    meal = forms.CharField(widget=forms.HiddenInput)
-    state = forms.CharField(widget=forms.HiddenInput)
-    features = forms.ChoiceField(choices=( ('', 'No'), ('R', 'Yes')), required = False)
+class MealStubForm(forms.Form):
+    date = forms.DateField(widget=forms.HiddenInput, required=False)
     members = forms.IntegerField(widget=forms.TextInput(attrs={'size':3}), required=False)
+    features = forms.ChoiceField(choices=( ('', 'No'), ('R', 'Yes')), required = False)
     notes = forms.CharField(required=False)

@@ -17,9 +17,7 @@
 
     <h3>Registered Artist Groups</h3>
     <ul>
-    {% if not user.is_authenticated %}
-        <li>[<a href="{{object.get_absolute_url}}register/guest">Register New Artist Group</a>]</li>
-    {% endif %}
+    <li>[<a href="{{object.get_absolute_url}}register/guest">Register New Artist Group</a>]</li>
     {% for eg in guest_list %}
         <li><a href="{{object.get_absolute_url}}group/{{eg.id}}/">{{eg.group.name}}</a></li>
     {% endfor %}
@@ -27,9 +25,7 @@
 
     <h3>Registered Theme Camps</h3>
     <ul>
-    {% if not user.is_authenticated %}
-        <li>[<a href="{{object.get_absolute_url}}register/host">Register New Theme Camp</a>]</li>
-    {% endif %}
+    <li>[<a href="{{object.get_absolute_url}}register/host">Register New Theme Camp</a>]</li>
     {% for eg in host_list %}
         <li><a href="{{object.get_absolute_url}}group/{{eg.id}}/">{{eg.group.name}}</a></li>
     {% endfor %}

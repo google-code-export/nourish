@@ -3,7 +3,7 @@ from django.template import RequestContext
 
 from django.shortcuts import render_to_response
 from nourish.models import EventUser, Event, GroupUser, Group, EventGroup, UserProfile, User, Meal
-from nourish.forms.register import RegistrationStubForm, EventRegistrationForm
+from nourish.forms.register import RegistrationKeyStubForm, EventRegistrationForm, RegistrationStubForm
 from nourish.forms.group import GroupStubForm
 from nourish.forms.meal import MealStubForm
 from nourish.forms.event import EventForm
@@ -16,7 +16,7 @@ from django import forms
 
 def register(request):
     if request.method == 'POST': # If the form has been submitted...
-        form = RegistrationStubForm(request.POST) # A form bound to the POST data
+        form = RegistrationKeyStubForm(request.POST) # A form bound to the POST data
         if form.is_valid(): # All validation rules pass
             data = form.cleaned_data
             user = User.objects.create_user(data['username'], data['email'], data['password'])
@@ -29,7 +29,7 @@ def register(request):
             )
             return HttpResponseRedirect('/logged-in/') # Redirect after POST
     else:
-        form = RegistrationStubForm() # An unbound form
+        form = RegistrationKeyStubForm() # An unbound form
 
     return render_to_response('nourish/register.html', {
         'form': form,
@@ -161,7 +161,7 @@ def login_redir(request):
     return HttpResponseRedirect('/home')
 
 def register_event_organizer(request):
-    RegistrationFormset = formset_factory(RegistrationStubForm, extra=0)
+    RegistrationFormset = formset_factory(RegistrationKeyStubForm, extra=0)
     EventFormset = formset_factory(EventForm, extra=0)
     if request.method == 'POST':
         user_formset = RegistrationFormset(request.POST, prefix='user')
@@ -187,27 +187,28 @@ def register_event_organizer(request):
                 role            = 'E',
             )
 
-            event = Event.create(
+            event = Event.objects.create(
                 name = event_data['name'],
                 start_date = event_data['start_date'],
-                end_data = event_data['end_date'],
+                end_date = event_data['end_date'],
                 url = event_data['url'],
             )
 
-            eu = EventUser.create(
+            eu = EventUser.objects.create(
                 event = event,
                 user = user,
                 admin = True,
                 group = None,
-                attending = 'Y'
-                arrival_date = event_data['start_date']
-                departure_data = event_data['end_date']
-                arrival_meal = 'B'
-                departure_meal = 'D'
+                attending = 'Y',
+                arrival_date = event_data['start_date'],
+                departure_date = event_data['end_date'],
+                arrival_meal = 'B',
+                departure_meal = 'D',
             )
+            return HttpResponseRedirect('/logged-in/') # Redirect after POST
 
-        else:
-            print "not valid"
+#        else:
+#            print "not valid"
 
     else:
         user_formset = RegistrationFormset(prefix='user', initial=[{
@@ -221,4 +222,54 @@ def register_event_organizer(request):
         'user_formset' : user_formset,
         'event_formset' : event_formset,
     }, context_instance=RequestContext(request))
+
+def event_register_guest(request, event_id):
+    event = Event.objects.get(id=event_id)
+    initial = []
+    dates = []
+    date = event.start_date
+    while date <= event.end_date:
+        initial.append({
+            'date' : date,
+        })
+        dates.append(date)
+        date += timedelta(days=1)
+#    feature_choices = [ ('R', 'Yes' ) ]
+    RegistrationFormset = formset_factory(RegistrationStubForm, extra=0)
+    GroupFormset = formset_factory(GroupStubForm, extra=0)
+    MealFormset = formset_factory(MealStubForm, extra=0)
+    if request.method == 'POST':
+        user_formset = RegistrationFormset(request.POST, prefix='user')
+        group_formset = GroupFormset(request.POST, prefix='group')
+        meal_formset = MealFormset(request.POST, prefix='meal')
+        if user_formset.is_valid() and group_formset.is_valid() and meal_formset.is_valid():
+            print "valid"
+            return
+#        for form in meal_formset:
+#            form.fields['features'].choices = feature_choices
+        else:
+            print "wtf"
+            return
+#            for form in meal_formset:
+#                print form
+    else:
+        user_formset = RegistrationFormset(prefix='user', initial=[{
+            'role' : 'A',
+        }])
+        group_formset = GroupFormset(prefix='group', initial=[{
+            'role' : 'A',
+        }])
+        meal_formset = MealFormset(prefix='meal', initial=initial)
+#        for form in meal_formset:
+#            form.fields['features'].choices = feature_choices
+
+    return render_to_response('nourish/event_register_guest.html', {
+        'request' : request,
+        'user_formset' : user_formset,
+        'group_formset' : group_formset,
+        'meal_formset' : meal_formset,
+        'event': event,
+        'dates': iter(dates),
+        'days': iter(dates),
+    })
 

@@ -37,6 +37,12 @@ class RegistrationForm(forms.Form):
 class RegistrationStubForm(RegistrationForm):
     role = forms.CharField(widget=forms.HiddenInput)
 
+class RegistrationKeyStubForm(RegistrationStubForm):
+    def validate_key(key):
+        if key not in [ "hungry" ]:
+            raise ValidationError("This key is invalid")
+    key = forms.CharField(label="Registration Key", validators=[validate_key])
+
 class EventRegistrationForm(RegistrationForm):
     FEATURE_CHOICES = (
         ('v', 'Some Vegetarian'),
