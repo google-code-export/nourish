@@ -8,6 +8,7 @@ urlpatterns = patterns('',
     url('^logged-in/$', 'nourish.views.homepage_chooser'),
     url('^register/event/$', 'nourish.views.register_event'),
     url('^home/$', 'nourish.views.homepage'),
+    url('^$',      'nourish.views.rootpage'),
 
     url(r'^events/$', ListView.as_view(
         model=Event,

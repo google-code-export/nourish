@@ -1,5 +1,5 @@
 from django.shortcuts import render_to_response, redirect
-from nourish.models import EventUser, GroupUser, Group, EventGroup, UserProfile
+from nourish.models import EventUser, GroupUser, Group, EventGroup, UserProfile, Event
 import array
 from django.template import RequestContext
 
@@ -14,6 +14,14 @@ def homepage(request):
         'request': request,
         'events' : events,
         'groups' : groups,
+    }, context_instance=RequestContext(request))
+
+def rootpage(request):
+    events = Event.objects.all()
+
+    return render_to_response('nourish/rootpage.html', { 
+        'request': request,
+        'events' : events,
     }, context_instance=RequestContext(request))
 
 def homepage_chooser(request):
