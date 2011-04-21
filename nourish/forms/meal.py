@@ -8,6 +8,10 @@ from django.forms import ModelForm
 class EventGroupInviteForm(forms.Form):
     meals = forms.ModelMultipleChoiceField(queryset=Meal.objects.all(),widget=forms.CheckboxSelectMultiple)
 
+class EventGroupInvitesForm(forms.Form):
+    invite_id = forms.IntegerField(widget=forms.HiddenInput)
+    action = forms.BooleanField(required=False)
+
 class EventGroupMealForm(forms.Form):
     meal_id = forms.IntegerField(widget=forms.HiddenInput,required=False)
     meal = forms.CharField(widget=forms.HiddenInput)
@@ -15,10 +19,6 @@ class EventGroupMealForm(forms.Form):
     invite = forms.ChoiceField(choices=[], widget=forms.RadioSelect, required=False)
     features = forms.ChoiceField(choices=[('', 'No'), ('R', 'Yes')], required=False)
     notes = forms.CharField(required=False)
-
-class EventGroupInvitesForm(forms.Form):
-    invite_id = forms.IntegerField(widget=forms.HiddenInput)
-    action = forms.BooleanField(required=False)
 
 class MealForm(ModelForm):
     class Meta:
