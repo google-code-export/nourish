@@ -4,7 +4,9 @@
 
 {% block content %}
 
-<h2>Manage Meals</h2>
+<h2><a href="{{eg.get_absolute_url}}">{{ eg.group.name }} at {{ eg.event.name }}</a></h2>
+
+<h3>Manage Meals</h3>
 
 <form action="{{eg.get_absolute_url}}meals/" method="post">{% csrf_token %}
 {{ formset.management_form }}

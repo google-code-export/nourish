@@ -145,5 +145,5 @@ def register_event_guest(request, event_id):
         'event': event,
         'dates': iter(dates),
         'days': iter(dates),
-    })
+    }, context_instance=RequestContext(request))
 

@@ -188,7 +188,7 @@
         <h1>FtA Online Reservation System</h1>
     <div id="nav">
     <ul>
-      {% if request.user.username %}
+      {% if user.username %}
         <li><a id="logo" href="/home/">Home</a></li>
       {% else %}
         <li><a id="logo" href="/">Home</a></li>
@@ -216,8 +216,8 @@
     </div>
       <div id="sidebar" class="column">
     <div id="auth">
-    {% if request.user.is_authenticated %}
-        Logged in as {{ request.user.username }}<br> [<a href="/logout">logout</a>]
+    {% if user.is_authenticated %}
+        Logged in as {{ user.username }}<br> [<a href="/logout">logout</a>]
     {% else %} 
         [<a href="/login">login</a>]
     {% endif %}

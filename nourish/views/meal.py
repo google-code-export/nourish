@@ -1,5 +1,6 @@
 from django.shortcuts import render_to_response, redirect
 from django.core.exceptions import PermissionDenied
+from django.template import RequestContext
 from nourish.models import GroupUser, EventGroup, Meal, MealInvite
 from nourish.forms.meal import EventGroupInviteForm, EventGroupMealForm, EventGroupInvitesForm
 from django.forms.formsets import formset_factory
@@ -48,7 +49,7 @@ def event_guest_invite(request, pk, host_eg_id):
         'eg': eg,
         'event' : event,
         'request': request,
-    })
+    }, context_instance=RequestContext(request))
 
 @login_required
 def event_guest_meals(request, pk):
@@ -74,7 +75,6 @@ def event_guest_meals(request, pk):
     m = {}
     for meal in meals:
         k = str(meal.date) + ':' + meal.meal
-        print "key is " + k
         m[k] = meal
     meals = m
 
@@ -155,7 +155,7 @@ def event_guest_meals(request, pk):
         'meals' : iter(display_info),
         'dates' : iter(dates),
         'days' : iter(dates),
-    })
+    }, context_instance=RequestContext(request))
 
 def event_host_invites(request, pk):
     eg = EventGroup.objects.get(id=pk)
@@ -203,4 +203,4 @@ def event_host_invites(request, pk):
         'invites' : invites,
         'forms' : forms,
         'has_invites' : has_invites,
-    })
+    }, context_instance=RequestContext(request))

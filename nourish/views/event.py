@@ -27,7 +27,7 @@ class EventGroupView(DetailView):
     
     def get_context_data(self, **kwargs):
         context = super(EventGroupView, self).get_context_data(**kwargs)
-        context['meals'] = Meal.objects.filter(eg=self.object)
+        context['meals'] = Meal.objects.filter(eg=self.object).order_by('date', 'meal')
         context['invites_sent'] = MealInvite.objects.filter(host_eg=self.object)
         context['invites_rcvd'] = MealInvite.objects.filter(guest_eg=self.object)
         dates = []

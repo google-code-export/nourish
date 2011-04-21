@@ -7,6 +7,7 @@
 <p>say something</p>
 
 <form action="/register/event/" method="post">
+{% csrf_token %}
 {{ user_formset.management_form }}
 {{ event_formset.management_form }}
 <h3>Info about you</h3>
