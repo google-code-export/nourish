@@ -1,6 +1,7 @@
 from django.shortcuts import render_to_response, redirect
 from nourish.models import EventUser, GroupUser, Group, EventGroup, UserProfile
 import array
+from django.template import RequestContext
 
 def homepage(request):
     groups = [ ]
@@ -13,7 +14,7 @@ def homepage(request):
         'request': request,
         'events' : events,
         'groups' : groups,
-    } )
+    }, context_instance=RequestContext(request))
 
 def homepage_chooser(request):
     user = request.user
