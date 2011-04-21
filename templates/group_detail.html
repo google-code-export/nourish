@@ -5,6 +5,8 @@
 {% block content %}
     <h2>Group: {{ object.name }}</h2>
 
+    <h3>About Us</h3>
+    <p>{{ object.description }}</p>
     <h3>Our Events</h3>
     <ul>
     {% for eg in eventgroup_list %}

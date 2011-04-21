@@ -28,7 +28,7 @@
 <h3>Meals</h3>
 <p>Here's where you tell us how many crew members are looking for dinner each night of the event.  Please specify each night that there will be crew with special dietary restrictions.</p>
 <table border=0 class="regtable">
-{{ user_formset.non_field_errors }}
+{{ meal_formset.non_field_errors }}
 <tr><th>Date</th><th>Crew</th><th>Restrictions</th><th>Notes</th></tr>
 {% for form in meal_formset %}
   {% if form.non_field_errors %}

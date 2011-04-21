@@ -1,4 +1,5 @@
-from nourish.views.edit import CreateView
-from nourish.views.homepage import homepage
-from nourish.views.register import register, login_redir, event_register, register_event_organizer
-from nourish.views.meal import event_group_invite, event_group_meals, event_group_invites
+from nourish.views.homepage import *
+from nourish.views.register import *
+from nourish.views.meal import *
+from nourish.views.group import *
+from nourish.views.event import *

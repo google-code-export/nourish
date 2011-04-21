@@ -5,8 +5,9 @@ from nourish.forms.meal import EventGroupInviteForm, EventGroupMealForm, EventGr
 from django.http import HttpResponseRedirect
 from django.forms.formsets import formset_factory
 from django.contrib.auth.decorators import login_required
+from datetime import timedelta
 
-def event_group_invite(request, event_id, event_group_id, host_eg_id):
+def event_guest_invite(request, event_id, event_group_id, host_eg_id):
     eg = EventGroup.objects.get(id=event_group_id)
     host_eg = EventGroup.objects.get(id=host_eg_id)
     event = Event.objects.get(id=event_id)
@@ -42,7 +43,7 @@ def event_group_invite(request, event_id, event_group_id, host_eg_id):
 
         form.initial = { 'meals' : ms }
 
-    return render_to_response('nourish/meal/invite.html', {
+    return render_to_response('nourish/event_guest_invite.html', {
         'form': form,
         'host_eg': host_eg,
         'eg': eg,
@@ -51,56 +52,95 @@ def event_group_invite(request, event_id, event_group_id, host_eg_id):
     })
 
 @login_required
-def event_group_meals(request, event_id, event_group_id):
-    eg = EventGroup.objects.get(id=event_group_id)
-    event = Event.objects.get(id=event_id)
-    meals = Meal.objects.filter(eg=eg)
+def event_guest_meals(request, pk):
+    eg = EventGroup.objects.get(id=pk)
+    event = eg.event
 
     try:
         gu = GroupUser.objects.get(group=eg.group,user=request.user,admin=True)
     except GroupUser.DoesNotExist:
         raise PermissionDenied
 
+    dates = []
+    date = event.start_date
+    while date <= event.end_date:
+        dates.append(date)
+        date += timedelta(days=1)
+
+    show_meals = [ ('D', 'Dinner') ]
+
+    meals = Meal.objects.filter(eg=eg)
+    invites = MealInvite.objects.filter(guest_eg=eg)
+
+    m = {}
+    for meal in meals:
+        k = str(meal.date) + ':' + meal.meal
+        print "key is " + k
+        m[k] = meal
+    meals = m
+
+    invites_by_meal = {}
+    for invite in invites:
+        if invite.meal not in invites_by_meal:
+            invites_by_meal[invite.meal] = []
+        invites_by_meal[invite.meal].append(invite)
+    
     initial = []
     choices = []
-    for meal in meals:
-        i = { 
-            'date': meal.date,
-            'meal_id': meal.id,
-            'members' : meal.members,
-            'invite' : 'un',
-        }
-        c = []
-        if (meal.state in ['N', 'I', 'S' ]):
-            c.append(('un', 'Undecided'))
-        for invite in MealInvite.objects.filter(meal=meal):
-            if invite.state not in ['N', 'S', 'C']:
-                continue
-            group = invite.host_eg.group
-            c.append((invite.id, group.name + ' (' + invite.host_eg.dinner_time + ', ' + invite.host_eg.features + ')'))
-            if invite.state in [ 'S', 'C' ]:
-                i['invite'] = invite.id
-        initial.append(i)
-        choices.append(c)
+    display_info = []
+    has_invites = []
+    for date in dates:
+        for sm in show_meals:
+            display_info.append(sm[1])
+            k = str(date) + ':' + sm[0]
+            i = { 'date' : date, 'meal' : sm[0] }
+            c = [ ]
+            if k in meals:
+                has_invites.append(True)
+                i['meal_id'] = meals[k].id
+                i['meal'] = meals[k].meal
+                i['members'] = meals[k].members
+                i['features'] = meals[k].features
+                i['notes'] = meals[k].notes
+                if meals[k].invite:
+                    i['invite'] = str(meals[k].invite.id)
+                else:
+                    i['invite'] = 'un'
+                c.append(('un', 'Undecided'))
+                if meals[k] in invites_by_meal:
+                    for invite in invites_by_meal[meals[k]]:
+                        c.append( ( invite.id, invite ) )
+            else:
+                has_invites.append(False)
+            choices.append(c)
+            initial.append(i)
 
     MealFormSet = formset_factory(EventGroupMealForm,extra=0)
-    if request.method == 'POST': # If the form has been submitted...
+    if request.method == 'POST':
         formset = MealFormSet(request.POST)
         i = iter(choices)
         for form in formset:
             form.fields['invite'].choices = i.next()
-        if formset.is_valid(): # All validation rules pass
-            i = iter(choices)
-            for data in formset.cleaned_data:
-                meal = Meal.objects.get(id=data['meal_id'])
-                if data['invite'] == 'un':
-                    if meal.state == 'S':
-                        meal.unchoose()
+        date = iter(dates)
+        if formset.is_valid():
+            for form in formset.cleaned_data:
+                d = date.next()
+                if form['meal_id']:
+                    meal = Meal.objects.get(pk=form['meal_id'])
+                    if form['members'] < 1:
+                        meal.delete()
+                        continue
                 else:
-                    invite = MealInvite.objects.get(id = int(data['invite']))
-                    if not meal.invite or meal.invite != invite:
-                        meal.choose(invite)
-                
+                    if form['members'] > 0:
+                        meal = eg.meal(d, 'D')
+                    else:
+                        continue
+
+                meal.members = form['members']
+                meal.features = ''.join(form['features'])
+                meal.notes = ''.join(form['notes'])
+                meal.save()
+
             return HttpResponseRedirect(eg.get_absolute_url()) 
     else:
         formset = MealFormSet(initial=initial)
@@ -108,11 +148,14 @@ def event_group_meals(request, event_id, event_group_id):
         for form in formset:
             form.fields['invite'].choices = i.next()
 
-    return render_to_response('nourish/meal/event_group.html', {
+    return render_to_response('nourish/event_guest_meals.html', {
         'formset': formset,
         'eg': eg,
         'event' : event,
         'request' : request,
+        'meals' : iter(display_info),
+        'dates' : iter(dates),
+        'days' : iter(dates),
     })
 
 def event_group_invites(request, event_id, event_group_id):
@@ -153,11 +196,12 @@ def event_group_invites(request, event_id, event_group_id):
         invite = invites[int(form['invite_id'].value())]
         forms[invite.state].append((form,invite))
 
-    return render_to_response('nourish/meal/event_group_invites.html', {
+    return render_to_response('nourish/event_host_invites.html', {
         'formset': formset,
         'eg': eg,
         'event' : event,
         'request' : request,
         'invites' : invites,
         'forms' : forms,
+        'has_invites' : has_invites,
     })

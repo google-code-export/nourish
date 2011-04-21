@@ -26,5 +26,4 @@ class GroupJoinForm(ModelForm):
 
 class GroupStubForm(GroupForm):
     role = forms.CharField(widget=forms.HiddenInput)
-    members = forms.IntegerField(widget=forms.HiddenInput, required=False)
     description = forms.CharField(widget=forms.Textarea(attrs={'rows':3}))

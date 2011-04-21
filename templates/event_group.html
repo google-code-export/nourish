@@ -5,20 +5,9 @@
 {% block content %}
     <h2><a href="{{object.group.get_absolute_url}}">{{ object.group.name }}</a> at <a href="{{object.event.get_absolute_url}}">{{ object.event.name }}</a></h2>
     <ul>
-        {% if object.role == 'T' %}
-            <li>Theme Camp</li>
-            <li>Dinner Time: {{ object.dinner_time }}</li>
-        {% endif %}
-        {% if object.role == 'A' %}
-            <li>Art Group</li>
-            <li>Expected Members: {{ object.expected_members }}</li>
-            <li>Notes: {{ object.notes }}</li>
-        {% endif %}
-        <li>Arrival: {{ object.arrival_date }}</li>
-        <li>Departure: {{ object.departure_date }}</li>
-        <li>Features: {{ object.features }}</li>
+        <li>{{ object.event.start_date }} thru {{ object.event.end_date }}</li>
     </ul>
-    {% if object.role == 'A' %}
+    {% if object.group.role == 'A' %}
         <h3>Meals</h3>
         {% for eg in host_event_groups %}
             <a href="{{object.get_absolute_url}}invite/{{eg.id}}">Invite {{object.group.name}} to dinner with {{ eg.group.name }}</a><br>

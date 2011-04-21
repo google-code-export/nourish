@@ -9,10 +9,12 @@ class EventGroupInviteForm(forms.Form):
     meals = forms.ModelMultipleChoiceField(queryset=Meal.objects.all(),widget=forms.CheckboxSelectMultiple)
 
 class EventGroupMealForm(forms.Form):
-    meal_id = forms.IntegerField(widget=forms.HiddenInput)
-    date = forms.CharField(widget=forms.HiddenInput, required=False)
-    members = forms.IntegerField(widget=forms.TextInput(attrs={'size':'3'}))
-    invite = forms.ChoiceField(choices=[], widget=forms.RadioSelect)
+    meal_id = forms.IntegerField(widget=forms.HiddenInput,required=False)
+    meal = forms.CharField(widget=forms.HiddenInput)
+    members = forms.IntegerField(widget=forms.TextInput(attrs={'size':'3'}), required=False)
+    invite = forms.ChoiceField(choices=[], widget=forms.RadioSelect, required=False)
+    features = forms.ChoiceField(choices=[('', 'No'), ('R', 'Yes')], required=False)
+    notes = forms.CharField(required=False)
 
 class EventGroupInvitesForm(forms.Form):
     invite_id = forms.IntegerField(widget=forms.HiddenInput)
@@ -23,7 +25,6 @@ class MealForm(ModelForm):
         model = Meal
 
 class MealStubForm(forms.Form):
-    date = forms.DateField(widget=forms.HiddenInput, required=False)
     members = forms.IntegerField(widget=forms.TextInput(attrs={'size':3}), required=False)
     features = forms.ChoiceField(choices=( ('', 'No'), ('R', 'Yes')), required = False)
     notes = forms.CharField(required=False)

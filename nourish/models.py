@@ -3,37 +3,33 @@ from django.contrib.auth.models import User
 
 class UserProfile(models.Model):
     ROLE_CHOICES = (
+        ('U', 'Undefined'),
         ('E', 'Event Coordinator'),
         ('T', 'Theme Camp Organizer'),
         ('A', 'Art Project Organizer'),
     )
     url = models.URLField()
-    role = models.CharField(max_length=1, choices=ROLE_CHOICES)
+    role = models.CharField(max_length=1, choices=ROLE_CHOICES, default='U')
     user = models.ForeignKey(User, unique=True)
     def __unicode__(self):
         return self.user.username
 
-class GroupManager(models.Manager):
-    def add_admin(self, group, admin):
-        GroupUser.objects.create(group=group, user=admin, admin=True)
-
 class GroupUser(models.Model):
     group = models.ForeignKey('Group')
     user = models.ForeignKey(User)
-    admin = models.BooleanField()
+    admin = models.BooleanField(default=False)
     def __unicode__(self):
         return self.group.name + ' : ' + self.user.username
 
 class Group(models.Model):
     ROLE_CHOICES = (
+        ('U', 'Undefined'),
         ('T', 'Theme Camp'),
         ('A', 'Artist Group'),
     )
     name = models.CharField(max_length=100, unique=True, verbose_name="Group Name")
-    objects = GroupManager()
     url = models.URLField(blank=True, null=True, verbose_name="Group Website")
-    role = models.CharField(max_length=1, choices=ROLE_CHOICES)
-    members = models.IntegerField(blank=True, null=True)
+    role = models.CharField(max_length=1, choices=ROLE_CHOICES, default='U')
     description = models.TextField(blank=True, null=True)
     def __unicode__(self):
         return self.name
@@ -57,8 +53,6 @@ class Event(models.Model):
         return self.name
     def get_absolute_url(self):
         return '/events/%i/' % self.id
-    def add_admin(self, admin):
-        EventUser.objects.create(event=self, user=admin, admin=True, attending='M',arrival_date=self.start_date,departure_date=self.end_date,arrival_meal='D',departure_meal = 'B')
 
     def group(self,group):
         try:
@@ -67,13 +61,6 @@ class Event(models.Model):
             eg = EventGroup.objects.create(
                 event           = self,
                 group           = group,
-                arrival_date    = self.start_date,
-                departure_date  = self.end_date,
-                expected_members= 0,
-                attending       = 'Y',
-                role            = '',
-                features        = '',
-                notes           = '',
             )
         return eg
 
@@ -84,56 +71,27 @@ class Event(models.Model):
             u = EventUser.objects.create(
                 event           = self, 
                 user            = user,
-                arrival_date    = self.start_date,
-                departure_date  = self.end_date,
-                arrival_meal    = 'B',
-                departure_meal  = 'D',
-                attending       = 'Y',
             )
         return u
 
 class EventUser(models.Model):
-    ATTEND_CHOICES = (
-        ('Y', 'Yes'),
-        ('N', 'No'),
-        ('M', 'Maybe'),
-    )
-    MEAL_CHOICES = (
-        ('B', 'Breakfast'),
-        ('L', 'Lunch'),
-        ('D', 'Dinner'),
-    )
     event = models.ForeignKey(Event,editable=False)
     user = models.ForeignKey(User,editable=False)
-    admin = models.BooleanField(editable=False)
-    group = models.ForeignKey(Group, blank=True, null=True)
-    attending = models.CharField(max_length=1, choices=ATTEND_CHOICES)
-    arrival_date = models.DateField(null=True)
-    departure_date = models.DateField(null=True)
-    arrival_meal = models.CharField(max_length=1, choices=MEAL_CHOICES)
-    departure_meal = models.CharField(max_length=1, choices=MEAL_CHOICES)
+    admin = models.BooleanField(editable=False, default=False)
     def __unicode__(self):
         return self.event.name + ' : ' + self.user.username
 
 class EventGroup(models.Model):
-    ATTEND_CHOICES = (
-        ('Y', 'Yes'),
-        ('N', 'No'),
-    )
     ROLE_CHOICES = (
+        ('U', 'Undefined'),
         ('T', 'Theme Camp'),
         ('A', 'Artist Group'),
     )
     event = models.ForeignKey(Event)
     group = models.ForeignKey(Group)
-    arrival_date = models.DateField()
-    departure_date = models.DateField()
-    expected_members = models.IntegerField()
-    attending = models.CharField(max_length=1, choices=ATTEND_CHOICES)
-    role = models.CharField(max_length=1, choices=ROLE_CHOICES)
-    features = models.CharField(max_length=100)
+    role = models.CharField(max_length=1, choices=ROLE_CHOICES, default='U')
+    features = models.CharField(max_length=100, default='')
     dinner_time = models.CharField(max_length=10,null=True,blank=True)
-    notes = models.TextField()
     def __unicode__(self):
         return self.event.name + ' : ' + self.group.name
     def get_absolute_url(self):
@@ -148,8 +106,6 @@ class EventGroup(models.Model):
                 event       = self.event,
                 date        = date,
                 meal        = meal,
-                state       = 'N',
-                members     = self.expected_members,
             )
         return m
 
@@ -165,7 +121,7 @@ class MealInvite(models.Model):
     host_eg = models.ForeignKey('EventGroup')
     guest_eg = models.ForeignKey('EventGroup', related_name='foo')
     meal = models.ForeignKey('Meal')
-    state = models.CharField(max_length=1, choices=STATE_CHOICES)
+    state = models.CharField(max_length=1, choices=STATE_CHOICES, default='N')
     def __unicode__(self):
         return str(self.date) + ' - ' + self.host_eg.group.name + ' (' + str(self.host_eg.dinner_time) + ', '  + self.host_eg.features + ') [' + self.state + ']'
     def rescind(self):
@@ -201,8 +157,6 @@ class MealInvite(models.Model):
 
 class Meal(models.Model):
     MEAL_CHOICES = (
-        ('B', 'Breakfast'),
-        ('L', 'Lunch'),
         ('D', 'Dinner'),
     )
     STATE_CHOICES = (
@@ -212,14 +166,14 @@ class Meal(models.Model):
         ('C', 'Confirmed'),
     )
     date = models.DateField()
-    meal = models.CharField(max_length=1, choices=MEAL_CHOICES)
+    meal = models.CharField(max_length=1, choices=MEAL_CHOICES, default='D')
     event = models.ForeignKey('Event')
     eg = models.ForeignKey('EventGroup')
-    state = models.CharField(max_length=1, choices=STATE_CHOICES)
-    members = models.IntegerField()
-    features = models.CharField(max_length=40)
-    notes = models.CharField(max_length=100)
-    invite = models.ForeignKey('MealInvite', null=True, blank=True)
+    state = models.CharField(max_length=1, choices=STATE_CHOICES, default='N')
+    members = models.IntegerField(default=0)
+    features = models.CharField(max_length=40, default='')
+    notes = models.CharField(max_length=100, null=True, blank=True)
+    invite = models.ForeignKey('MealInvite', null=True, blank=True, related_name='invite_link')
     def __unicode__(self):
         return str(self.date) + ' - ' + self.eg.group.name + ' (' + str(self.members) + ' diners) [' + self.state + ']'
 
@@ -242,7 +196,7 @@ class Meal(models.Model):
         self.save()
         invites = MealInvite.objects.filter(meal=self)
     
-    def invite(self, host_eg):
+    def get_invite(self, host_eg):
         invite = MealInvite.objects.create(
             meal = self,
             date = self.date, 

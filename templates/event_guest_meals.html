@@ -10,22 +10,28 @@
 {{ formset.management_form }}
 <ul>
 <table border=0>
-<tr><th>Date</th><th>Diners</th><th>Host Camp</th></tr>
+<tr><th>Date</th><th>Diners</th><th>Restrictions</th><th>Notes</th></tr>
 {% for form in formset %} 
-<tr><td colspan=3>
+<tr><td colspan=4>
 <hr>
 {{ form.non_field_errors }}
 </td>
 <tr>
-<td>{{ form.meal_id }} {{form.date}} {{ form.date.value }}</td>
-<div class="fieldWrapper">
+<td>{{ form.meal_id }} {{ form.meal }} {{ dates.next|date:"N j" }} <em>({{ days.next|date:"D." }})</em> </td>
 <td>{{ form.members.errors }}
     {{ form.members }}</td>
-<td>
-    {{ form.invite.errors }}
+<td>{{ form.features.errors }}
+    {{ form.features }}</td>
+<td>{{ form.notes.errors }}
+    {{ form.notes }}</td>
+</tr>
+{% if has_invites.next %}
+<tr><td></td>
+<td colspan=3>{{ form.invite.errors }}
     {{ form.invite }}</td>
 </td>
 </tr>
+{% endif %}
 {{ form.non_field_errors }}
 {% endfor %}
 <tr><td colspan=3><hr></td>
