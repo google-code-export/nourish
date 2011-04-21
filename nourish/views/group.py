@@ -14,6 +14,8 @@ class GroupDetailView(DetailView):
 	    context['my_membership'] = GroupUser.objects.get(group=self.object,user=self.request.user)
 	except GroupUser.DoesNotExist:
 	    context['my_membership'] = None
+	except TypeError:
+	    context['my_membership'] = None
 	return context
 
 
