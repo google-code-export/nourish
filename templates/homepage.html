@@ -4,9 +4,12 @@
 {% block content %}
 
 <h2>Upcoming Events</h2>
-{% if events %}
+{% if events or egs %}
   <ul>
-  {% for eg in events %}
+  {% for event in events %}
+      <li><a href="{{event.get_absolute_url}}">{{event.name}}</a></li>
+  {% endfor %}
+  {% for eg in egs %}
       <li><a href="{{eg.get_absolute_url}}">{{eg.group.name}} at {{eg.event.name}}</a></li>
   {% endfor %}
   </ul>
