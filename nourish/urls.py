@@ -32,4 +32,5 @@ urlpatterns = patterns('',
         template_name='nourish/group_list.html',
     )),
     url(r'^groups/(?P<pk>\d+)/$', GroupDetailView.as_view()),
+    url(r'^fb/$', 'nourish.views.fb'),
 )
