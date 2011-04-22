@@ -1,4 +1,3 @@
-#from django.core.context_processors import csrf_protect
 from django.template import RequestContext
 
 from django.shortcuts import render_to_response, redirect
@@ -18,26 +17,36 @@ def register_event(request):
     if request.method == 'POST':
         user_formset = RegistrationFormset(request.POST, prefix='user')
         event_formset = EventFormset(request.POST, prefix='event')
-        if user_formset.is_valid() and event_formset.is_valid():
-            user_data = user_formset.cleaned_data[0];
+        valid = False
+        if event_formset.is_valid():
+            if request.user.is_authenticated() or user_formset.is_valid():
+                valid = True
+        if valid:
             event_data = event_formset.cleaned_data[0];
 
-            user = User.objects.create_user(
-                user_data['username'], 
-                user_data['email'], 
-                user_data['password']
-            )
+            if request.user.is_authenticated():
+                user = request.user
+                profile = user.get_profile()
+            else:
+                user_data = user_formset.cleaned_data[0];
+                user = User.objects.create_user(
+                    user_data['username'], 
+                    user_data['email'], 
+                    user_data['password']
+                )
+                authuser = authenticate(
+                    username=user_data['username'], 
+                    password=user_data['password']
+                )
+                login(request, authuser)
+                profile = UserProfile.objects.create(
+                    user            = user,
+                    role            = 'E',
+                )
 
-            authuser = authenticate(
-                username=user_data['username'], 
-                password=user_data['password']
-            )
-            login(request, authuser)
-
-            profile = UserProfile.objects.create(
-                user            = user,
-                role            = 'E',
-            )
+            if profile.role == 'U' or not profile.role:
+                profile.role = 'E'
+                profile.save()
 
             event = Event.objects.create(
                 name = event_data['name'],
@@ -62,6 +71,7 @@ def register_event(request):
         'request' : request,
         'user_formset' : user_formset,
         'event_formset' : event_formset,
+        'next' : request.get_full_path(),
     }, context_instance=RequestContext(request))
 
 def register_event_guest(request, event_id):
@@ -82,27 +92,39 @@ def register_event_guest(request, event_id):
         group_formset = GroupFormset(request.POST, prefix='group')
         meal_formset = MealFormset(request.POST, prefix='meal')
 
-        if user_formset.is_valid() and group_formset.is_valid() and meal_formset.is_valid():
-            user_data = user_formset.cleaned_data[0]
+        valid = False
+        if group_formset.is_valid() and meal_formset.is_valid():
+            if request.user.is_authenticated() or user_formset.is_valid():
+                valid = True
+        if valid:
             group_data = group_formset.cleaned_data[0]
             meal_data = meal_formset.cleaned_data
 
-            user = User.objects.create_user(
-                user_data['username'], 
-                user_data['email'], 
-                user_data['password']
-            )
+            if request.user.is_authenticated():
+                user = request.user
+                profile = user.get_profile()
+            else:
+                user_data = user_formset.cleaned_data[0]
+                user = User.objects.create_user(
+                    user_data['username'], 
+                    user_data['email'], 
+                    user_data['password']
+                )
 
-            authuser = authenticate(
-                username = user_data['username'], 
-                password = user_data['password']
-            )
-            login(request, authuser)
+                authuser = authenticate(
+                    username = user_data['username'], 
+                    password = user_data['password']
+                )
+                login(request, authuser)
 
-            profile = UserProfile.objects.create(
-                user            = user,
-                role            = 'A',
-            )
+                profile = UserProfile.objects.create(
+                    user            = user,
+                    role            = 'A',
+                )
+
+            if profile.role == 'U' or not profile.role:
+                profile.role = 'A'
+                profile.save()
 
             group = Group.objects.create(
                 name            = group_data['name'],
@@ -145,5 +167,6 @@ def register_event_guest(request, event_id):
         'event': event,
         'dates': iter(dates),
         'days': iter(dates),
+        'next' : request.get_full_path(),
     }, context_instance=RequestContext(request))
 

@@ -3,6 +3,17 @@
 
 {% block content %}
 
+<h2>Login with Facebook</h2>
+
+<br>
+
+{% load facebook_tags %}
+{% facebook_button %}
+
+<br>
+<br>
+
+<h2>Login with a username and password</h2>
 {% if form.errors %}
 <p>Your username and password didn't match. Please try again.</p>
 {% endif %}
@@ -24,4 +35,5 @@
 <input type="hidden" name="next" value="{{ next }}" />
 </form>
 
+{% facebook_js %}
 {% endblock %}

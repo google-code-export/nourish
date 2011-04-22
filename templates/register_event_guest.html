@@ -6,19 +6,21 @@
 <h2>Register an Artist Group at {{event.name}}</h2>
 <p>This page is for artists groups that would like to be invited to dinner at {{event.name}}.  Registering doesn't guarantee you a meal, but we certainly hope it will get you invited to one (or more) on the playa...</p>
 
-{% if user.is_authenticated and not user.profile.poweruser %}
-{% include "nourish/notpower.html" %}
+{% if not user.is_authenticated and not request.GET.u %}
+{% include "nourish/please_connect.html" %}
 {% else %}
 <form action="{{event.get_absolute_url}}register/guest/" method="post">{% csrf_token %}
 {{ user_formset.management_form }}
 {{ group_formset.management_form }}
 {{ meal_formset.management_form }}
+{% if not user.is_authenticated %} 
 <h3>Info about you</h3>
 <p>We presume that you are the person who will be coordinating meals for your group.  We need the information below so that we can contact you with updates about your reservations, as well as other FtA-related communications.  Plus, you'll need to be able to log back into the site later to confirm your invitations, etc.</p>
 {{ user_formset.0.non_field_errors }}
 <table class="regform">
 {% include "nourish/form_snippet.html" with form=user_formset.0 %}
 </table>
+{% endif %}
 
 <h3>Info about your group</h3>
 <p>The following information will be shared with theme camps who are looking for artists to invite.  The description is a good place for a brief description of your project and any overall dietary restrictions that you may have.</p>
