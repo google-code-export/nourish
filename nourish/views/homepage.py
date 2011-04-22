@@ -44,7 +44,7 @@ def homepage_chooser(request):
             return redirect('/home')
         if not len(eus):
             return redirect('/register/event/')
-        return redirect(eu.event.get_absolute_url())
+        return redirect(eus[0].event.get_absolute_url())
     if profile.role == 'T':
         gus = GroupUser.objects.filter(user=user,admin=True)
         if len(gus) > 1:
