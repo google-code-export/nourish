@@ -6,6 +6,9 @@
 <h2>Register an Event</h2>
 <p>say something</p>
 
+{% if user.is_authenticated and not user.profile.poweruser %}
+{% include "nourish/notpower.html" %}
+{% else %}
 <form action="/register/event/" method="post">
 {% csrf_token %}
 {{ user_formset.management_form }}
@@ -27,4 +30,5 @@
 
 <input type="submit" value="Register" />
 </form>
+{% endif %}
 {% endblock %}

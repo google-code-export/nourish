@@ -6,6 +6,9 @@
 <h2>Register an Artist Group at {{event.name}}</h2>
 <p>This page is for artists groups that would like to be invited to dinner at {{event.name}}.  Registering doesn't guarantee you a meal, but we certainly hope it will get you invited to one (or more) on the playa...</p>
 
+{% if user.is_authenticated and not user.profile.poweruser %}
+{% include "nourish/notpower.html" %}
+{% else %}
 <form action="{{event.get_absolute_url}}register/guest/" method="post">{% csrf_token %}
 {{ user_formset.management_form }}
 {{ group_formset.management_form }}
@@ -42,14 +45,7 @@
   </tr>
 {% endfor %}
 </table>
-
-{% if role == 'guest' %}
-<div class="fieldWrapper">
-    {{ form.notes.errors }}
-    <label for="id_notes">Notes:</label>
-    {{ form.notes }}
-</div>
-{% endif %}
 <input type="submit" value="Register" />
 </form>
+{% endif %}
 {% endblock %}
