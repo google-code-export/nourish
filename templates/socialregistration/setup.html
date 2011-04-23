@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Feed The Artists{% endblock %}
+
+{% block content %}
+{% load socialregistration_tags %}
+<h2>Create your profile on nour.sh</h2>
+
+<p>Your username will be visible to everyone on the site.  It can optionally be linked to your facebook profile.</p>
+
+<p>Your email address will only be shared with parties who you have confirmed meals with.</p>
+
+{% if error %}
+	<p>Your session timed out. Please try again.</p>
+{% else %}
+	<form action="." method="post">
+	    <table class='regform'>
+            {% include "nourish/form_snippet.html" with form=form %}
+	    </table>
+	    {% social_csrf_token %}
+        <br>
+	    <input type="submit" value="Finish Registration" />
+	</form>
+{% endif %}
+
+{% endblock %}
