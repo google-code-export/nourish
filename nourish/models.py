@@ -51,6 +51,7 @@ class Event(models.Model):
     start_date = models.DateField(verbose_name='Event Begins')
     end_date = models.DateField(verbose_name='Event Ends')
     url = models.URLField(verbose_name='Event Website')
+    display = models.BooleanField(default=False, verbose_name='Display in Event Lists')
 #    logo = models.FileField(upload_to='uploads/%Y-%m-%d')
     def __unicode__(self):
         return self.name

@@ -25,7 +25,7 @@ def homepage(request):
     }, context_instance=RequestContext(request))
 
 def rootpage(request):
-    events = Event.objects.all()
+    events = Event.objects.filter(display=True)
 
     return render_to_response('nourish/rootpage.html', { 
         'request': request,
