@@ -11,8 +11,8 @@ urlpatterns = patterns('',
     url('^$',      'nourish.views.rootpage'),
 
     url(r'^events/$', ListView.as_view(
-        model=Event,
         template_name='nourish/event_list.html',
+        queryset=Event.objects.filter(display=True)
     )),
     url(r'^events/(?P<pk>\d+)/$', EventDetailView.as_view()),
 
