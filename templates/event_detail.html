@@ -33,8 +33,9 @@
 
 
         
-    {% if attend.admin %}
+    {% if is_admin %}
         You are an admin of this event!<br>
+        <a href="{{ object.get_absolute_url }}edit/">Edit Event</a>
     {% endif %}
     <!--
     {% if attend.attending == 'Y' %}

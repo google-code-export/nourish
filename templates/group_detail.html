@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load nourish %}
 
 {% block title %}{{ object.name }} - Groups{% endblock %}
 
@@ -17,7 +18,7 @@
     <h3>Organizers</h3>
     <ul>
     {% for gu in groupuser_list %}
-        <li><a href="{{gu.user.get_absolute_url}}">{{gu.user.username}}</a>
+        <li>{% userlink gu.user %}</li>
         </li>
     {% endfor %}
     </ul>
@@ -25,7 +26,7 @@
         
     {% if my_membership %}
 	{% if my_membership.admin %}
-            You are an admin of this group!
+            You are an admin of this group! <a href="{{ object.get_absolute_url}}edit/">Edit Group</a>
         {% else %}
 	    You are already a member of this group!
 	    <a href="{{object.get_absolute_url}}leave">Leave Group</a>

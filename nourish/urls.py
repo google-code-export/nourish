@@ -1,7 +1,8 @@
 from django.conf.urls.defaults import patterns, url
+from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, DetailView
 
-from nourish.views import GroupDetailView, EventDetailView, EventGroupView
+from nourish.views import GroupDetailView, GroupUpdateView, EventDetailView, EventGroupView, EventUpdateView
 from nourish.models import Event, Group
 
 urlpatterns = patterns('',
@@ -15,6 +16,7 @@ urlpatterns = patterns('',
         queryset=Event.objects.filter(display=True)
     )),
     url(r'^events/(?P<pk>\d+)/$', EventDetailView.as_view()),
+    url(r'^events/(?P<pk>\d+)/edit/$', login_required(EventUpdateView.as_view())),
 
     url(r'^events/(?P<event_id>\d+)/register/guest/$', 
         'nourish.views.register_event_guest'),
@@ -32,5 +34,6 @@ urlpatterns = patterns('',
         template_name='nourish/group_list.html',
     )),
     url(r'^groups/(?P<pk>\d+)/$', GroupDetailView.as_view()),
+    url(r'^groups/(?P<pk>\d+)/edit/$', login_required(GroupUpdateView.as_view())),
     url(r'^social/setup/$', 'nourish.views.social_reg_setup'),
 )

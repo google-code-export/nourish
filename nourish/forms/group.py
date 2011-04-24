@@ -5,7 +5,5 @@ from nourish.models import Group
 class GroupForm(ModelForm):
     class Meta:
         model = Group
-
-class GroupStubForm(GroupForm):
-    role = forms.CharField(widget=forms.HiddenInput)
+        exclude = ('role')
     description = forms.CharField(widget=forms.Textarea(attrs={'rows':3}))

@@ -3,7 +3,7 @@ from django.template import RequestContext
 from django.shortcuts import render_to_response, redirect
 from nourish.models import Event, Group, UserProfile, User
 from nourish.forms.register import RegistrationKeyStubForm, RegistrationStubForm
-from nourish.forms.group import GroupStubForm
+from nourish.forms.group import GroupForm
 from nourish.forms.meal import MealStubForm
 from nourish.forms.event import EventForm
 from django.contrib.auth import login, authenticate
@@ -84,7 +84,7 @@ def register_event_guest(request, event_id):
         date += timedelta(days=1)
 
     RegistrationFormset = formset_factory(RegistrationStubForm, extra=0)
-    GroupFormset = formset_factory(GroupStubForm, extra=0)
+    GroupFormset = formset_factory(GroupForm, extra=0)
     MealFormset = formset_factory(MealStubForm, extra=len(dates))
 
     if request.method == 'POST':

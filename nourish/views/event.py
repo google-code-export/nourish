@@ -1,5 +1,6 @@
-from django.views.generic import DetailView
+from django.views.generic import DetailView, UpdateView
 from nourish.models import EventGroup, Event, GroupUser, Meal, MealInvite
+from nourish.forms import EventForm
 from django.shortcuts import get_object_or_404, redirect
 from datetime import timedelta
 
@@ -12,6 +13,7 @@ class EventDetailView(DetailView):
         context = super(EventDetailView, self).get_context_data(**kwargs)
         context['host_list'] = []
         context['guest_list'] = []
+        context['is_admin'] = self.object.is_admin(self.request.user)
         for eg in EventGroup.objects.filter(event=self.object):
             if eg.group.role == 'T':
                 context['host_list'].append(eg)
@@ -51,3 +53,19 @@ class EventGroupView(DetailView):
         context['host_event_groups'] = host_egs
         context['group_admin'] = group_admin
         return context
+
+class EventUpdateView(UpdateView):
+    context_object_name = 'event'
+    model = Event
+    form_class = EventForm
+    login_required = True
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated() and not self.get_object().is_admin(self.request.user):
+            raise PermissionDenied
+        return super(EventUpdateView, self).get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        if request.user.is_authenticated() and not self.get_object().is_admin(self.request.user):
+            raise PermissionDenied
+        return super(EventUpdateView, self).post(request, *args, **kwargs)

@@ -46,6 +46,13 @@ class Group(models.Model):
             gu = GroupUser.objects.create(user=user, group=self)
         return gu
 
+    def is_admin(self, user):
+        try:
+            gu = GroupUser.objects.get(user=user, group=self, admin=True)
+        except GroupUser.DoesNotExist:
+            return False
+        return True
+
 class Event(models.Model):
     name = models.CharField(max_length=100, unique=True, verbose_name='Event Name')
     start_date = models.DateField(verbose_name='Event Begins')
@@ -57,6 +64,13 @@ class Event(models.Model):
         return self.name
     def get_absolute_url(self):
         return '/events/%i/' % self.id
+
+    def is_admin(self, user):
+        try:
+            gu = EventUser.objects.get(user=user, event=self, admin=True)
+        except EventUser.DoesNotExist:
+            return False
+        return True
 
     def group(self,group):
         try:

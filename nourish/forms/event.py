@@ -7,9 +7,9 @@ from datetime import date, timedelta
 class EventForm(ModelForm):
     class Meta:
         model = Event
+        exclude = ('display')
     start_date = forms.DateField(widget=SelectDateWidget)
     end_date = forms.DateField(widget=SelectDateWidget)
-    display = forms.BooleanField(widget=forms.HiddenInput, required=False)
 
     def clean(self):
         start = self.cleaned_data.get("start_date")
