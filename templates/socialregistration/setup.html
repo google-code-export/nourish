@@ -3,23 +3,29 @@
 
 {% block content %}
 {% load socialregistration_tags %}
-<h2>Create your profile on nour.sh</h2>
+<h2>Use your Facebook profile on nour.sh</h2>
 
-<p>Your username will be visible to everyone on the site.  It can optionally be linked to your facebook profile.</p>
-
-<p>Your email address will only be shared with parties who you have confirmed meals with.</p>
 
 {% if error %}
 	<p>Your session timed out. Please try again.</p>
 {% else %}
-	<form action="." method="post">
+    <p>By default, your profile on nour.sh will be linked to your Facebook profile.  This means we will use the following information about you:<p>
+
+    <ul>
+    <li>Your full name (<em>{{ form.fullname.value }}</em>) and Facebook profile photo will be publicly displayed with any events or groups you create on nour.sh, along with links to your Facebook profile.</li>
+    <li>Your email address (<em>{{ form.email.value }}</em>) will be shared only with other nour.sh users with whom you have a confirmed dinner arrangement.</li>
+    </ul>
+	<form method="post">
 	    <table class='regform'>
             {% include "nourish/form_snippet.html" with form=form %}
 	    </table>
 	    {% social_csrf_token %}
-        <br>
-	    <input type="submit" value="Finish Registration" />
+	    <input type="submit" value="Yes, link my nour.sh account to my Facebook profile." />
 	</form>
+    <br>
+    <h2>Keep nour.sh and Facebook separate</h2>
+    <p>If you'd rather not give nour.sh users a direct link to your Facebook profile, you can use the link below.  You'll still use Facebook to login to nour.sh, but we won't link to your Facebook profile on the site, and you can choose your own display name and email address.</p>
+    <a href="?nolink=1">Don't link my nour.sh profile to my Facebook profile.</a>
 {% endif %}
 
 {% endblock %}

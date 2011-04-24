@@ -8,13 +8,14 @@ class UserProfile(models.Model):
         ('T', 'Theme Camp Organizer'),
         ('A', 'Art Project Organizer'),
     )
+    fullname = models.CharField(max_length=50, verbose_name="Displayed Name", blank=True)
     url = models.URLField(blank=True, null=True, default='')
     role = models.CharField(max_length=1, choices=ROLE_CHOICES, default='U')
     user = models.ForeignKey(User, unique=True)
     poweruser = models.BooleanField(default=False)
 
     def __unicode__(self):
-        return self.user.username
+        return self.fullname + ' (' + self.user.username + ')'
 
 class GroupUser(models.Model):
     group = models.ForeignKey('Group')

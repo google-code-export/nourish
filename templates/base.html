@@ -1,3 +1,4 @@
+{% load nourish %}
 <!DOCTYPE html 
      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -230,7 +231,7 @@
       <div id="sidebar" class="column">
     <div id="auth">
     {% if user.is_authenticated %}
-        Logged in as {{ user.username }}<br> [<a href="/logout">logout</a>]
+        {% userlink user %}[<a href="/logout">logout</a>]
     {% else %} 
         [<a href="/login">login</a>]
     {% endif %}
