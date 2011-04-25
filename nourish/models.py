@@ -127,7 +127,7 @@ class EventGroup(models.Model):
     def __unicode__(self):
         return self.event.name + ' : ' + self.group.name
     def get_absolute_url(self):
-        return '/eg/%i-%s-at-%s' % (self.id, slugify(self.group.name), slugify(self.event.name))
+        return '/eg/%i-%s-at-%s/' % (self.id, slugify(self.group.name), slugify(self.event.name))
     
     def meal(self,date,meal):
         try:
