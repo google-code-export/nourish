@@ -17,6 +17,7 @@ class SocialRegUserForm(UserForm):
             fullname = self.cleaned_data.get('fullname'),
             url = self.cleaned_data.get('url'),
             role = self.cleaned_data.get('role'),
+            provider = 'F',
         )
 
         if self.cleaned_data.get('link_profile'):

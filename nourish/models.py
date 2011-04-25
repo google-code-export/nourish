@@ -8,10 +8,15 @@ class UserProfile(models.Model):
         ('T', 'Theme Camp Organizer'),
         ('A', 'Art Project Organizer'),
     )
+    PROVIDER_CHOICES = (
+        ('N', 'None'),
+        ('F', 'Facebook'),
+    )
     fullname = models.CharField(max_length=50, verbose_name="Displayed Name", blank=True)
     url = models.URLField(blank=True, null=True, default='')
     image_url = models.URLField(blank=True, null=True, default='')
     role = models.CharField(max_length=1, choices=ROLE_CHOICES, default='U')
+    provider = models.CharField(max_length=1, choices=PROVIDER_CHOICES, default='N')
     user = models.ForeignKey(User, unique=True)
     poweruser = models.BooleanField(default=False)
 

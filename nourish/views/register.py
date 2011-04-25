@@ -16,7 +16,9 @@ from pprint import pformat
 
 def register_event(request):
 
-    is_fb = True
+    is_fb = False
+    if request.user.get_profile().provider == 'F':
+        is_fb = True
     if 'nofb' in request.GET:
         is_fb = False
     if is_fb:
@@ -133,7 +135,9 @@ def register_event_guest(request, event_id):
         dates.append(date)
         date += timedelta(days=1)
 
-    is_fb = True
+    is_fb = False
+    if request.user.get_profile().provider == 'F':
+        is_fb = True
     if 'nofb' in request.GET:
         is_fb = False
 
