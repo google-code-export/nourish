@@ -7,3 +7,7 @@ class GroupForm(ModelForm):
         model = Group
         exclude = ('role')
     description = forms.CharField(widget=forms.Textarea(attrs={'rows':3}))
+
+class GroupFBForm(forms.Form):
+    group = forms.ChoiceField(required=False,choices=[])
+    description = forms.CharField(widget=forms.Textarea(attrs={'rows':3}))

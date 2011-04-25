@@ -1,13 +1,26 @@
 {% extends "base.html" %}
+{% load nourish %}
 
 {% block title %}{{ object.group.name }} at {{ object.event.name }}{% endblock %}
 
 {% block content %}
-    <h2><a href="{{object.group.get_absolute_url}}">{{ object.group.name }}</a> at <a href="{{object.event.get_absolute_url}}">{{ object.event.name }}</a></h2>
-    <ul>
-        <li>{{ object.event.start_date }} thru {{ object.event.end_date }}</li>
-    </ul>
+    {% if object.group.image_url %}
+        <div style="float: left; margin-right: 5px;"><a href="{{ object.group.get_absolute_url }}"><img src="{{object.group.image_url}}?type=normal" border=0></a></div>
+    {% endif %}
+    {% if object.event.image_url %}
+        <div style="float: left; margin-right: 5px;"><a href="{{ object.event.get_absolute_url }}"><img src="{{object.event.image_url}}?type=normal" border=0></a></div>
+    {% endif %}
+    <div style="float: left; width: 350px;">
+    <h3 style="display: inline;"><a href="{{object.group.get_absolute_url}}">{{ object.group.name }}</a></h3><br>
+    <h4 style="display: inline;">at <a href="{{object.group.get_absolute_url}}">{{object.event.name}}</a></h4><br>
+{{ object.event.start_date }} thru {{ object.event.end_date }}<br>
+    </div>
+    <div style="clear: both;"></div>
+
+
     {% if object.group.role == 'A' %}
+        <h3>About Us</h3>
+        <p>{{ object.group.description }}</p>
         <h3>Meals</h3>
         {% for eg in host_event_groups %}
             <a href="{{object.get_absolute_url}}invite/{{eg.id}}">Invite {{object.group.name}} to dinner with {{ eg.group.name }}</a><br>

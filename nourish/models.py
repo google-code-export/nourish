@@ -10,6 +10,7 @@ class UserProfile(models.Model):
     )
     fullname = models.CharField(max_length=50, verbose_name="Displayed Name", blank=True)
     url = models.URLField(blank=True, null=True, default='')
+    image_url = models.URLField(blank=True, null=True, default='')
     role = models.CharField(max_length=1, choices=ROLE_CHOICES, default='U')
     user = models.ForeignKey(User, unique=True)
     poweruser = models.BooleanField(default=False)
@@ -32,6 +33,7 @@ class Group(models.Model):
     )
     name = models.CharField(max_length=100, unique=True, verbose_name="Group Name")
     url = models.URLField(blank=True, null=True, verbose_name="Group Website")
+    image_url = models.URLField(blank=True, null=True, default='', verbose_name="Image URL")
     role = models.CharField(max_length=1, choices=ROLE_CHOICES, default='U')
     description = models.TextField(blank=True, null=True)
     def __unicode__(self):
@@ -47,6 +49,8 @@ class Group(models.Model):
         return gu
 
     def is_admin(self, user):
+        if not user.is_authenticated():
+            return False
         try:
             gu = GroupUser.objects.get(user=user, group=self, admin=True)
         except GroupUser.DoesNotExist:
@@ -58,6 +62,7 @@ class Event(models.Model):
     start_date = models.DateField(verbose_name='Event Begins')
     end_date = models.DateField(verbose_name='Event Ends')
     url = models.URLField(verbose_name='Event Website')
+    image_url = models.URLField(blank=True, null=True, default='', verbose_name="Image URL")
     display = models.BooleanField(default=False, verbose_name='Display in Event Lists')
 #    logo = models.FileField(upload_to='uploads/%Y-%m-%d')
     def __unicode__(self):
@@ -66,6 +71,8 @@ class Event(models.Model):
         return '/events/%i/' % self.id
 
     def is_admin(self, user):
+        if not user.is_authenticated():
+            return False
         try:
             gu = EventUser.objects.get(user=user, event=self, admin=True)
         except EventUser.DoesNotExist:
@@ -74,8 +81,8 @@ class Event(models.Model):
 
     def group(self,group):
         try:
-            eg = EventGroup.objects.get(event=event,group=group)
-        except:
+            eg = EventGroup.objects.get(event=self,group=group)
+        except EventGroup.DoesNotExist:
             eg = EventGroup.objects.create(
                 event           = self,
                 group           = group,

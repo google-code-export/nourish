@@ -24,6 +24,9 @@
 
 <h3>Info about your group</h3>
 <p>The following information will be shared with theme camps who are looking for artists to invite.  The description is a good place for a brief description of your project and any overall dietary restrictions that you may have.</p>
+{% if is_fb %}
+<p>If your group doesn't have a Facebook page, <a href="?nofb">click here</a>.
+{% endif %}
 {{ group_formset.0.non_field_errors }}
 <table class="regform">
 {% include "nourish/form_snippet.html" with form=group_formset.0 %}

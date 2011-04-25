@@ -21,3 +21,6 @@ class EventForm(ModelForm):
         if (end - start) > timedelta(days=28):
             raise forms.ValidationError("event must not be longer than four weeks")
         return self.cleaned_data
+
+class EventFBForm(forms.Form):
+    event = forms.ChoiceField(required=False,choices=[])

@@ -1,5 +1,5 @@
 from django.views.generic import DetailView, UpdateView
-from nourish.models import EventGroup, Event, GroupUser, Meal, MealInvite
+from nourish.models import EventGroup, Event, GroupUser, Meal, MealInvite, EventUser
 from nourish.forms import EventForm
 from django.shortcuts import get_object_or_404, redirect
 from datetime import timedelta
@@ -14,6 +14,7 @@ class EventDetailView(DetailView):
         context['host_list'] = []
         context['guest_list'] = []
         context['is_admin'] = self.object.is_admin(self.request.user)
+        context['eventuser_list'] = EventUser.objects.filter(event=self.object,admin=True)
         for eg in EventGroup.objects.filter(event=self.object):
             if eg.group.role == 'T':
                 context['host_list'].append(eg)
