@@ -41,18 +41,17 @@ class EventGroupView(DetailView):
         groups = []
         group_admin = True;
         if self.request.user.is_authenticated():
+            context['is_admin'] = self.object.group.is_admin(self.request.user)
             for g in GroupUser.objects.filter(user=self.request.user,admin=True):
-                groups.append(g.group.id)
-            try:
-                gu = GroupUser.objects.get(group=self.object.group,user=self.request.user,admin=True)
-            except GroupUser.DoesNotExist:
-                group_admin = False
+                if g.group.role == 'T':
+                    groups.append(g.group)
+            host_egs = EventGroup.objects.filter(group__in=groups,event=self.object.event)
         else:
-            group_admin = False
+            context['is_admin'] = False
+            host_egs = []
         
-        host_egs = EventGroup.objects.filter(role='T', group__in=groups)
+#        host_egs = EventGroup.objects.filter(role='T', group__in=groups)
         context['host_event_groups'] = host_egs
-        context['group_admin'] = group_admin
         return context
 
 class EventUpdateView(UpdateView):

@@ -24,3 +24,17 @@ class EventForm(ModelForm):
 
 class EventFBForm(forms.Form):
     event = forms.ChoiceField(required=False,choices=[])
+
+class EventHostFeaturesForm(forms.Form):
+    FEATURES= (
+        ('v', 'Vegetarian Friendly'),
+        ('V', 'Vegan Friendly'),
+        ('G', 'Gluten Free'),
+        ('R', 'Raw Friendly'),
+        ('K', 'Kosher Friendly'),
+        ('H', 'Halal'),
+        ('D', 'Drinks Provided'),
+        ('S', 'Plates/Utensils/Cups Provided'),
+    )
+    features = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple,required=False,choices=FEATURES)
+    dinner_time = forms.TimeField()

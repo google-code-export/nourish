@@ -5,7 +5,7 @@ from nourish.models import Event, Group, UserProfile, User
 from nourish.forms.register import RegistrationKeyStubForm, RegistrationStubForm
 from nourish.forms.group import GroupForm, GroupFBForm
 from nourish.forms.meal import MealStubForm
-from nourish.forms.event import EventForm, EventFBForm
+from nourish.forms.event import EventForm, EventFBForm, EventHostFeaturesForm
 from django.contrib.auth import login, authenticate
 from datetime import timedelta
 import datetime
@@ -259,6 +259,142 @@ def register_event_guest(request, event_id):
         'user_formset' : user_formset,
         'group_formset' : group_formset,
         'meal_formset' : meal_formset,
+        'event': event,
+        'dates': iter(dates),
+        'days': iter(dates),
+        'next' : request.get_full_path(),
+        'is_fb' : is_fb,
+    }, context_instance=RequestContext(request))
+
+def register_event_host(request, event_id):
+    event = Event.objects.get(id=event_id)
+
+    dates = []
+    date = event.start_date
+    while date <= event.end_date:
+        dates.append(date)
+        date += timedelta(days=1)
+
+    is_fb = False
+    if request.user.is_authenticated() and request.user.get_profile().provider == 'F':
+        is_fb = True
+    if 'nofb' in request.GET:
+        is_fb = False
+
+    RegistrationFormset = formset_factory(RegistrationStubForm, extra=0)
+    FeaturesFormset = formset_factory(EventHostFeaturesForm, extra=0)
+    if is_fb:
+        GroupFormset = formset_factory(GroupFBForm, extra=0)
+        choices = []
+        groups = request.facebook.graph.get_object('me/groups')
+        for group in groups['data']:
+            choices.append((group['id'], group['name']))
+    else:
+        GroupFormset = formset_factory(GroupForm, extra=0)
+
+    if request.method == 'POST':
+        user_formset = RegistrationFormset(request.POST, prefix='user')
+        group_formset = GroupFormset(request.POST, prefix='group')
+        features_formset = FeaturesFormset(request.POST, prefix='features')
+        if is_fb:
+            group_formset[0].fields['group'].choices = choices
+
+        valid = False
+        if group_formset.is_valid() and features_formset.is_valid:
+            if request.user.is_authenticated() or user_formset.is_valid():
+                valid = True
+        if valid:
+            group_data = group_formset.cleaned_data[0]
+            features_data = group_formset.cleaned_data[0]
+
+            if request.user.is_authenticated():
+                user = request.user
+                profile = user.get_profile()
+            else:
+                user_data = user_formset.cleaned_data[0]
+                user = User.objects.create_user(
+                    user_data['username'], 
+                    user_data['email'], 
+                    user_data['password']
+                )
+
+                authuser = authenticate(
+                    username = user_data['username'], 
+                    password = user_data['password']
+                )
+                login(request, authuser)
+
+                profile = UserProfile.objects.create(
+                    user            = user,
+                    role            = 'T',
+                )
+
+            if profile.role == 'U' or not profile.role:
+                profile.role = 'T'
+                profile.save()
+
+            group = None
+
+            if is_fb:
+                fbgroup = request.facebook.graph.get_object(group_data['group'])
+                group_data['name'] = fbgroup['name']
+                if 'link' in fbgroup:
+                    group_data['url'] = fbgroup['link']
+                else:
+                    group_data['url'] = 'http://www.facebook.com/group.php?gid=' + str(fbgroup['id'])
+                group_data['image_url'] = 'http://graph.facebook.com/' + str(fbgroup['id']) + '/picture'
+                try:
+                    group = Group.objects.get(name=fbgroup['name'])
+                    if not group.is_admin(request.user):
+                        raise Exception("you are not an admin of this group")
+                except Group.DoesNotExist:
+                    group = Group.objects.create(
+                        name            = group_data['name'],
+                        url             = group_data['url'],
+                        description     = group_data['description'],
+                        image_url       = group_data['image_url'],
+                        role            = 'T',
+                    )
+                    gu = group.user(user)
+                    gu.admin            = True
+                    gu.save()
+            else:
+                group = Group.objects.create(
+                    name            = group_data['name'],
+                    url             = group_data['url'],
+                    description     = group_data['description'],
+                    image_url       = group_data['image_url'],
+                    role            = 'T'
+                )
+                gu = group.user(user)
+                gu.admin            = True
+                gu.save()
+
+            eg = event.group(group)
+            if 'features' in features_data:
+                eg.features = ','.join(features_data['features'])
+                if eg.features:
+                    eg.features += ','
+                eg.features += 'T:' + features_data['dinner_time']
+                eg.save()
+            
+            return redirect('/logged-in/') # Redirect after POST
+    else:
+        user_formset = RegistrationFormset(prefix='user', initial=[{
+            'role': 'A',
+        }])
+        group_formset = GroupFormset(prefix='group', initial=[{
+            'role' : 'A',
+        }])
+        features_formset = FeaturesFormset(prefix='features', initial=[{}])
+        if is_fb:
+            group_formset[0].fields['group'].choices = choices
+
+    return render_to_response('nourish/register_event_host.html', {
+        'request' : request,
+        'user_formset' : user_formset,
+        'group_formset' : group_formset,
+        'features_formset' : features_formset,
         'event': event,
         'dates': iter(dates),
         'days': iter(dates),

@@ -28,10 +28,10 @@
     {{ form.notes }}</td>
 </tr>
 <tr> <td colspan=3>
-<!--
+    {% if form.fields.invite.choices %}
     {{ form.invite.errors }}
     {{ form.invite }}
--->
+    {% endif %}
 </td>
 </tr>
 {% endfor %}

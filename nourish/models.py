@@ -169,6 +169,7 @@ class MealInvite(models.Model):
                 self.meal.state = 'S'
         else:
             self.meal.state = 'N'
+        self.meal.invite = None
         self.meal.save()
         self.delete()
 
@@ -219,6 +220,11 @@ class Meal(models.Model):
             self.state = 'N'
     
     def choose(self, invite):
+        invites = MealInvite.objects.filter(meal=self)
+        for o_invite in invites:
+            if o_invite != invite:
+                o_invite.state = 'N'
+                o_invite.save()
         invite.state = 'S'
         invite.save()
         self.state = 'S'
@@ -226,7 +232,7 @@ class Meal(models.Model):
         self.save()
         invites = MealInvite.objects.filter(meal=self)
     
-    def get_invite(self, host_eg):
+    def send_invite(self, host_eg):
         invite = MealInvite.objects.create(
             meal = self,
             date = self.date, 

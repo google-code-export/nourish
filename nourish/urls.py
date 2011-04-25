@@ -20,6 +20,8 @@ urlpatterns = patterns('',
 
     url(r'^events/(?P<event_id>\d+)/register/guest/$', 
         'nourish.views.register_event_guest'),
+    url(r'^events/(?P<event_id>\d+)/register/host/$', 
+        'nourish.views.register_event_host'),
     url(r'^events/\d+/group/(?P<pk>\d+)(-[^/]+)?/$', 
         EventGroupView.as_view()),
     url(r'^events/\d+/group/(?P<pk>\d+)/meals/$', 

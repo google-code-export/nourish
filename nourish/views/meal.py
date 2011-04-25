@@ -6,6 +6,8 @@ from nourish.forms.meal import EventGroupInviteForm, EventGroupMealForm, EventGr
 from django.forms.formsets import formset_factory
 from django.contrib.auth.decorators import login_required
 from datetime import timedelta
+import sys
+from pprint import pformat
 
 def event_guest_invite(request, pk, host_eg_id):
     eg = EventGroup.objects.get(id=pk)
@@ -18,11 +20,14 @@ def event_guest_invite(request, pk, host_eg_id):
         if form.is_valid(): # All validation rules pass
             data = form.cleaned_data
             for meal in meals:
+                sys.stderr.write("meal!: " + pformat(meal) + "\n")
                 if meal in data['meals']:
                     try:
                         invite = MealInvite.objects.get(meal=meal,host_eg=host_eg)
                     except MealInvite.DoesNotExist:
-                        meal.invite(host_eg)
+                        sys.stderr.write("meal: " + pformat(meal) + "\n")
+                        sys.stderr.write("host_re: " + pformat(host_eg) + "\n")
+                        meal.send_invite(host_eg)
                 else:
                     try:
                         invite = MealInvite.objects.get(meal=meal,host_eg=host_eg)
@@ -78,11 +83,13 @@ def event_guest_meals(request, pk):
         m[k] = meal
     meals = m
 
+
     invites_by_meal = {}
     for invite in invites:
         if invite.meal not in invites_by_meal:
             invites_by_meal[invite.meal] = []
         invites_by_meal[invite.meal].append(invite)
+    sys.stderr.write("invites_by_meal" + pformat(invites_by_meal) + "\n")
     
     initial = []
     choices = []
@@ -105,10 +112,13 @@ def event_guest_meals(request, pk):
                     i['invite'] = str(meals[k].invite.id)
                 else:
                     i['invite'] = 'un'
-                c.append(('un', 'Undecided'))
-                if meals[k] in invites_by_meal:
-                    for invite in invites_by_meal[meals[k]]:
-                        c.append( ( invite.id, invite ) )
+                meal = Meal.objects.get(id=meals[k].id)
+                sys.stderr.write("moremeal: " + pformat(meal) + "\n")
+                if meal.state in [ 'I', 'S' ]:
+                    c.append(('un', 'Select an Invitation!'))
+                    if meals[k] in invites_by_meal:
+                        for invite in invites_by_meal[meals[k]]:
+                            c.append( ( invite.id, invite.host_eg.group.name ) )
             else:
                 has_invites.append(False)
             choices.append(c)
@@ -129,6 +139,12 @@ def event_guest_meals(request, pk):
                     if form['members'] < 1:
                         meal.delete()
                         continue
+                    if form['invite']:
+                        if form['invite'] == 'un':
+                            meal.unchoose()
+                        else:
+                            invite = MealInvite.objects.get(id=form['invite'])
+                            meal.choose(invite)
                 else:
                     if form['members'] > 0:
                         meal = eg.meal(d, 'D')
@@ -202,5 +218,4 @@ def event_host_invites(request, pk):
         'request' : request,
         'invites' : invites,
         'forms' : forms,
-        'has_invites' : has_invites,
     }, context_instance=RequestContext(request))
