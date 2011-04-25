@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.template.defaultfilters import slugify
 
 class UserProfile(models.Model):
     ROLE_CHOICES = (
@@ -44,7 +45,7 @@ class Group(models.Model):
     def __unicode__(self):
         return self.name
     def get_absolute_url(self):
-        return '/groups/%i/' % self.id
+        return '/g/%i-%s/' % (self.id, slugify(self.name))
     
     def user(self, user):
         try:
@@ -73,7 +74,7 @@ class Event(models.Model):
     def __unicode__(self):
         return self.name
     def get_absolute_url(self):
-        return '/events/%i/' % self.id
+        return '/e/%i-%s/' % (self.id, slugify(self.name))
 
     def is_admin(self, user):
         if not user.is_authenticated():
@@ -125,7 +126,7 @@ class EventGroup(models.Model):
     def __unicode__(self):
         return self.event.name + ' : ' + self.group.name
     def get_absolute_url(self):
-        return self.event.get_absolute_url() + 'group/%i/' % self.id 
+        return '/eg/%i-%s-at-%s' % (self.id, slugify(self.group.name), slugify(self.event.name))
     
     def meal(self,date,meal):
         try:

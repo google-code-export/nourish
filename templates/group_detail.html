@@ -27,7 +27,7 @@
     <h3>Events we are attending</h3>
     <ul>
     {% for eg in eventgroup_list %}
-        <li><a href="{{eg.event.get_absolute_url}}">{{eg.event.name}}</a></li>
+        <li><a href="{{eg.get_absolute_url}}">{{eg.event.name}}</a></li>
     {% endfor %}
     </ul>
 {% endblock %}

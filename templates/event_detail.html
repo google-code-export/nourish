@@ -37,9 +37,9 @@
     {% for eg in guest_list %}
         <li>
             {% if eg.group.image_url %}
-                <a href="{{object.get_absolute_url}}group/{{eg.id}}/"><img width=50 src="{{eg.group.image_url}}?type=small" border=0></a>
+                <a href="{{eg.get_absolute_url}}"><img width=50 src="{{eg.group.image_url}}?type=small" border=0></a>
             {% endif %}
-            <a href="{{object.get_absolute_url}}group/{{eg.id}}/">{{eg.group.name}}</a>
+            <a href="{{eg.get_absolute_url}}">{{eg.group.name}}</a>
         </li>
     {% endfor %}
     </ul>
@@ -48,7 +48,7 @@
     <ul>
     <li>[<a href="{{object.get_absolute_url}}register/host">Register New Theme Camp</a>]</li>
     {% for eg in host_list %}
-        <li><a href="{{object.get_absolute_url}}group/{{eg.id}}/">{{eg.group.name}}</a></li>
+        <li><a href="{{eg.get_absolute_url}}">{{eg.group.name}}</a></li>
     {% endfor %}
     </ul>
 {% endblock %}
