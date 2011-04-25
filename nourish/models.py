@@ -92,6 +92,7 @@ class Event(models.Model):
             eg = EventGroup.objects.create(
                 event           = self,
                 group           = group,
+                role            = group.role,
             )
         return eg
 
