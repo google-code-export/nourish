@@ -95,6 +95,7 @@ def event_guest_meals(request, pk):
     choices = []
     display_info = []
     has_invites = []
+    mealset = []
     for date in dates:
         for sm in show_meals:
             display_info.append(sm[1])
@@ -113,13 +114,14 @@ def event_guest_meals(request, pk):
                 else:
                     i['invite'] = 'un'
                 meal = Meal.objects.get(id=meals[k].id)
-                sys.stderr.write("moremeal: " + pformat(meal) + "\n")
                 if meal.state in [ 'I', 'S' ]:
                     c.append(('un', 'Select an Invitation!'))
                     if meals[k] in invites_by_meal:
                         for invite in invites_by_meal[meals[k]]:
                             c.append( ( invite.id, invite.host_eg.group.name ) )
+                mealset.append(meals[k])
             else:
+                mealset.append(None)
                 has_invites.append(False)
             choices.append(c)
             initial.append(i)
@@ -163,6 +165,11 @@ def event_guest_meals(request, pk):
         for form in formset:
             form.fields['invite'].choices = i.next()
 
+    forms_and_meals = []
+    meals = iter(mealset)
+    for form in formset:
+        forms_and_meals.append((form, meals.next()))
+
     return render_to_response('nourish/event_guest_meals.html', {
         'formset': formset,
         'eg': eg,
@@ -171,6 +178,7 @@ def event_guest_meals(request, pk):
         'meals' : iter(display_info),
         'dates' : iter(dates),
         'days' : iter(dates),
+        'f_m' : forms_and_meals,
     }, context_instance=RequestContext(request))
 
 def event_host_invites(request, pk):

@@ -12,7 +12,7 @@
 {{ formset.management_form }}
 <table border=0 class="meals" width="100%">
 <tr><th class="first"></th><th>Diners</th><th>Restr.</th><th>Notes</th></tr>
-{% for form in formset %} 
+{% for form, meal in f_m %} 
 <tr class="meal"><th rowspan=3 class="first">
 {{ form.meal_id }} {{ form.meal }} {{ dates.next|date:"N j" }} <em>({{ days.next|date:"D." }})</em>
 </th>
@@ -31,6 +31,9 @@
     {% if form.fields.invite.choices %}
     {{ form.invite.errors }}
     {{ form.invite }}
+    {% endif %}
+    {% if meal.state == 'C' %}
+        <em>Confirmed with {{ meal.invite.host_eg.group.name }}</em>
     {% endif %}
 </td>
 </tr>
