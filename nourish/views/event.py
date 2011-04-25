@@ -32,6 +32,7 @@ class EventGroupView(DetailView):
         context['meals'] = Meal.objects.filter(eg=self.object).order_by('date', 'meal')
         context['invites_sent'] = MealInvite.objects.filter(host_eg=self.object)
         context['invites_rcvd'] = MealInvite.objects.filter(guest_eg=self.object)
+        context['is_group_admin'] = self.object.group.is_admin(self.request.user)
         dates = []
         date = self.object.event.start_date
         while date <= self.object.event.end_date:

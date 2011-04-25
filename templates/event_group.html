@@ -65,19 +65,20 @@
     {% endif %}
     {% if object.role == 'T' %}
         <h3>Invitations</h3>
-        {% if group_admin %}
+        {% if is_group_admin %}
             <a href="{{ object.get_absolute_url}}invites/">Manage Invitations</a>
         {% endif %}
-        <ul>
+        <table class="meals">
+        <tr><th class="first"></th><th>Invitations</th></tr>
         {% for date in dates %}
-            <li>{{date}}</li>
-            <ul>
-            {% if group_admin %}
-                <li><a href="{{object.event.get_absolute_url}}">Invite Artists to Dinner!</a></li>
-            {% endif %}
+            {% if 1 %}
+            <tr class="meal">
+            <th class="first">{{date}}</th>
+            <td>
+            <ul style="margin: 2px; padding: 0; list-style: none;">
             {% for invite in invites_sent %}
                 {% if invite.date == date %}
-                <li>{{invite.date}} - <a href="{{invite.guest_eg.get_absolute_url}}">{{invite.guest_eg.group.name}}</a> <em>({{invite.meal.members}} diners)</em> -
+                <li><a href="{{invite.guest_eg.get_absolute_url}}">{{invite.guest_eg.group.name}}</a> <em>({{invite.meal.members}} diners)</em> -
                 {% if invite.state == 'N' %}
                     <strong>Pending</strong>
                 {% endif %}
@@ -93,9 +94,14 @@
                 </li>
                 {% endif %}
             {% endfor %}
+            {% if is_group_admin %}
+                <li><a href="{{object.event.get_absolute_url}}">Invite Artists to Dinner!</a></li>
+            {% endif %}
+            {% endif %}
             </ul>
         {% endfor %}
-        </ul>
+        </tr>
     {% endif %}
+    </table>
 
 {% endblock %}
