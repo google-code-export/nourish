@@ -11,6 +11,8 @@
     <div style="float: left; width: 450px;">
     <h2 style="display: inline;">{{ object.name }}</h2>
     <a href="{{ object.get_absolute_url}}edit/">[Edit Event]</a><br>
+    {{ object.start_date }} thru {{ object.end_date }}<br>
+    
     FtA Organizers
     <ul style="display: inline; list-style: none; padding: 0;">
     {% for eu in eventuser_list %}
