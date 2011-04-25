@@ -17,7 +17,7 @@ from pprint import pformat
 def register_event(request):
 
     is_fb = False
-    if request.user.get_profile().provider == 'F':
+    if request.user.is_authenticated() and request.user.get_profile().provider == 'F':
         is_fb = True
     if 'nofb' in request.GET:
         is_fb = False
@@ -85,8 +85,8 @@ def register_event(request):
                         raise Exception("you are not an admin of this event")
                 except Event.DoesNotExist:
                     event = Event.objects.create(
-                        end_date        = datetime.datetime.strptime(fbevent['end_time'],"%Y-%m-%dT%H:%M:%S").date(),
-                        start_date      = datetime.datetime.strptime(fbevent['start_time'],"%Y-%m-%dT%H:%M:%S").date(),
+                        end_date        = datetime.datetime.strptime(fbevent['end_time'],"%Y-%m-%dT%H:%M:%S").date() + timedelta(days=5),
+                        start_date      = datetime.datetime.strptime(fbevent['start_time'],"%Y-%m-%dT%H:%M:%S").date() - timedelta(days=10),
                         name            = event_data['name'],
                         url             = event_data['url'],
                         image_url       = event_data['image_url'],
@@ -136,7 +136,7 @@ def register_event_guest(request, event_id):
         date += timedelta(days=1)
 
     is_fb = False
-    if request.user.get_profile().provider == 'F':
+    if request.user.is_authenticated() and request.user.get_profile().provider == 'F':
         is_fb = True
     if 'nofb' in request.GET:
         is_fb = False
