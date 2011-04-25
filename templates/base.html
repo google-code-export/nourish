@@ -30,24 +30,18 @@
     table.meals {
         border-collapse: collapse;
     }
-    table.meals tr th {
-        padding-left: 1em;
-        padding-right: 1em;
+    tr.meal td, tr.meal th {
+        border-top: 1px solid black;
     }
     table.meals tr th.first {
         border-right: 1px solid black;
     }
-    tr.meal {
-        border-top: 1px solid black;
+    table.meals th, table.meals td {
+        text-align: left;
+        padding-left: 0.5em;
     }
-    tr.meal th {
-        border-right: 1px solid black;
-        padding-left: 1em;
-        padding-right: 1em;
-    }
-    tr.meal td {
-        padding-left: 1em;
-        padding-right: 1em;
+    table.meals th.first {
+        font-weight: normal;
     }
     #wrap {
         width:800px;

@@ -10,16 +10,16 @@
 
 <form action="{{eg.get_absolute_url}}meals/" method="post">{% csrf_token %}
 {{ formset.management_form }}
-<ul>
-<table border=0>
-<tr><th>Date</th><th>Diners</th><th>Restrictions</th><th>Notes</th></tr>
+<table border=0 class="meals" width="100%">
+<tr><th class="first"></th><th>Diners</th><th>Restr.</th><th>Notes</th></tr>
 {% for form in formset %} 
-<tr><td colspan=4>
-<hr>
+<tr class="meal"><th rowspan=3 class="first">
+{{ form.meal_id }} {{ form.meal }} {{ dates.next|date:"N j" }} <em>({{ days.next|date:"D." }})</em>
+</th>
+<td colspan=3>
 {{ form.non_field_errors }}
 </td>
 <tr>
-<td>{{ form.meal_id }} {{ form.meal }} {{ dates.next|date:"N j" }} <em>({{ days.next|date:"D." }})</em> </td>
 <td>{{ form.members.errors }}
     {{ form.members }}</td>
 <td>{{ form.features.errors }}
@@ -27,16 +27,14 @@
 <td>{{ form.notes.errors }}
     {{ form.notes }}</td>
 </tr>
-{% if has_invites.next %}
-<tr><td></td>
-<td colspan=3>{{ form.invite.errors }}
-    {{ form.invite }}</td>
+<tr> <td colspan=3>
+<!--
+    {{ form.invite.errors }}
+    {{ form.invite }}
+-->
 </td>
 </tr>
-{% endif %}
-{{ form.non_field_errors }}
 {% endfor %}
-<tr><td colspan=3><hr></td>
 </table>
 <input type="submit" value="Save Changes" />
 </form>
