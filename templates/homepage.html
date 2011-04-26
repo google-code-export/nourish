@@ -7,10 +7,10 @@
 {% if events or egs %}
   <ul>
   {% for event in events %}
-      <li><a href="{{event.get_absolute_url}}">{{event.name}}</a></li>
+    <li>{% include "nourish/event_small.html" with event=event %}</li>
   {% endfor %}
   {% for eg in egs %}
-      <li><a href="{{eg.get_absolute_url}}">{{eg.group.name}} at {{eg.event.name}}</a></li>
+      <li>{% include "nourish/eg_small.html" with eg=eg %}</li>
   {% endfor %}
   </ul>
 {% else %}
@@ -21,7 +21,7 @@
 {% if groups %}
   <ul>
   {% for group in groups %}
-    <li><a href="/groups/{{ group.id }}/">{{ group.name }}</a></li>
+    <li>{% include "nourish/group_small.html" with group=group %}</li>
   {% endfor %}
   </ul>
 {% else %}
