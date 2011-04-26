@@ -19,7 +19,7 @@
     {% endfor %}
     </ul>
     <br>
-    Group website: <a href="{{ object.url }}">link</a>
+    Group website: {{object.url|urlizetrunc:40}}
     </div>
     <div style="clear: both;"></div>
     <h3 style="padding-top: 1em;">About us</h3>
@@ -27,7 +27,7 @@
     <h3>Events we are attending</h3>
     <ul>
     {% for eg in eventgroup_list %}
-        <li><a href="{{eg.get_absolute_url}}">{{eg.event.name}}</a></li>
+        <li>{% include "nourish/eg_event_small.html" with eg=eg %}</li>
     {% endfor %}
     </ul>
 {% endblock %}
