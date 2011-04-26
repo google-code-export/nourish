@@ -21,7 +21,7 @@
     {% endfor %}
     </ul>
     <br>
-    Event website: <a href="{{ object.url }}">link</a>
+    Event website: {{object.url|urlizetrunc:40}}
     </div>
     <div style="clear: both;"></div>
 
