@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Feed The Artists{% endblock %}
+
+{% block content %}
+<h1>FtA ORS</h1>
+
+<br>
+
+<h2>Theme Camps and Artist Groups</h2>
+
+<p>Find your event on the following list, and then follow the links to register!</p>
+
+<ul>
+    {% for event in events %}
+    <li><a href="{{event.get_absolute_url}}">{{event.name}}</a></li>
+    {% endfor %}
+</ul>
+
+<h2>Event Organizers</h2>
+
+<p>If you are an event organizer, you can <a href="/register/event">register your event.</a></p>
+
+{% endblock %}

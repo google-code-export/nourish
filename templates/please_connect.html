@@ -1,0 +1,16 @@
+<div style="border: 1px solid red; float: left; margin: 10px; padding: 10px; background-color: #fdd;">
+<h2>Do you use facebook?</h2>
+
+<p>If you do, that will save you some typing, not to mention having to remember another password!</p>
+
+
+{% load facebook_tags %}
+{% facebook_button %}
+
+<p>If you're not a Facebook user, that's OK too...</p>
+
+<a href="?u=y">Register without a Facebook account</a>
+
+
+{% facebook_js %}
+</div>

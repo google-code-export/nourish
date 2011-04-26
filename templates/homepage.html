@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+<h2>Upcoming Events</h2>
+{% if events or egs %}
+  <ul>
+  {% for event in events %}
+    <li>{% include "nourish/event_small.html" with event=event %}</li>
+  {% endfor %}
+  {% for eg in egs %}
+      <li>{% include "nourish/eg_small.html" with eg=eg %}</li>
+  {% endfor %}
+  </ul>
+{% else %}
+  <p>You aren't currently attending any events.</p>
+{% endif %}
+
+<h2>My Groups</h2>
+{% if groups %}
+  <ul>
+  {% for group in groups %}
+    <li>{% include "nourish/group_small.html" with group=group %}</li>
+  {% endfor %}
+  </ul>
+{% else %}
+  <p>You aren't currently a members of any groups</p>
+{% endif %}
+
+
+{% endblock %}

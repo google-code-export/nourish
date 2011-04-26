@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+
+<h2>Invite {{ eg.group.name }} to meals with {{host_eg.group.name}} at {{ event.name }}</h2>
+
+<form action="{{eg.get_absolute_url}}invite/{{host_eg.id}}/" method="post">{% csrf_token %}
+{{ form.as_p }}
+<input type="submit" value="Send Invitations" />
+</form>
+{% endblock %}
