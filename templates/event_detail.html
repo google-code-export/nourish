@@ -10,7 +10,10 @@
     {% endif %}
     <div style="float: left; width: 450px;">
     <h2 style="display: inline;">{{ object.name }}</h2>
-    <a href="{{ object.get_absolute_url}}edit/">[Edit Event]</a><br>
+    {% if is_admin %}
+    [<a href="{{ object.get_absolute_url}}edit/">Edit Event</a>]
+    {% endif %}
+    <br>
     {{ object.start_date }} thru {{ object.end_date }}<br>
     
     FtA Organizers
