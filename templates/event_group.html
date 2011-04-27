@@ -11,8 +11,16 @@
         <div style="float: left; margin-right: 5px;"><a href="{{ object.event.get_absolute_url }}"><img width=100 src="{{object.event.image_url}}?type=normal" border=0></a></div>
     {% endif %}
     <div style="float: left; width: 350px;">
-    <h3 style="display: inline;"><a href="{{object.group.get_absolute_url}}">{{ object.group.name }}</a></h3><br>
-    <h4 style="display: inline;">at <a href="{{object.event.get_absolute_url}}">{{object.event.name}}</a></h4><br>
+    <h3 style="display: inline;"><a href="{{object.group.get_absolute_url}}">{{ object.group.name }}</a></h3>
+    {% if is_group_admin %}
+    [<a href="{{ object.group.get_absolute_url}}edit/">Edit Group</a>]
+    {% endif %}
+    <br>
+    <h4 style="display: inline;">at <a href="{{object.event.get_absolute_url}}">{{object.event.name}}</a></h4>
+    {% if is_event_admin %}
+    [<a href="{{ object.event.get_absolute_url}}edit/">Edit Event</a>]
+    {% endif %}
+    <br>
 {{ object.event.start_date }} thru {{ object.event.end_date }}<br>
     </div>
     <div style="clear: both;"></div>

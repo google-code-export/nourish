@@ -1,6 +1,53 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
+import sys
+from pprint import pformat
+import datetime
+from django.core.serializers.json import DjangoJSONEncoder
+from django.core import serializers
+import json
+
+
+class FacebookProfileCache(models.Model):
+    user = models.ForeignKey(User, unique=True)
+    groups = models.TextField(blank=True)
+    events = models.TextField(blank=True)
+    last_updated = models.DateTimeField(blank=True, null=True)
+
+    def get_groups(self):
+        if self.groups:
+            return json.loads(self.groups)
+        else:
+            return []
+
+    def get_events(self):
+        if self.events:
+            return json.loads(self.events)
+        else:
+            return []
+
+    def update(self, facebook):
+        if not facebook.graph:
+            return
+
+        fbgroups = facebook.graph.get_object('me/groups')
+        groups = []
+        for group in fbgroups['data']:
+            groups.append((group['id'], group['name']))
+
+        fbevents = facebook.graph.get_object('me/events')
+        events = []
+        now = datetime.datetime.now()
+        for event in fbevents['data']:
+            end = datetime.datetime.strptime(event['end_time'],"%Y-%m-%dT%H:%M:%S")
+            if end > now:
+                events.append((event['id'], event['name']))
+
+        self.groups = json.dumps(groups)
+        self.events = json.dumps(events)
+
+        self.save()
 
 class UserProfile(models.Model):
     ROLE_CHOICES = (
@@ -23,6 +70,15 @@ class UserProfile(models.Model):
 
     def __unicode__(self):
         return self.fullname + ' (' + self.user.username + ')'
+
+    def fb_cache(self):
+        if self.provider != 'F':
+            raise Exception("UserProfile.provider is not Facebook")
+        try:
+            fb_cache = FacebookProfileCache.objects.get(user=self.user)
+        except FacebookProfileCache.DoesNotExist:
+            fb_cache = FacebookProfileCache.objects.create(user=self.user)
+        return fb_cache
 
 class GroupUser(models.Model):
     group = models.ForeignKey('Group')
@@ -246,3 +302,4 @@ class Meal(models.Model):
         if self.state == 'N':
             self.state = 'I'
             self.save()
+
