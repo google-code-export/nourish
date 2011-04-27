@@ -17,20 +17,13 @@ from pprint import pformat
 def register_event(request):
 
     is_fb = False
-    if request.user.is_authenticated() and request.user.get_profile().provider == 'F':
+    if request.user.is_authenticated() and request.user.get_profile().provider == 'F' and request.user.get_profile().fb_cache().get_events():
         is_fb = True
     if 'nofb' in request.GET:
         is_fb = False
     if is_fb:
         EventFormset = formset_factory(EventFBForm, extra=0)
-        choices = []
-        events = request.facebook.graph.get_object('me/events')
-        sys.stderr.write('events: ' + pformat(events))
-        now = datetime.datetime.now()
-        for event in events['data']:
-            end = datetime.datetime.strptime(event['end_time'],"%Y-%m-%dT%H:%M:%S")
-            if end > now:
-                choices.append((event['id'], event['name']))
+        choices = request.user.get_profile().fb_cache().get_events()
     else:
         EventFormset = formset_factory(EventForm, extra=0)
 
@@ -114,9 +107,6 @@ def register_event(request):
         event_formset = EventFormset(prefix='event', initial=[{ }])
         if is_fb:
             event_formset[0].fields['event'].choices = choices
-            end = datetime.datetime.strptime(event['end_time'],"%Y-%m-%dT%H:%M:%S")
-            if end > now:
-                choices.append((event['id'], event['name']))
 
     return render_to_response('nourish/register_event.html', {
         'request' : request,
@@ -136,7 +126,7 @@ def register_event_guest(request, event_id):
         date += timedelta(days=1)
 
     is_fb = False
-    if request.user.is_authenticated() and request.user.get_profile().provider == 'F':
+    if request.user.is_authenticated() and request.user.get_profile().provider == 'F' and request.user.get_profile().fb_cache().get_groups():
         is_fb = True
     if 'nofb' in request.GET:
         is_fb = False
@@ -145,10 +135,7 @@ def register_event_guest(request, event_id):
     MealFormset = formset_factory(MealStubForm, extra=len(dates))
     if is_fb:
         GroupFormset = formset_factory(GroupFBForm, extra=0)
-        choices = []
-        groups = request.facebook.graph.get_object('me/groups')
-        for group in groups['data']:
-            choices.append((group['id'], group['name']))
+        choices = request.user.get_profile().fb_cache().get_groups()
     else:
         GroupFormset = formset_factory(GroupForm, extra=0)
 
@@ -276,7 +263,7 @@ def register_event_host(request, event_id):
         date += timedelta(days=1)
 
     is_fb = False
-    if request.user.is_authenticated() and request.user.get_profile().provider == 'F':
+    if request.user.is_authenticated() and request.user.get_profile().provider == 'F' and request.user.get_profile().fb_cache().get_groups():
         is_fb = True
     if 'nofb' in request.GET:
         is_fb = False
@@ -285,10 +272,7 @@ def register_event_host(request, event_id):
     FeaturesFormset = formset_factory(EventHostFeaturesForm, extra=0)
     if is_fb:
         GroupFormset = formset_factory(GroupFBForm, extra=0)
-        choices = []
-        groups = request.facebook.graph.get_object('me/groups')
-        for group in groups['data']:
-            choices.append((group['id'], group['name']))
+        choices = request.user.get_profile().fb_cache().get_groups()
     else:
         GroupFormset = formset_factory(GroupForm, extra=0)
 

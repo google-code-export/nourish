@@ -12,6 +12,7 @@ class GroupDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(GroupDetailView, self).get_context_data(**kwargs)
+        context['is_admin'] = self.object.is_admin(self.request.user)
         context['eventgroup_list'] = EventGroup.objects.filter(group=self.object)
     	context['groupuser_list'] = GroupUser.objects.filter(group=self.object)
 	try:
