@@ -6,6 +6,7 @@ from nourish.forms.register import RegistrationKeyStubForm, RegistrationStubForm
 from nourish.forms.group import GroupForm, GroupFBForm
 from nourish.forms.meal import MealStubForm
 from nourish.forms.event import EventForm, EventFBForm, EventHostFeaturesForm
+from nourish.exceptions import FacebookAuthTimeout
 from django.contrib.auth import login, authenticate
 from datetime import timedelta
 import datetime
@@ -65,7 +66,10 @@ def register_event(request):
                 profile.save()
 
             if is_fb:
-                fbevent = request.facebook.graph.get_object(event_data['event'])
+                try:
+                    fbevent = request.facebook.graph.get_object(event_data['event'])
+                except AttributeError:
+                    raise FacebookAuthTimeout
                 event_data['name'] = fbevent['name']
                 if 'link' in fbevent:
                     event_data['url'] = fbevent['link']
@@ -183,7 +187,10 @@ def register_event_guest(request, event_id):
             group = None
 
             if is_fb:
-                fbgroup = request.facebook.graph.get_object(group_data['group'])
+                try:
+                    fbgroup = request.facebook.graph.get_object(group_data['group'])
+                except AttributeError:
+                    raise FacebookAuthTimeout
                 group_data['name'] = fbgroup['name']
                 if 'link' in fbgroup:
                     group_data['url'] = fbgroup['link']
@@ -320,7 +327,10 @@ def register_event_host(request, event_id):
             group = None
 
             if is_fb:
-                fbgroup = request.facebook.graph.get_object(group_data['group'])
+                try:
+                    fbgroup = request.facebook.graph.get_object(group_data['group'])
+                except AttributeError:
+                    raise FacebookAuthTimeout
                 group_data['name'] = fbgroup['name']
                 if 'link' in fbgroup:
                     group_data['url'] = fbgroup['link']
