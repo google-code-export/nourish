@@ -28,7 +28,7 @@
     <h3 style="padding-top: 1em;">About us</h3>
     <p>{{ object.description }}</p>
     <h3>Events we are attending</h3>
-    <ul>
+    <ul class="small_list">
     {% for eg in eventgroup_list %}
         <li>{% include "nourish/eg_event_small.html" with eg=eg %}</li>
     {% endfor %}
