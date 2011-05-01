@@ -28,25 +28,30 @@
     </div>
     <div style="clear: both;"></div>
 
-    {% if not user.is_authenticated %}
-        <a href="{{object.get_absolute_url}}register/guest"><img src="http://feedtheartists.net/images/home-artists.jpg" alt="Register New Camp" border=0></a>
-        <a href="{{object.get_absolute_url}}register/host"><img src="http://feedtheartists.net/images/burningman2.jpg" alt="Register New Theme Camp" border=0></a>
-        <a href="{{object.get_absolute_url}}group/{{eg.id}}/">{{eg.group.name}}</a>
-    {% endif %}
+    <br>
 
+    <div style="float: left;">
+    <a href="{{object.get_absolute_url}}register/guest"><img width=250 src="http://feedtheartists.net/images/home-artists.jpg" alt="Register New Artist Group" border=0></a>
+    {% if guest_list %}
     <h3>Registered Artist Groups</h3>
-    <ul>
-    <li>[<a href="{{object.get_absolute_url}}register/guest">Register New Artist Group</a>]</li>
+    <ul class="small_list">
     {% for eg in guest_list %}
         <li>{% include "nourish/eg_group_small.html" with eg=eg %}</li>
     {% endfor %}
     </ul>
+    {% endif %}
+    </div>
 
+    <div style="float: left;">
+    <a href="{{object.get_absolute_url}}register/host"><img width=250 src="http://feedtheartists.net/images/burningman2.jpg" alt="Register New Theme Camp" border=0></a>
+    {% if host_list %}
     <h3>Registered Theme Camps</h3>
-    <ul>
-    <li>[<a href="{{object.get_absolute_url}}register/host">Register New Theme Camp</a>]</li>
+    <ul class="small_list">
     {% for eg in host_list %}
         <li>{% include "nourish/eg_group_small.html" with eg=eg %}</li>
     {% endfor %}
     </ul>
+    {% endif %}
+    </div>
+    <div style="clear: both;"></div>
 {% endblock %}
