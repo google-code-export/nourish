@@ -4,7 +4,7 @@
 
 {% block content %}
     <h2>Groups</h2>
-    <ul>
+    <ul class="small_list">
         {% for group in object_list %}
             <li>{% include "nourish/group_small.html" with group=group %}</li>
     	{% endfor %}

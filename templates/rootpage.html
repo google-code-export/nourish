@@ -10,9 +10,9 @@
 
 <p>Find your event on the following list, and then follow the links to register!</p>
 
-<ul>
+<ul class="small_list">
     {% for event in events %}
-    <li><a href="{{event.get_absolute_url}}">{{event.name}}</a></li>
+    <li>{% include "nourish/event_small.html" with event=event %}</li>
     {% endfor %}
 </ul>
 

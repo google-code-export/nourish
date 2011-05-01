@@ -4,7 +4,8 @@
 
 {% block content %}
     <h2>Events</h2>
-    <ul>
+    <ul class="small_list">
+        <li><a href="/register/event/">Register a New Event</a></li>
         {% for event in object_list %}
             <li>{% include "nourish/event_small.html" with event=event %}</li>
     	{% endfor %}
