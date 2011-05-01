@@ -1,10 +1,12 @@
 <a class="small_link" href="{{group.get_absolute_url}}">
 <div class="small_link" style="">
-{% if group.image_url %}
 <div style="float:left; padding-right: 5px;">
+{% if group.image_url %}
         <img width=50 src="{{group.image_url}}?type=small" border=0>
-</div>
+{% else %}
+        <img width=50 src="http://www.feedtheartists.net/images/homelogo.gif" border=0>
 {% endif %}
+</div>
 <div style="float:left; width: 200px;">
 {{group.name}}
 </div>
