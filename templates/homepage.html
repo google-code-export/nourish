@@ -3,6 +3,7 @@
 
 {% block content %}
 
+<div style="float: left;">
 <h2>Upcoming Events</h2>
 {% if events or egs %}
   <ul class="small_list">
@@ -16,7 +17,9 @@
 {% else %}
   <p>You aren't currently attending any events.</p>
 {% endif %}
+</div>
 
+<div style="float: left;">
 <h2>My Groups</h2>
 {% if groups %}
   <ul class="small_list">
@@ -27,6 +30,8 @@
 {% else %}
   <p>You aren't currently a members of any groups</p>
 {% endif %}
+</div>
+<div style="clear: both;"></div>
 
 
 {% endblock %}
