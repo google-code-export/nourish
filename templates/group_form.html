@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Edit {{ object.name }} - Groups{% endblock %}
+
+{% block content %}
+    <h2>Edit Group {{ object.name }}</h2>
+
+    <form method="post">
+    <table>
+        {% include "nourish/form_snippet.html" with form=form %}
+    </table>
+    <input type="submit" value="Update">
+    </form>
+
+{% endblock %}

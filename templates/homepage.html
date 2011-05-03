@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+<div style="float: left;">
+<h2>Upcoming Events</h2>
+{% if events or egs %}
+  <ul class="small_list">
+  {% for event in events %}
+    <li>{% include "nourish/event_small.html" with event=event %}</li>
+  {% endfor %}
+  {% for eg in egs %}
+      <li>{% include "nourish/eg_small.html" with eg=eg %}</li>
+  {% endfor %}
+  </ul>
+{% else %}
+  <p>You aren't currently attending any events.</p>
+{% endif %}
+</div>
+
+<div style="float: left;">
+<h2>My Groups</h2>
+{% if groups %}
+  <ul class="small_list">
+  {% for group in groups %}
+    <li>{% include "nourish/group_small.html" with group=group %}</li>
+  {% endfor %}
+  </ul>
+{% else %}
+  <p>You aren't currently a members of any groups</p>
+{% endif %}
+</div>
+<div style="clear: both;"></div>
+
+
+{% endblock %}
