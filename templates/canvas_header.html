@@ -1,5 +1,17 @@
+{% load facebook_tags %}
 <div id="wrap">
- <div id="header">
-  <h1>FtA Online Reservation System</h1>
+ <div id="logo" style="float: left;">
+  <img src="http://feedtheartists.net/images/logo1.gif" width=100>
+ </div>
+ <div id="header" style="float: left;">
+  <h2>Feed The Artists</h2>
+  <h3>Online Reservation System</h3>
+ </div>
+ <div style="clear: both; padding-bottom: 10px;">
  <div>
 
+{% facebook_js %}
+
+<script type="text/javascript">
+FB.Canvas.setAutoResize();
+</script>

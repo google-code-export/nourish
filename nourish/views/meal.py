@@ -9,7 +9,7 @@ from datetime import timedelta
 import sys
 from pprint import pformat
 
-def event_guest_invite(request, pk, host_eg_id):
+def event_guest_invite(request, pk, host_eg_id, canvas=False):
     eg = EventGroup.objects.get(id=pk)
     host_eg = EventGroup.objects.get(id=host_eg_id)
     event = eg.event
@@ -35,7 +35,7 @@ def event_guest_invite(request, pk, host_eg_id):
                         continue
                     invite.rescind()
 #
-            return redirect(eg.get_absolute_url()) # Redirect after POST
+            return redirect(eg.get_absolute_url(canvas)) # Redirect after POST
 
     else:
         form = EventGroupInviteForm() # An unbound form
@@ -54,10 +54,11 @@ def event_guest_invite(request, pk, host_eg_id):
         'eg': eg,
         'event' : event,
         'request': request,
+        'canvas': canvas,
     }, context_instance=RequestContext(request))
 
 @login_required
-def event_guest_meals(request, pk):
+def event_guest_meals(request, pk, canvas=False):
     eg = EventGroup.objects.get(id=pk)
     event = eg.event
 
@@ -158,7 +159,7 @@ def event_guest_meals(request, pk):
                 meal.notes = ''.join(form['notes'])
                 meal.save()
 
-            return redirect(eg.get_absolute_url()) 
+            return redirect(eg.get_absolute_url(canvas)) 
     else:
         formset = MealFormSet(initial=initial)
         i = iter(choices)
@@ -179,9 +180,10 @@ def event_guest_meals(request, pk):
         'dates' : iter(dates),
         'days' : iter(dates),
         'f_m' : forms_and_meals,
+        'canvas' : canvas
     }, context_instance=RequestContext(request))
 
-def event_host_invites(request, pk):
+def event_host_invites(request, pk, canvas=False):
     eg = EventGroup.objects.get(id=pk)
     event = eg.event
     
@@ -209,7 +211,7 @@ def event_host_invites(request, pk):
                         invite.confirm()
                     else:
                         invite.rescind()
-            return redirect(eg.get_absolute_url()) 
+            return redirect(eg.get_absolute_url(canvas)) 
 
     else:
         formset = InvitesFormSet(initial=initial)
@@ -226,4 +228,5 @@ def event_host_invites(request, pk):
         'request' : request,
         'invites' : invites,
         'forms' : forms,
+        'canvas' : canvas,
     }, context_instance=RequestContext(request))

@@ -8,7 +8,12 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.core import serializers
 import json
 from django.core.urlresolvers import reverse
+import re
 
+rewriter_re = re.compile("\/nourish\/")
+
+def canvas_url_rewrite(url):
+    return rewriter_re.sub('/nourish/fb/', url)
 
 class FacebookProfileCache(models.Model):
     user = models.ForeignKey(User, unique=True)
@@ -44,6 +49,7 @@ class FacebookProfileCache(models.Model):
             end = datetime.datetime.strptime(event['end_time'],"%Y-%m-%dT%H:%M:%S")
             if end > now:
                 events.append((event['id'], event['name']))
+        sys.stderr.write("reloading cache\n")
 
         self.groups = json.dumps(groups)
         self.events = json.dumps(events)
@@ -101,8 +107,11 @@ class Group(models.Model):
     description = models.TextField(blank=True, null=True)
     def __unicode__(self):
         return self.name
-    def get_absolute_url(self):
-        return reverse('group-detail', kwargs={'pk':self.id, 'slug': slugify(self.name)})
+    def get_absolute_url(self, canvas=False):
+        u = reverse('group-detail', kwargs={'pk':self.id, 'slug': slugify(self.name)})
+        if canvas:
+            return canvas_url_rewrite(u)
+        return u
     
     def user(self, user):
         try:
@@ -130,8 +139,11 @@ class Event(models.Model):
 #    logo = models.FileField(upload_to='uploads/%Y-%m-%d')
     def __unicode__(self):
         return self.name
-    def get_absolute_url(self):
-        return reverse('event-detail', kwargs={'pk':self.id, 'slug': slugify(self.name)})
+    def get_absolute_url(self, canvas=False):
+        u = reverse('event-detail', kwargs={'pk':self.id, 'slug': slugify(self.name)})
+        if canvas:
+            return canvas_url_rewrite(u)
+        return u
 
     def is_admin(self, user):
         if not user.is_authenticated():
@@ -183,8 +195,11 @@ class EventGroup(models.Model):
     dinner_time = models.CharField(max_length=10,null=True,blank=True)
     def __unicode__(self):
         return self.event.name + ' : ' + self.group.name
-    def get_absolute_url(self):
-        return reverse('event-group-detail', kwargs={'pk':self.id, 'slug': '%s-at-%s' % (slugify(self.group.name), slugify(self.event.name))})
+    def get_absolute_url(self, canvas=False):
+        u = reverse('event-group-detail', kwargs={'pk':self.id, 'slug': '%s-at-%s' % (slugify(self.group.name), slugify(self.event.name))})
+        if canvas:
+            return canvas_url_rewrite(u)
+        return u
     
     def meal(self,date,meal):
         try:

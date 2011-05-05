@@ -3,6 +3,8 @@ from nourish.models import EventUser, GroupUser, Group, EventGroup, UserProfile,
 import array
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
+import sys
+import re
 
 def homepage(request, canvas=False):
     groups = [ ]
@@ -41,9 +43,14 @@ def rootpage(request, canvas=False):
 
 def homepage_chooser(request, canvas=False):
     url = homepage_chooser_url(request)
+    sys.stderr.write("path is " + request.path + "\n")
+    if canvas:
+        p = re.compile("\/nourish\/")
+        url = p.sub('/nourish/fb/', url)
     return redirect(url)
 
-def homepage_chooser_url(request):
+
+def homepage_chooser_url(request, canvas=False):
     user = request.user
     try:
         profile = UserProfile.objects.get(user=user)

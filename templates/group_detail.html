@@ -11,7 +11,7 @@
     <div style="float: left; width: 450px;">
     <h2 style="display: inline;">{{ object.name }}</h2>
     {% if is_admin %}
-    [<a href="{{ object.get_absolute_url}}edit/">Edit Group</a>]
+    [<a href="{% nurl object %}edit/">Edit Group</a>]
     {% endif %}
     <br>
     Organizers

@@ -15,8 +15,10 @@ from pprint import pformat
 
 @receiver(login)
 def login_facebook(user, profile, client, **kwargs):
+    sys.stderr.write("facebook login\n")
     user.get_profile().fb_cache().update(client)
 
 @receiver(connect)
 def connect_facebook(user, profile, client, **kwargs):
+    sys.stderr.write("facebook connect\n")
     user.get_profile().fb_cache().update(client)
