@@ -1,8 +1,7 @@
 from django.conf.urls.defaults import patterns, url
 from django.contrib.auth.decorators import login_required
-from django.views.generic import ListView, DetailView
 
-from nourish.views import GroupDetailView, GroupUpdateView, EventDetailView, EventGroupView, EventUpdateView
+from nourish.views import GroupDetailView, GroupUpdateView, EventDetailView, EventGroupView, EventUpdateView, EventListView, GroupListView, SiteInviteRecipientView
 from nourish.models import Event, Group
 
 urlpatterns = patterns('',
@@ -11,13 +10,8 @@ urlpatterns = patterns('',
     url('^home/$', 'nourish.views.homepage', name='homepage'),
     url('^$',      'nourish.views.rootpage', name='rootpage'),
 
-    url(r'^events/$', ListView.as_view(
-        template_name='nourish/event_list.html',
-        queryset=Event.objects.filter(display=True)
-    ), name='event-list'),
-    # legacy
-    url(r'^events/(?P<pk>\d+)(-[^\/]*)?/$', EventDetailView.as_view()),
-    url(r'^events/\d+/group/(?P<pk>\d+)(-[^/]+)?/$', EventGroupView.as_view()),
+    url(r'^i/$', SiteInviteRecipientView.as_view()),
+    url(r'^events/$', EventListView.as_view(), name='event-list'),
 
     url(r'^e/(?P<pk>\d+)-(?P<slug>[^\/]*)/$', EventDetailView.as_view(), name='event-detail'),
     url(r'^e/(?P<pk>\d+)(-[^\/]*)?/edit/$', login_required(EventUpdateView.as_view())),
@@ -35,10 +29,7 @@ urlpatterns = patterns('',
     url(r'^eg/(?P<pk>\d+)(-[^\/]*)?/invites/$', 
         'nourish.views.event_host_invites'),
 
-    url(r'^groups/$', ListView.as_view(
-        model=Group,
-        template_name='nourish/group_list.html',
-    ), name='group-list'),
+    url(r'^groups/$', GroupListView.as_view(), name='group-list'),
     url(r'^g/(?P<pk>\d+)-(?P<slug>[^\/]*)/$', GroupDetailView.as_view(), name='group-detail'),
     url(r'^g/(?P<pk>\d+)(-[^\/]*)?/edit/$', login_required(GroupUpdateView.as_view())),
 )

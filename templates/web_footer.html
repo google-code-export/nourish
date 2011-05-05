@@ -1,0 +1,35 @@
+{% load nourish %}
+    </div>
+      <div id="sidebar" class="column">
+    <div id="auth">
+    {% if user.is_authenticated %}
+        {% userlink user %}[<a href="{% url logout %}">logout</a>]
+    {% else %} 
+        [<a href="{% url login %}">login</a>]
+    {% endif %}
+    </div>
+        <a href="http://www.feedtheartists.net"><img src="http://feedtheartists.net/images/logo1.gif" border=0></a>
+        {% block sidebar %}
+            <h3>Feed The Artists</h3>
+            <ul id="sidebar_links">
+                <li><a href="http://feedtheartists.net/">Homepage</a></li>
+                <li><a href="http://www.kickstarter.com/projects/feedtheartists/evolving-the-burning-man-community-with-culinary-l">Kickstarter 2011</a></li>
+                <li><a href="http://www.kickstarter.com/projects/feedtheartists/communal-art-grant-through-food">Kickstarter 2010</a></li>
+            </ul> 
+        {% endblock %}
+      </div>
+
+    <div id="footer">
+      <div id="footer_links">
+      <a href="http://feedtheartists.net/contactus.html">Contact Us</a>
+      | <a target="_blank" href="http://code.google.com/p/nourish/issues/entry?labels=Type-Defect,Path-{{request.path}}&summary=Problem on {{request.path}}">Report Bug</a>
+      | <a target="_blank" href="http://code.google.com/p/nourish/issues/entry?template=Feature%20Request&labels=Path-{{request.path}}">Request Feature</a>
+      | <a href="{% url admin:index %}">Admin</a>
+      </div>
+      <div id="attribution">
+      <p>Powered by <a href="http://www.allbuttonspressed.com/projects/django-nonrel">Django-nonrel</a></p>
+      </div>
+    <div style="clear:both"></div>
+    </div>
+
+   </div>
