@@ -239,12 +239,12 @@
     <div id="nav">
     <ul>
       {% if user.username %}
-        <li><a id="logo" href="/home/">Home</a></li>
+        <li><a id="logo" href="{% url homepage %}">Home</a></li>
       {% else %}
-        <li><a id="logo" href="/">Home</a></li>
+        <li><a id="logo" href="{% url rootpage %}">Home</a></li>
       {% endif %}
-      <li><a id="logo" href="/events/">Events</a></li>
-      <li><a id="logo" href="/groups/">Groups</a></li>
+      <li><a id="logo" href="{% url event-list %}">Events</a></li>
+      <li><a id="logo" href="{% url group-list %}">Groups</a></li>
     </ul>
     </div>
     </div>
@@ -267,9 +267,9 @@
       <div id="sidebar" class="column">
     <div id="auth">
     {% if user.is_authenticated %}
-        {% userlink user %}[<a href="/logout">logout</a>]
+        {% userlink user %}[<a href="{% url logout %}">logout</a>]
     {% else %} 
-        [<a href="/login">login</a>]
+        [<a href="{% url login %}">login</a>]
     {% endif %}
     </div>
         <a href="http://www.feedtheartists.net"><img src="http://feedtheartists.net/images/logo1.gif" border=0></a>
@@ -288,7 +288,7 @@
       <a href="http://feedtheartists.net/contactus.html">Contact Us</a>
       | <a target="_blank" href="http://code.google.com/p/nourish/issues/entry?labels=Type-Defect,Path-{{request.path}}&summary=Problem on {{request.path}}">Report Bug</a>
       | <a target="_blank" href="http://code.google.com/p/nourish/issues/entry?template=Feature%20Request&labels=Path-{{request.path}}">Request Feature</a>
-      | <a href="/admin">Admin</a>
+      | <a href="{% url admin:index %}">Admin</a>
       </div>
       <div id="attribution">
       <p>Powered by <a href="http://www.allbuttonspressed.com/projects/django-nonrel">Django-nonrel</a></p>
