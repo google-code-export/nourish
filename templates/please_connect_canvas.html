@@ -1,10 +1,7 @@
-{% if canvas %}
-{% include "nourish/please_connect_canvas.html" %}
-{% else %}
 <div style="border: 1px solid red; float: left; margin: 10px; padding: 10px; background-color: #fdd;">
-<h2>Do you use facebook?</h2>
+<h2>Authorize Feed The Artists</h2>
 
-<p>If you do, that will save you some typing, not to mention having to remember another password!</p>
+<p>In order to proceed, we need you to connect your Facebook profile to the Feed The Artists Application.</p>
 
 
 {% load facebook_tags %}
@@ -18,11 +15,5 @@ Integrate my: <input name=perms type=checkbox value="user_groups" checked>Groups
 {% facebook_button 1 %}
 </form>
 
-<p>If you're not a Facebook user, that's OK too...</p>
-
-<a href="?u=y">Register without a Facebook account</a>
-
-
 {% facebook_js %}
 </div>
-{% endif %}
