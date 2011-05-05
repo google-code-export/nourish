@@ -16,8 +16,7 @@ import sys
 from pprint import pformat
 from django.core.urlresolvers import reverse
 
-def register_event(request):
-
+def register_event(request, canvas=False):
     is_fb = False
     if request.user.is_authenticated() and request.user.get_profile().provider == 'F' and request.user.get_profile().fb_cache().get_events():
         is_fb = True
@@ -119,9 +118,10 @@ def register_event(request):
         'event_formset' : event_formset,
         'next' : request.get_full_path(),
         'is_fb' : is_fb,
+        'canvas' : canvas,
     }, context_instance=RequestContext(request))
 
-def register_event_guest(request, event_id):
+def register_event_guest(request, event_id, canvas=False):
     event = Event.objects.get(id=event_id)
 
     dates = []
@@ -259,9 +259,10 @@ def register_event_guest(request, event_id):
         'days': iter(dates),
         'next' : request.get_full_path(),
         'is_fb' : is_fb,
+        'canvas' : canvas
     }, context_instance=RequestContext(request))
 
-def register_event_host(request, event_id):
+def register_event_host(request, event_id, canvas=False):
     event = Event.objects.get(id=event_id)
 
     dates = []
@@ -395,5 +396,6 @@ def register_event_host(request, event_id):
         'days': iter(dates),
         'next' : request.get_full_path(),
         'is_fb' : is_fb,
+        'canvas' : canvas,
     }, context_instance=RequestContext(request))
 

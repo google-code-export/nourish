@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% load nourish %}
+
+{% block content %}
+<ul>
+{% for template, invite in invites %}
+{% include template %}
+{% endfor %}
+</ul>
+
+{% endblock %}

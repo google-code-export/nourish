@@ -4,7 +4,7 @@ import array
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
 
-def homepage(request):
+def homepage(request, canvas=False):
     groups = [ ]
     events = []
     if request.user.is_authenticated():
@@ -23,17 +23,23 @@ def homepage(request):
         'events' : events,
         'egs' : egs,
         'groups' : groups,
+        'canvas' : canvas,
     }, context_instance=RequestContext(request))
 
-def rootpage(request):
+def rootpage(request, canvas=False):
     events = Event.objects.filter(display=True)
+
+    if canvas:
+        if 'request_ids' in request.GET:
+            return redirect('/nourish/fb/i/?request_ids=' + request.GET['request_ids'])
 
     return render_to_response('nourish/rootpage.html', { 
         'request': request,
         'events' : events,
+        'canvas' : canvas,
     }, context_instance=RequestContext(request))
 
-def homepage_chooser(request):
+def homepage_chooser(request, canvas=False):
     url = homepage_chooser_url(request)
     return redirect(url)
 

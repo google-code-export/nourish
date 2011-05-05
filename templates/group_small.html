@@ -1,4 +1,5 @@
-<a class="small_link" href="{{group.get_absolute_url}}">
+{% load nourish %}
+<a class="small_link" href="{% nurl group %}">
 <div class="small_link" style="">
 <div style="float:left; padding-right: 5px;">
 {% if group.image_url %}

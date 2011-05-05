@@ -1,10 +1,14 @@
-from django.views.generic import DetailView, UpdateView
+from django.views.generic import DetailView, UpdateView, ListView
 from nourish.models import EventGroup, Event, GroupUser, Meal, MealInvite, EventUser
 from nourish.forms import EventForm
 from django.shortcuts import get_object_or_404, redirect
 from datetime import timedelta
+from nourish.views.canvas import HybridCanvasView
 
-class EventDetailView(DetailView):
+import sys
+from pprint import pformat
+
+class EventDetailView(HybridCanvasView, DetailView):
     context_object_name = 'event'
     model = Event
     template_name='nourish/event_detail.html'
@@ -22,7 +26,7 @@ class EventDetailView(DetailView):
                 context['guest_list'].append(eg)
         return context
 
-class EventGroupView(DetailView):
+class EventGroupView(HybridCanvasView, DetailView):
     context_object_name = 'event_group'
     model = EventGroup
     template_name='nourish/event_group.html'
@@ -56,7 +60,7 @@ class EventGroupView(DetailView):
         context['host_event_groups'] = host_egs
         return context
 
-class EventUpdateView(UpdateView):
+class EventUpdateView(HybridCanvasView, UpdateView):
     context_object_name = 'event'
     model = Event
     form_class = EventForm
@@ -71,3 +75,7 @@ class EventUpdateView(UpdateView):
         if request.user.is_authenticated() and not self.get_object().is_admin(self.request.user):
             raise PermissionDenied
         return super(EventUpdateView, self).post(request, *args, **kwargs)
+
+class EventListView(HybridCanvasView, ListView):
+    template_name='nourish/event_list.html',
+    queryset=Event.objects.filter(display=True)

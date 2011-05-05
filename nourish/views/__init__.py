@@ -4,6 +4,7 @@ from nourish.views.meal import *
 from nourish.views.group import *
 from nourish.views.event import *
 from nourish.views.socialreg import social_reg_setup
+from nourish.views.siteinvite import *
 
 from socialregistration.signals import connect, login
 #from socialregistration.models import FacebookProfile

@@ -1,11 +1,13 @@
-from django.views.generic import DetailView, UpdateView
+from django.views.generic import DetailView, UpdateView, ListView
 from nourish.models import Group, EventGroup, GroupUser
 from nourish.forms import GroupForm
 from django.core.exceptions import PermissionDenied
 from pprint import pformat
 import sys
 
-class GroupDetailView(DetailView):
+from nourish.views.canvas import HybridCanvasView
+
+class GroupDetailView(HybridCanvasView, DetailView):
     context_object_name = 'group'
     model = Group
     template_name='nourish/group_detail.html'
@@ -24,7 +26,7 @@ class GroupDetailView(DetailView):
 	return context
 
 
-class GroupUpdateView(UpdateView):
+class GroupUpdateView(HybridCanvasView, UpdateView):
     context_object_name = 'group'
     model = Group
     form_class = GroupForm
@@ -39,3 +41,8 @@ class GroupUpdateView(UpdateView):
         if request.user.is_authenticated() and not self.get_object().is_admin(self.request.user):
             raise PermissionDenied
         return super(GroupUpdateView, self).post(request, *args, **kwargs)
+
+class GroupListView(HybridCanvasView, ListView):
+    model=Group
+    template_name='nourish/group_list.html'
+
