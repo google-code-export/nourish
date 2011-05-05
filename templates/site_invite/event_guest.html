@@ -1,0 +1,8 @@
+<li>
+{% load nourish %}
+<img src="http://graph.facebook.com/{{invite.from.id}}/picture" width=100>
+<a href="{% nurl invite.event %}"><img src="{{ invite.event.image_url }}" width=100 border=0></a>
+<a href="{% nurl invite.event %}register/guest"><img width=250 src="http://feedtheartists.net/images/home-artists.jpg" alt="Register New Artist Group" border=0></a><br>
+{{ invite.from.name }} wants you to register your artist group at {{ invite.event.name }}. 
+
+</li>
