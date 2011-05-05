@@ -1,14 +1,15 @@
 {% extends "base.html" %}
+{% load nourish %}
 
 {% block title %}Manage Meals{% endblock %}
 
 {% block content %}
 
-<h2><a href="{{eg.get_absolute_url}}">{{ eg.group.name }} at {{ eg.event.name }}</a></h2>
+<h2><a href="{% nurl eg %}">{{ eg.group.name }} at {{ eg.event.name }}</a></h2>
 
 <h3>Manage Meals</h3>
 
-<form action="{{eg.get_absolute_url}}meals/" method="post">{% csrf_token %}
+<form action="{% nurl eg %}meals/" method="post">{% csrf_token %}
 {{ formset.management_form }}
 <table border=0 class="meals" width="100%">
 <tr><th class="first"></th><th>Diners</th><th>Restr.</th><th>Notes</th></tr>

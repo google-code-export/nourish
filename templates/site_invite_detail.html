@@ -3,7 +3,9 @@
 {% load nourish %}
 
 {% block content %}
-<ul>
+<p>This is some canned text about how awesome feed the artists is and how you should follow up on every one of the following invites.</p>
+
+<ul style="list-style: none;">
 {% for template, invite in invites %}
 {% include template %}
 {% endfor %}

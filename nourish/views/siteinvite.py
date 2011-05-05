@@ -43,11 +43,11 @@ class SiteInviteRecipientView(HybridCanvasView, TemplateView):
                             'from' : notification['from'], 
                             'event' : Event.objects.get(id=d['event']),  
                         }))
-                    if d['type'] == 'event_invite':
-                        invites.append(('nourish/site_invite/event.html', { 
-                            'from' : notification['from'], 
-                            'event' : Event.objects.get(id=d['event']),  
-                        }))
+#                    if d['type'] == 'event_invite':
+#                        invites.append(('nourish/site_invite/event.html', { 
+#                            'from' : notification['from'], 
+#                            'event' : Event.objects.get(id=d['event']),  
+#                        }))
             except:
                 continue
 
