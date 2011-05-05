@@ -2,6 +2,7 @@ from django.shortcuts import render_to_response, redirect
 from nourish.models import EventUser, GroupUser, Group, EventGroup, UserProfile, Event
 import array
 from django.template import RequestContext
+from django.core.urlresolvers import reverse
 
 def homepage(request):
     groups = [ ]
@@ -33,39 +34,35 @@ def rootpage(request):
     }, context_instance=RequestContext(request))
 
 def homepage_chooser(request):
+    url = homepage_chooser_url(request)
+    return redirect(url)
+
+def homepage_chooser_url(request):
     user = request.user
     try:
         profile = UserProfile.objects.get(user=user)
-    except UserProfile.DoesNotExist:
-        return redirect('/home')
-    if profile.role == 'E':
-        eus = EventUser.objects.filter(user=user,admin=True)
-        if len(eus) > 1:
-            return redirect('/home')
-        if not len(eus):
-            return redirect('/register/event/')
-        return redirect(eus[0].event.get_absolute_url())
-    if profile.role == 'T':
-        gus = GroupUser.objects.filter(user=user,admin=True)
-        if len(gus) > 1:
-            return redirect('/home')
-        if not len(gus):
-            return redirect('/groups/create?host')
-        egs = EventGroup.objects.filter(group=gus[0].group)
-        if len(egs) == 1:
-            return redirect(egs[0].get_absolute_url())
-        return redirect('/home')
-    if profile.role == 'A':
-        gus = GroupUser.objects.filter(user=user,admin=True)
-        if len(gus) > 1:
-            return redirect('/home')
-        if not len(gus):
-            if 'nourish_event' in request.session:
-                event = Event.objects.get(id = request.session['nourish_event'])
-                return redirect(event.get_absolute_url() + 'register/guest/')
-            return redirect('/events/')
-        egs = EventGroup.objects.filter(group=gus[0].group)
-        if len(egs) == 1:
-            return redirect(egs[0].get_absolute_url())
-        return redirect('/home')
-    return redirect('/home')
+        if profile.role == 'E':
+            eus = EventUser.objects.filter(user=user,admin=True)
+            if len(eus) > 1:
+                return reverse('homepage')
+            if not len(eus):
+                return reverse('register-event')
+            return eus[0].event.get_absolute_url()
+        if profile.role == 'T':
+            gus = GroupUser.objects.get(user=user,admin=True)
+            egs = EventGroup.objects.get(group=gus[0].group)
+            return egs[0].get_absolute_url()
+        if profile.role == 'A':
+            gus = GroupUser.objects.filter(user=user,admin=True)
+            if len(gus) > 1:
+                return reverse('homepage')
+            if not len(gus):
+                if 'nourish_event' in request.session:
+                    event = Event.objects.get(id = request.session['nourish_event'])
+                    return event.get_absolute_url() + 'register/guest/'
+                return reverse('event-list')
+            egs = EventGroup.objects.get(group=gus[0].group)
+            return egs[0].get_absolute_url()
+    except:
+        return reverse('homepage')
+    return reverse('homepage')
