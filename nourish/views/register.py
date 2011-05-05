@@ -14,6 +14,7 @@ from django.forms.formsets import formset_factory
 import array
 import sys
 from pprint import pformat
+from django.core.urlresolvers import reverse
 
 def register_event(request):
 
@@ -103,7 +104,7 @@ def register_event(request):
                 eu.admin = True;
                 eu.save()
 
-            return redirect('/logged-in/') 
+            return redirect(reverse('homepage-chooser'))
     else:
         user_formset = RegistrationFormset(prefix='user', initial=[{
             'role' : 'E',
@@ -236,7 +237,7 @@ def register_event_guest(request, event_id):
                     meal.notes = m['notes']
                     meal.save()
         
-            return redirect('/logged-in/') # Redirect after POST
+            return redirect(reverse('homepage-chooser'))
     else:
         user_formset = RegistrationFormset(prefix='user', initial=[{
             'role': 'A',
@@ -372,7 +373,7 @@ def register_event_host(request, event_id):
                 eg.features += 'T:' + features_data['dinner_time']
                 eg.save()
             
-            return redirect('/logged-in/') # Redirect after POST
+            return redirect(reverse('homepage-chooser'))
     else:
         user_formset = RegistrationFormset(prefix='user', initial=[{
             'role': 'A',
