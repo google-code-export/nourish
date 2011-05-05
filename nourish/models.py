@@ -7,6 +7,7 @@ import datetime
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core import serializers
 import json
+from django.core.urlresolvers import reverse
 
 
 class FacebookProfileCache(models.Model):
@@ -101,7 +102,7 @@ class Group(models.Model):
     def __unicode__(self):
         return self.name
     def get_absolute_url(self):
-        return '/nourish/g/%i-%s/' % (self.id, slugify(self.name))
+        return reverse('group-detail', kwargs={'pk':self.id, 'slug': slugify(self.name)})
     
     def user(self, user):
         try:
@@ -130,7 +131,7 @@ class Event(models.Model):
     def __unicode__(self):
         return self.name
     def get_absolute_url(self):
-        return '/nourish/e/%i-%s/' % (self.id, slugify(self.name))
+        return reverse('event-detail', kwargs={'pk':self.id, 'slug': slugify(self.name)})
 
     def is_admin(self, user):
         if not user.is_authenticated():
@@ -183,7 +184,7 @@ class EventGroup(models.Model):
     def __unicode__(self):
         return self.event.name + ' : ' + self.group.name
     def get_absolute_url(self):
-        return '/nourish/eg/%i-%s-at-%s/' % (self.id, slugify(self.group.name), slugify(self.event.name))
+        return reverse('event-group-detail', kwargs={'pk':self.id, 'slug': '%s-at-%s' % (slugify(self.group.name), slugify(self.event.name))})
     
     def meal(self,date,meal):
         try:
