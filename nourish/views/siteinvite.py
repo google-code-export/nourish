@@ -1,4 +1,5 @@
 from django.views.generic import DetailView, UpdateView, ListView, TemplateView
+from django.shortcuts import redirect
 from socialregistration.exceptions import FacebookAuthTimeout
 from django.conf import settings
 from nourish.views.canvas import HybridCanvasView
@@ -14,6 +15,18 @@ import json
 class SiteInviteRecipientView(HybridCanvasView, TemplateView):
     context_object_name = 'siteinvite'
     template_name='nourish/site_invite_detail.html'
+
+    def post(self, request, *args, **kwargs):
+        if request.POST['action'] == 'delete_fb_request':
+            path = "https://graph.facebook.com/%s?access_token=%s&method=delete" % (request.POST['invite'], request.facebook.user['access_token'])
+            f = urllib2.urlopen(path)
+            f.read()
+            return redirect(request.path)
+        if request.POST['action'] == 'confirm_invite':
+            raise Exception("confirm invite is not implemented")
+        if request.POST['action'] == 'select_invite':
+            raise Exception("select invite is not implemented")
+        raise Exception("unknown action")
 
     def get_context_data(self, **kwargs):
         context = super(SiteInviteRecipientView, self).get_context_data(**kwargs)
@@ -57,11 +70,13 @@ class SiteInviteRecipientView(HybridCanvasView, TemplateView):
                         invites.append(('nourish/site_invite/event_guest.html', { 
                             'from' : notification['from'], 
                             'event' : Event.objects.get(id=d['event']),  
+                            'id' : notification['id'],
                         }))
                     elif d['type'] == 'event_host_invite':
                         invites.append(('nourish/site_invite/event_host.html', { 
                             'from' : notification['from'], 
                             'event' : Event.objects.get(id=d['event']),  
+                            'id' : notification['id'],
                         }))
                     else:
                         raise Exception("unknown type")

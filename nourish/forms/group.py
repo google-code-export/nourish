@@ -9,5 +9,5 @@ class GroupForm(ModelForm):
     description = forms.CharField(widget=forms.Textarea(attrs={'rows':3}))
 
 class GroupFBForm(forms.Form):
-    group = forms.ChoiceField(required=False,choices=[])
+    group = forms.ChoiceField(required=False,choices=[]) #, widget=forms.RadioSelect)
     description = forms.CharField(widget=forms.Textarea(attrs={'rows':3}))

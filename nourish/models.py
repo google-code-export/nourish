@@ -87,6 +87,36 @@ class UserProfile(models.Model):
             fb_cache = FacebookProfileCache.objects.create(user=self.user)
         return fb_cache
 
+    def admin_groups(self):
+        groups = []
+        for gm in GroupUser.objects.filter(user=self.user, admin=True):
+            groups.append(gm.group)
+        return groups
+
+    def upcoming_events(self):
+        my_events = list(EventUser.objects.filter(user=self.user,admin=True))
+        groups = self.admin_groups()
+        group_events = list(EventGroup.objects.filter(group__in=groups)) 
+        have_events = { }
+        events = []
+
+        for eu in my_events:
+            have_events[eu.event.id] = True
+            events.append(eu.event)
+
+        for eg in group_events:
+            if eg.event.id not in have_events:
+                events.append(eg.event)
+                have_events[eg.event.id] = True
+            
+        out = []
+        for event in events:
+            out.append(event)
+            for eg in group_events:
+                if eg.event == event:
+                    out.append(eg)
+        return out
+
 class GroupUser(models.Model):
     group = models.ForeignKey('Group')
     user = models.ForeignKey(User)
