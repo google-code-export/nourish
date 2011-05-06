@@ -2,15 +2,21 @@
 {% block css %}
     <link rel="stylesheet" type="text/css" href="/static/canvas_base.css">
 {% endblock %}
-<div id="canvas">
- <div id="logo" style="float: left;">
-  <img src="http://feedtheartists.net/images/logo1.gif" width=100>
- </div>
- <div id="header" style="float: left;">
+<div id="canvas_sidebar" style="width: 160px; float: left; padding: 10px; ">
+  <div id="logo">
+    <center>
+    <img src="http://feedtheartists.net/images/logo1.gif" width=100>
+    </center>
+  </div>
+  <h3>Feed The Artists</h3>
+  <h4>Online Reservation System</h4>
+</div>
+
+<div id="nourish_canvas" style="width: 400px; float: left; border-left: 1px dotted black; padding-left: 10px; ">
+ <div id="nourish_header">
   <h2>Feed The Artists</h2>
   <h3>Online Reservation System</h3>
  </div>
- <div style="clear: both; padding-bottom: 10px;"></div>
  <div>
 
 {% facebook_js %}
