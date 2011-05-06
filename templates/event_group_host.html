@@ -1,0 +1,43 @@
+{% load nourish %}
+
+<h3>Invitations</h3>
+{% if is_group_admin %}
+  <a href="{% nurl object %}invites/">Manage Invitations</a>
+{% endif %}
+<table class="meals">
+  <tr><th class="first"></th><th>Invitations</th></tr>
+  {% for date in dates %}
+    {% if 1 %}
+      <tr class="meal">
+        <th class="first">{{date}}</th>
+        <td>
+          <ul style="margin: 2px; padding: 0; list-style: none;">
+            {% for invite in invites_sent %}
+              {% if invite.date == date %}
+                <li>
+                  <a href="{% nurl invite.guest_eg %}">{{invite.guest_eg.group.name}}</a> 
+                  <em>({{invite.meal.members}} diners)</em> -
+                  {% if invite.state == 'N' %}
+                    <strong>Pending</strong>
+                  {% endif %}
+                  {% if invite.state == 'S' %}
+                    <strong>Selected</strong>
+                  {% endif %}
+                  {% if invite.state == 'C' %}
+                    <strong>Confirmed</strong>
+                  {% endif %}
+                  {% if invite.state == 'R' %}
+                    <strong>Declined</strong>
+                  {% endif %}
+                </li>
+              {% endif %}
+            {% endfor %}
+            {% if is_group_admin %}
+              <li><a href="{% nurl object.event %}">Invite Artists to Dinner!</a></li>
+            {% endif %}
+          </ul>
+        </td>
+      </tr>
+    {% endif %}
+  {% endfor %}
+</table>
