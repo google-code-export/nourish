@@ -32,7 +32,10 @@
     <br>
 
     <div style="float: left;">
-    <input type=button value="Invite artists!" onclick="FB.ui({method: 'apprequests', message: 'You should register your art project {{ object.name }}, so you can get invited to dinner!', data: { type: 'event_guest_invite', event: {{ object.id }} }});"><br>
+    {% if request.user.get_profile.provider == 'F' %}
+      {% include "nourish/fb/event_guest_siteinvite_link.html" with event=object %}
+      <br>
+    {% endif %}
     <a href="{% nurl object %}register/guest"><img width=250 src="http://feedtheartists.net/images/home-artists.jpg" alt="Register New Artist Group" border=0></a>
     {% if guest_list %}
     <h3>Registered Artist Groups</h3>
@@ -45,7 +48,10 @@
     </div>
 
     <div style="float: left;">
-    <input type=button value="Invite theme camps!" onclick="FB.ui({method: 'apprequests', message: 'You should register your theme camp at {{ object.name }}, so you can invite artists to dinner!', data: { type: 'event_host_invite', event: {{ object.id }} }});"><br>
+    {% if request.user.get_profile.provider == 'F' %}
+      {% include "nourish/fb/event_host_siteinvite_link.html" with event=object %}
+      <br>
+    {% endif %}
     <a href="{% nurl object %}register/host"><img width=250 src="http://feedtheartists.net/images/burningman2.jpg" alt="Register New Theme Camp" border=0></a>
     {% if host_list %}
     <h3>Registered Theme Camps</h3>
