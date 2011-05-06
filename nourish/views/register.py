@@ -6,7 +6,7 @@ from nourish.forms.register import RegistrationKeyStubForm, RegistrationStubForm
 from nourish.forms.group import GroupForm, GroupFBForm
 from nourish.forms.meal import MealStubForm
 from nourish.forms.event import EventForm, EventFBForm, EventHostFeaturesForm
-from nourish.exceptions import FacebookAuthTimeout
+from socialregistration.exceptions import FacebookAuthTimeout
 from django.contrib.auth import login, authenticate
 from datetime import timedelta
 import datetime
