@@ -243,6 +243,54 @@ class EventGroup(models.Model):
             )
         return m
 
+    # host group sends invitations to guest group
+    def send_invites(self, meals):
+        for meal in meals:
+            meal.send_invite(self)
+        # notify all guest groups
+
+    # host group rescinds invitations
+    def rescind_invites(self, invites):
+        for invite in invites:
+            invite.rescind()
+        # notify guest of any rescinded invites that were selected or confirmed
+
+    # host group confirms invitations
+    def confirm_invites(self, invites):
+        for invite in invites:
+            invite.confirm()
+        # notify guests
+
+    # guest group chooses invitations
+    def choose_invites(self, invites):
+        for invite in invites:
+            invite.meal.choose(invite)
+        # notify hosts
+
+    # guest group unchoose invitations
+    def unchoose_meals(self, meals):
+        for meal in meals:
+            meal.unchoose()
+        # notify hosts of any unchosen invites that were selected or confirmed
+
+    # guest group deletes meals
+    def delete_meals(self, meals):
+        for meal in meals:
+            meal.delete()
+        # notify hosts of any deleted meals that were selected or confirmed
+
+    # guest adds meals
+    def add_meals(self, meals):
+        for meal in meals:
+            meal.save()
+        # notify hosts that have sent any invites for any of the guests other meals
+
+    # guest changes meals
+    def change_meals(self, changes):
+        for (meal, data) in changes:
+            meal.change(data)
+        # notify hosts of any selected or confirmed invitations associated with changed meal
+
 class MealInvite(models.Model):
     STATE_CHOICES = (
         ('N', 'New'),
@@ -349,3 +397,9 @@ class Meal(models.Model):
             self.state = 'I'
             self.save()
 
+    def change(self, data):
+        self.members = data['members']
+        self.members = data['members']
+        self.features = ''.join(data['features'])
+        self.notes = ''.join(data['notes'])
+        self.save()
