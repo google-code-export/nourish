@@ -1,5 +1,8 @@
 {% load facebook_tags %}
-<div id="wrap">
+{% block css %}
+    <link rel="stylesheet" type="text/css" href="/static/canvas_base.css">
+{% endblock %}
+<div id="canvas">
  <div id="logo" style="float: left;">
   <img src="http://feedtheartists.net/images/logo1.gif" width=100>
  </div>
@@ -7,7 +10,7 @@
   <h2>Feed The Artists</h2>
   <h3>Online Reservation System</h3>
  </div>
- <div style="clear: both; padding-bottom: 10px;">
+ <div style="clear: both; padding-bottom: 10px;"></div>
  <div>
 
 {% facebook_js %}

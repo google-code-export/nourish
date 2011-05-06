@@ -1,0 +1,11 @@
+{% load nourish %}
+<div>
+  <div style="float: left; border-right: 1px solid black; padding-right: 10px; width: 355px;">
+  &nbsp;
+  </div>
+  <div style="float: left; width: 300px; ; margin: 10px;">
+    <img src="http://graph.facebook.com/{{invite.from.id}}/picture" width=50 style="float: left; margin: 5px;" border=0>
+   {{ invite.from.name }} wants you to do something, but this request [{{ invite.id }}] is broken :(
+  </div>
+  <div style="clear: both;"></div>
+</div>
