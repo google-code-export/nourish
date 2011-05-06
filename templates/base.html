@@ -9,48 +9,43 @@
   <head>
     <link rel="icon" href="http://www.feedtheartists.net/images/favicon.ico">
     <link rel="stylesheet" type="text/css" href="/static/base.css">
-    </style>
 
     <title>{% block title %}{% endblock %} - FtA ORS</title>
 
-    {% block css %}
-    {% endblock %}
-
-    {% block preload_js %}
-    {% endblock %}
-
+    {% block css %}{% endblock %}
+    {% block preload_js %}{% endblock %}
     {% block extra-head %}{% endblock %}
+
     {% include "nourish/ga.html" %}
   </head>
 
-  <body><!-- test -->
-   {% if canvas %}
-     {% include "nourish/canvas_header.html" %}
-   {% else %}
-     {% include "nourish/web_header.html" %}
-   {% endif %}
+  <body>
+    {% if canvas %}
+      {% include "nourish/canvas_header.html" %}
+    {% else %}
+      {% include "nourish/web_header.html" %}
+    {% endif %}
 
-      <div id="main">
-        {% block content-header %}
-          {% if error %}<div class="error">{{ error }}</div>{% endif %}
-          {% if info %}<div class="info">{{ info }}</div>{% endif %}
-          {% if messages %}
-            {% for message in messages %}
-              <div class="info">{{ message }}</div>
-            {% endfor %}
-          {% endif %}
-        {% endblock %}
+    <div id="main">
+      {% block content-header %}
+        {% if error %}<div class="error">{{ error }}</div>{% endif %}
+        {% if info %}<div class="info">{{ info }}</div>{% endif %}
+        {% if messages %}
+          {% for message in messages %}
+            <div class="info">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endblock %}
 
-        {% block content %}{% endblock %}
-      </div>
+      {% block content %}{% endblock %}
+    </div>
 
-   {% if canvas %}
-     {% include "nourish/canvas_footer.html" %}
-   {% else %}
-     {% include "nourish/web_footer.html" %}
-   {% endif %}
+    {% if canvas %}
+      {% include "nourish/canvas_footer.html" %}
+    {% else %}
+      {% include "nourish/web_footer.html" %}
+    {% endif %}
 
-  {% block js %}
-  {% endblock %}
+    {% block js %}{% endblock %}
   </body>
 </html>
