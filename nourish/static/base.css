@@ -107,10 +107,9 @@ ul#event_details {
     margin-top: 0;
     list-style: none;
 }
-#main {
+#nourish_main {
     padding:10px;
     background:#ffffff;
-    border-top: 1px solid black;
 }
 h2 {
     margin:0 0 0.25em;
