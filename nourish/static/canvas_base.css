@@ -1,0 +1,15 @@
+div#canvas_sidebar ul.event_list {
+    list-style: none;
+    padding-left: 10px;
+}
+
+div#canvas_sidebar ul.event_group_list {
+    list-style: square;
+    padding-left: 20px;
+    padding-bottom: 10px;
+}
+
+div#canvas_sidebar ul.links {
+    list-style: none;
+    padding-left: 0px;
+}

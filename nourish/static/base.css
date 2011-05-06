@@ -108,7 +108,6 @@ ul#event_details {
     list-style: none;
 }
 #nourish_main {
-    padding:10px;
     background:#ffffff;
 }
 h2 {
@@ -177,7 +176,7 @@ h3 {
     color: #600;
 }
 div.small_link {
-    width: 260px;
+    width: 255px;
     padding: 5px;
     border: 1px solid #fbb;
     margin: 2px;

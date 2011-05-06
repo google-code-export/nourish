@@ -18,13 +18,14 @@ from django.core.urlresolvers import reverse
 
 def register_event(request, canvas=False):
     is_fb = False
-    if request.user.is_authenticated() and request.user.get_profile().provider == 'F' and request.user.get_profile().fb_cache().get_events():
+    if request.user.is_authenticated() and request.user.get_profile().provider == 'F':
         is_fb = True
     if 'nofb' in request.GET:
         is_fb = False
     if is_fb:
         EventFormset = formset_factory(EventFBForm, extra=0)
-        choices = request.user.get_profile().fb_cache().get_events()
+        choices = get_event_choices(request.facebook.graph)
+        sys.stderr.write("choices " + pformat(choices) + "\n")
     else:
         EventFormset = formset_factory(EventForm, extra=0)
 
@@ -131,7 +132,7 @@ def register_event_guest(request, event_id, canvas=False):
         date += timedelta(days=1)
 
     is_fb = False
-    if request.user.is_authenticated() and request.user.get_profile().provider == 'F' and request.user.get_profile().fb_cache().get_groups():
+    if request.user.is_authenticated() and request.user.get_profile().provider == 'F':
         is_fb = True
     if 'nofb' in request.GET:
         is_fb = False
@@ -140,7 +141,8 @@ def register_event_guest(request, event_id, canvas=False):
     MealFormset = formset_factory(MealStubForm, extra=len(dates))
     if is_fb:
         GroupFormset = formset_factory(GroupFBForm, extra=0)
-        choices = request.user.get_profile().fb_cache().get_groups()
+        choices = get_group_choices(request.facebook.graph)
+        sys.stderr.write("choices " + pformat(choices) + "\n")
     else:
         GroupFormset = formset_factory(GroupForm, extra=0)
 
@@ -272,7 +274,7 @@ def register_event_host(request, event_id, canvas=False):
         date += timedelta(days=1)
 
     is_fb = False
-    if request.user.is_authenticated() and request.user.get_profile().provider == 'F' and request.user.get_profile().fb_cache().get_groups():
+    if request.user.is_authenticated() and request.user.get_profile().provider == 'F':
         is_fb = True
     if 'nofb' in request.GET:
         is_fb = False
@@ -281,7 +283,8 @@ def register_event_host(request, event_id, canvas=False):
     FeaturesFormset = formset_factory(EventHostFeaturesForm, extra=0)
     if is_fb:
         GroupFormset = formset_factory(GroupFBForm, extra=0)
-        choices = request.user.get_profile().fb_cache().get_groups()
+        choices = get_group_choices(request.facebook.graph)
+        sys.stderr.write("choices " + pformat(choices) + "\n")
     else:
         GroupFormset = formset_factory(GroupForm, extra=0)
 
@@ -399,3 +402,34 @@ def register_event_host(request, event_id, canvas=False):
         'canvas' : canvas,
     }, context_instance=RequestContext(request))
 
+def get_group_choices(graph):
+    user = graph.get_object("me")
+    groups = graph.get_object("me/groups")
+    events = graph.get_object("me/events")
+    accounts = graph.get_object("me/accounts")
+    sys.stderr.write("user " + pformat(user) + "\n")
+    sys.stderr.write("groups " + pformat(groups) + "\n")
+    sys.stderr.write("events " + pformat(events) + "\n")
+    sys.stderr.write("accounts " + pformat(accounts) + "\n")
+    choices = []
+    if not Group.objects.filter(name=user['name']).count():
+        choices.append((user['id'], user['name'] + " (Me)"))
+    for group in groups['data']:
+        if not Group.objects.filter(name=group['name']).count():
+            choices.append((group['id'], group['name'] + " (Group)"))
+    for event in events['data']:
+        if not Group.objects.filter(name=event['name']).count():
+            choices.append((event['id'], event['name'] + " (Event)"))
+    for account in accounts['data']:
+        if 'category' in account:
+            if not Group.objects.filter(name=account['name']).count():
+                choices.append((account['id'], account['name'] + " (Page - " + account['category'] + ")"))
+    return choices
+
+def get_event_choices(graph):
+    choices = []
+    events = graph.get_object("me/events")
+    for event in events['data']:
+        if not Event.objects.filter(name=event['name']).count():
+            choices.append((event['id'], event['name']))
+    return choices
