@@ -4,6 +4,9 @@
 {% block title %}Register an Artist Group at {{event.name}}{% endblock %}
 
 {% block content %}
+{% if canvas and not user.is_authenticated %}
+{% include "nourish/authorize_connect.html" %}
+{% else %}
 <h2>Register an Artist Group at {{event.name}}</h2>
 <p>This page is for artists groups that would like to be invited to dinner at {{event.name}}.  Registering doesn't guarantee you a meal, but we certainly hope it will get you invited to one (or more) on the playa...</p>
 
@@ -55,5 +58,6 @@
 </table>
 <input type="submit" value="Register" />
 </form>
+{% endif %}
 {% endif %}
 {% endblock %}

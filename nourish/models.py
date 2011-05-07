@@ -33,9 +33,21 @@ class FacebookProfileCache(models.Model):
         else:
             return []
 
-    def update(self, facebook):
+    def update(self, user, facebook):
         if not facebook.graph:
             return
+
+        me = facebook.graph.get_object('me')
+        try:
+            link = me['link']
+        except:
+            link = 'http://www.facebook.com/profile.php?id=' + me['id']
+
+        profile = user.get_profile()
+        profile.fullname = me['name']
+        profile.url = link
+        profile.image_url = 'http://graph.facebook.com/' + me['id'] + '/picture'
+        profile.save()
 
         fbgroups = facebook.graph.get_object('me/groups')
         groups = []
@@ -63,6 +75,7 @@ class UserProfile(models.Model):
         ('A', 'Art Project Organizer'),
     )
     PROVIDER_CHOICES = (
+        ('U', 'Undefined'),
         ('N', 'None'),
         ('F', 'Facebook'),
     )
@@ -78,7 +91,11 @@ class UserProfile(models.Model):
         return self.fullname + ' (' + self.user.username + ')'
 
     def fb_cache(self):
-        if self.provider != 'F':
+        if self.provider == 'U':
+            self.provider = 'F'
+            self.save()
+
+        if self.provider is not 'F':
             raise Exception("UserProfile.provider is not Facebook")
         try:
             fb_cache = FacebookProfileCache.objects.get(user=self.user)
