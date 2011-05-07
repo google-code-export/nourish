@@ -6,7 +6,7 @@ from django.core.validators import ValidationError
 from django.forms import ModelForm
 
 class EventGroupInviteForm(forms.Form):
-    meals = forms.ModelMultipleChoiceField(queryset=Meal.objects.all(),widget=forms.CheckboxSelectMultiple)
+    meals = forms.ModelMultipleChoiceField(queryset=Meal.objects.all(),widget=forms.CheckboxSelectMultiple,required=False)
 
 class EventGroupInvitesForm(forms.Form):
     invite_id = forms.IntegerField(widget=forms.HiddenInput)
