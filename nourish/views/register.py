@@ -104,7 +104,7 @@ def register_event(request, canvas=False):
                 eu.admin = True;
                 eu.save()
 
-            return redirect(reverse('homepage-chooser'))
+            return redirect(event.get_absolute_url(canvas))
     else:
         user_formset = RegistrationFormset(prefix='user', initial=[{
             'role' : 'E',
@@ -239,7 +239,7 @@ def register_event_guest(request, event_id, canvas=False):
                     meal.notes = m['notes']
                     meal.save()
         
-            return redirect(reverse('homepage-chooser'))
+            return redirect(eg.get_absolute_url(canvas))
     else:
         user_formset = RegistrationFormset(prefix='user', initial=[{
             'role': 'A',
@@ -377,7 +377,7 @@ def register_event_host(request, event_id, canvas=False):
                 eg.features += 'T:' + features_data['dinner_time']
                 eg.save()
             
-            return redirect(reverse('homepage-chooser'))
+            return redirect(eg.get_absolute_url(canvas))
     else:
         user_formset = RegistrationFormset(prefix='user', initial=[{
             'role': 'A',
