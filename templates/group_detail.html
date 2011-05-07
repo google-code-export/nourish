@@ -8,19 +8,11 @@
     {% if object.image_url %}
         <div style="float: left; margin-right: 5px;"><a href="{{ object.url }}"><img width=100 src="{{object.image_url}}?type=normal" border=0></a></div>
     {% endif %}
-    <div style="float: left; width: 450px;">
+    <div style="float: left; width: 440px;">
     <h2 style="display: inline;">{{ object.name }}</h2>
     {% if is_admin %}
     [<a href="{% nurl object %}edit/">Edit Group</a>]
     {% endif %}
-    <br>
-    Organizers
-    <ul style="display: inline; list-style: none; padding: 0;">
-    {% for gu in groupuser_list %}
-        <li style="display: inline; padding-left: 0.5em;">{% userlink gu.user %}</li>
-        </li>
-    {% endfor %}
-    </ul>
     <br>
     Group website: {{object.url|urlizetrunc:40}}
     </div>
