@@ -50,7 +50,6 @@ def clink_tag(parser, token):
     if len(bits) < 2:
         raise TemplateSyntaxError("'%s' takes at least one argument"
                                   " (path to a view)" % bits[0])
-    sys.stderr.write("got an object %s\n" % bits[1])
     tp = parser.compile_filter(bits[1])
     p = re.compile("^'")
     if p.match(bits[1]):

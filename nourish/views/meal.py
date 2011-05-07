@@ -22,13 +22,10 @@ def event_guest_invite(request, pk, host_eg_id, canvas=False):
             to_invite = []
             to_rescind = []
             for meal in meals:
-                sys.stderr.write("meal!: " + pformat(meal) + "\n")
                 if meal in data['meals']:
                     try:
                         invite = MealInvite.objects.get(meal=meal,host_eg=host_eg)
                     except MealInvite.DoesNotExist:
-                        sys.stderr.write("meal: " + pformat(meal) + "\n")
-                        sys.stderr.write("host_re: " + pformat(host_eg) + "\n")
                         to_invite.append(meal)
                 else:
                     try:
@@ -95,7 +92,6 @@ def event_guest_meals(request, pk, canvas=False):
         if invite.meal not in invites_by_meal:
             invites_by_meal[invite.meal] = []
         invites_by_meal[invite.meal].append(invite)
-    sys.stderr.write("invites_by_meal" + pformat(invites_by_meal) + "\n")
     
     initial = []
     choices = []
@@ -135,7 +131,7 @@ def event_guest_meals(request, pk, canvas=False):
     MealFormSet = formset_factory(EventGroupMealForm,extra=0)
     if request.method == 'POST':
         formset = MealFormSet(request.POST)
-        I = iter(choices)
+        i = iter(choices)
         for form in formset:
             form.fields['invite'].choices = i.next()
         date = iter(dates)
@@ -162,6 +158,8 @@ def event_guest_meals(request, pk, canvas=False):
                             invite = MealInvite.objects.get(id=form['invite'])
                             if meal.invite != invite:
                                 to_choose.append(invite)
+                    if meal.members != form['members'] or meal.features != ''.join(form['features']) or meal.notes != ''.join(form['notes']):
+                        to_change.append( (meal, form) )
                 else:
                     if form['members'] > 0:
                         meal = eg.meal(d, 'D')
@@ -171,12 +169,10 @@ def event_guest_meals(request, pk, canvas=False):
                         to_add.append(meal)
                         continue
 
-                if meal.members != form['members'] or meal.features != ''.join(form['features']) or meal.notes != ''.join(form['notes']):
-                    to_change.append( (meal, form) )
     
             eg.delete_meals(to_delete)
             eg.unchoose_meals(to_unchoose)
-            eg.change_meals(meals)
+            eg.change_meals(to_change)
             eg.choose_invites(to_choose)
             eg.add_meals(to_add)
 

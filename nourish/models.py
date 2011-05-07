@@ -49,7 +49,6 @@ class FacebookProfileCache(models.Model):
             end = datetime.datetime.strptime(event['end_time'],"%Y-%m-%dT%H:%M:%S")
             if end > now:
                 events.append((event['id'], event['name']))
-        sys.stderr.write("reloading cache\n")
 
         self.groups = json.dumps(groups)
         self.events = json.dumps(events)
@@ -243,53 +242,104 @@ class EventGroup(models.Model):
             )
         return m
 
-    # host group sends invitations to guest group
+    def send_notification(self, recipient, action, objects):
+        sys.stderr.write("=== send notification [%s] from %s to %s with %d objects\n" % ( action, self.group.name, recipient.group.name, len(objects) ))
+
+    # host group sends invitations to guest groups
     def send_invites(self, meals):
+        invites_by_eg = { }
         for meal in meals:
-            meal.send_invite(self)
+            if meal.eg not in invites_by_eg:
+                invites_by_eg[meal.eg] = []
+            invites_by_eg[meal.eg].append(meal.send_invite(self))
         # notify all guest groups
+        for eg, invites in invites_by_eg.iteritems():
+            self.send_notification(eg, 'invited', invites)
 
     # host group rescinds invitations
     def rescind_invites(self, invites):
+        meals_by_eg = { }
         for invite in invites:
+            if invite.meal.invite == invite:
+                if invite.meal.eg not in meals_by_eg:
+                    meals_by_eg[invite.meal.eg] = []
+                meals_by_eg[invite.meal.eg].append(invite.meal)
             invite.rescind()
         # notify guest of any rescinded invites that were selected or confirmed
+        for eg, meals in meals_by_eg.iteritems():
+            self.send_notification(eg, 'rescinded', meals)
 
     # host group confirms invitations
     def confirm_invites(self, invites):
+        invites_by_eg = { }
         for invite in invites:
+            if invite.host_eg not in invites_by_eg:
+                invites_by_eg[invite.host_eg] = []
+            invites_by_eg[invite.host_eg].append(invite)
             invite.confirm()
         # notify guests
+        for eg, invites in invites_by_eg.iteritems():
+            self.send_notification(eg, 'confirmed', invites)
 
     # guest group chooses invitations
     def choose_invites(self, invites):
+        invites_by_eg = { }
         for invite in invites:
+            if invite.host_eg not in invites_by_eg:
+                invites_by_eg[invite.host_eg] = []
+            invites_by_eg[invite.host_eg].append(invite)
             invite.meal.choose(invite)
         # notify hosts
+        for eg, invites in invites_by_eg.iteritems():
+            self.send_notification(eg, 'chosen', invites)
 
     # guest group unchoose invitations
     def unchoose_meals(self, meals):
+        meals_by_eg = { }
         for meal in meals:
+            if meal.invite and meal.invite.state == 'C':
+                if meal.invite.host_eg not in meals_by_eg:
+                    meals_by_eg[meal.invite.host_eg] = []
+                meals_by_eg[meal.invite.host_eg].append(meal)
             meal.unchoose()
         # notify hosts of any unchosen invites that were selected or confirmed
+        for eg, meals in meals_by_eg.iteritems():
+            self.send_notification(eg, 'unchosen', meals)
 
     # guest group deletes meals
     def delete_meals(self, meals):
+        host_egs = { }
         for meal in meals:
+            if meal.invite and meal.invite.state == 'C':
+                host_egs[meal.invite.host_eg] = True
             meal.delete()
         # notify hosts of any deleted meals that were selected or confirmed
+        for eg, j in host_egs.iteritems():
+            self.send_notification(eg, 'deleted', eg)
 
     # guest adds meals
     def add_meals(self, meals):
+        host_egs = { }
         for meal in meals:
             meal.save()
         # notify hosts that have sent any invites for any of the guests other meals
+        for invite in MealInvite.objects.filter(guest_eg=self):
+            if invite.host_eg not in host_egs:
+                self.send_notification(invite.host_eg, 'added', meals)
+                host_egs[invite.host_eg] = True
 
     # guest changes meals
     def change_meals(self, changes):
+        invites_by_eg = { }
         for (meal, data) in changes:
+            if meal.invite and meal.invite.state == 'C':
+                if meal.invite.host_eg not in invites_by_eg:
+                    invites_by_eg[meal.invite.host_eg] = []
+                invites_by_eg[meal.invite.host_eg].append(meal.invite)
             meal.change(data)
         # notify hosts of any selected or confirmed invitations associated with changed meal
+        for eg, invites in invites_by_eg:
+            self.send_notification(eg, 'changed', invites)
 
 class MealInvite(models.Model):
     STATE_CHOICES = (
@@ -308,17 +358,15 @@ class MealInvite(models.Model):
         return str(self.date) + ' - ' + self.host_eg.group.name + ' (' + str(self.host_eg.dinner_time) + ', '  + self.host_eg.features + ') [' + self.state + ']'
     def rescind(self):
         invites = MealInvite.objects.filter(meal=self.meal)
-        for invite in invites:
-            if invite == self:
-                continue
-            invite.state = 'N'
-            invite.save()
+        if self.meal.invite == self:
+            for invite in invites:
+                if invite == self:
+                    continue
+                invite.state = 'N'
+                invite.save()
         if len(invites) > 1:
-            if self.state in [ 'S', 'C' ]:
+            if self.meal.invite == self:
                 self.meal.state = 'I'
-                self.meal.invite = None
-            else:
-                self.meal.state = 'S'
         else:
             self.meal.state = 'N'
         self.meal.invite = None
@@ -396,6 +444,7 @@ class Meal(models.Model):
         if self.state == 'N':
             self.state = 'I'
             self.save()
+        return invite
 
     def change(self, data):
         self.members = data['members']
@@ -403,3 +452,10 @@ class Meal(models.Model):
         self.features = ''.join(data['features'])
         self.notes = ''.join(data['notes'])
         self.save()
+
+
+class Notification(models.Model):
+    def __init__(self, action='', objects=[]):
+        objects = []
+        setattr(self, 'action', action)
+        setattr(self, 'objects')
