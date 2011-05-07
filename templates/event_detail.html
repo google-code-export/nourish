@@ -19,13 +19,6 @@
     <br>
     {{ object.start_date }} thru {{ object.end_date }}<br>
     
-    FtA Organizers
-    <ul style="display: inline; list-style: none; padding: 0;">
-      {% for eu in eventuser_list %}
-        <li style="display: inline; padding-left: 0.5em;">{% userlink eu.user %}</li>
-        </li>
-      {% endfor %}
-    </ul>
     <br>
     Event website: {{object.url|urlizetrunc:40}}
   </div>
