@@ -43,8 +43,11 @@ class SiteInviteRecipientView(HybridCanvasView, TemplateView):
         if 'request_ids' in self.request.GET:
             ids = self.request.GET['request_ids'].split(',')
             for i in ids:
-                request = graph.get_object(i)
-                requests.append(request)
+                try:
+                    request = graph.get_object(i)
+                    requests.append(request)
+                except:
+                    sys.stderr.write("bad id %s" % i)
         else:
             if not hasattr(self.request.facebook, 'user'):
                 raise FacebookAuthTimeout
