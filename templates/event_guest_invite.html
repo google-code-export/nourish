@@ -5,7 +5,11 @@
 
 {% block content %}
 
-<h2>Invite {{ eg.group.name }} to meals with {{host_eg.group.name}} at {{ event.name }}</h2>
+<img width=100 src="{{ event.image_url }}">
+<img width=100 src="{{ host_eg.group.image_url }}">
+<img width=100 src="{{ eg.group.image_url }}">
+
+<h3>Invite {{ eg.group.name }} to meals with {{host_eg.group.name}} at {{ event.name }}</h3>
 
 <form action="{% nurl eg %}invite/{{host_eg.id}}/" method="post">{% csrf_token %}
 {{ form.as_p }}
