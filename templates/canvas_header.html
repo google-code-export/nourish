@@ -3,7 +3,7 @@
 {% block css %}
     <link rel="stylesheet" type="text/css" href="/static/canvas_base.css">
 {% endblock %}
-<div id="canvas_sidebar" style="width: 160px; float: left; padding: 10px; ">
+<div id="canvas_sidebar">
   <div id="logo">
     <center>
     <a href="/nourish/fb/logged-in/"><img src="http://feedtheartists.net/images/logo1.gif" width=150></a>
@@ -30,12 +30,12 @@
   </ul>
 </div>
 
-<div id="nourish_canvas" style="width: 550px; float: left; border-left: 1px dotted black; padding-left: 10px; ">
+<div id="nourish_canvas">
  <div id="nourish_header">
-  <h2 style="display: inline;">Feed The Artists</h2>
-  <h3 style="display: inline;">Online Reservation System</h3>
+  <h2><a target="_parent" href="http://www.feedtheartists.net/">Feed The Artists</a></h2>
+  <h3><a href="/nourish/fb/logged-in/">Online Reservation System</a></h3>
  </div>
- <div style="padding: 0px;">
+ <div id="canvas_body">
 
 {% facebook_js %}
 
