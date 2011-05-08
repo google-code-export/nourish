@@ -9,6 +9,7 @@
     <a href="/nourish/fb/logged-in/"><img src="http://feedtheartists.net/images/logo1.gif" width=150></a>
     </center>
   </div>
+  {% if request.user.get_profile.upcoming_events %}
   <h3>My Events</h3>
   <ul class="event_list">
     <ul>
@@ -22,6 +23,14 @@
       {% endif %}
     {% endfor %}
   </ul>
+  {% else %}
+  <h3>Public Events</h3>
+  <ul class="event_list">
+    {% for e in request.user.get_profile.public_events %}
+      <li><a href="{% nurl e %}">{{ e.name }}</a></li>
+    {% endfor %}
+  </ul>
+  {% endif %}
   <br><br>
   <ul class="links">
     <li><a target="_blank" href="http://feedtheartists.net/contactus.html">Contact FtA</a></li>

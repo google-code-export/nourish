@@ -133,6 +133,9 @@ class UserProfile(models.Model):
                     out.append(eg)
         return out
 
+    def public_events(self):
+        return list(Event.objects.filter(display=True))
+
 class GroupUser(models.Model):
     group = models.ForeignKey('Group')
     user = models.ForeignKey(User)
