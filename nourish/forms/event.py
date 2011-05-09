@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import ModelForm
 from django.forms.extras.widgets import SelectDateWidget
-from nourish.models import Event
+from nourish.models import Event, EventGroup
 from datetime import date, timedelta
 
 class EventForm(ModelForm):
@@ -25,16 +25,10 @@ class EventForm(ModelForm):
 class EventFBForm(forms.Form):
     event = forms.ChoiceField(required=False,choices=[])
 
-class EventHostFeaturesForm(forms.Form):
-    FEATURES= (
-        ('v', 'Vegetarian Friendly'),
-        ('V', 'Vegan Friendly'),
-        ('G', 'Gluten Free'),
-        ('R', 'Raw Friendly'),
-        ('K', 'Kosher Friendly'),
-        ('H', 'Halal'),
-        ('D', 'Drinks Provided'),
-        ('S', 'Plates/Utensils/Cups Provided'),
-    )
-    features = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple,required=False,choices=FEATURES)
-    dinner_time = forms.TimeField()
+class EventGroupHostFeaturesForm(forms.Form):
+    features = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple,required=False,choices=EventGroup.FEATURE_CHOICES)
+
+class EventGroupHostForm(ModelForm):
+    class Meta:
+        model = EventGroup
+        exclude = ('event','group','role','features')

@@ -27,7 +27,6 @@ def connect_facebook(user, profile, client, **kwargs):
 
 @receiver(signals.post_save)
 def saved_handler(instance, created, **kwargs):
-    sys.stderr.write("creatig profile for user" + pformat(instance))
     if isinstance(instance, User) and created:
         profile = UserProfile.objects.create(
             user = instance,

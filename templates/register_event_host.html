@@ -1,45 +1,70 @@
 {% extends "base.html" %}
-
+{% load nourish %}
 {% block title %}Register an Artist Group at {{event.name}}{% endblock %}
-
 {% block content %}
-{% if canvas and not user.is_authenticated %}
-{% include "nourish/authorize_connect.html" %}
-{% else %}
-<h2>Register a Theme Camp at {{event.name}}</h2>
-<p>This page is for theme camps that would like to invite artists to dinner at {{event.name}}.</p>
+  {% if canvas and not user.is_authenticated %}
+    {% include "nourish/authorize_connect.html" %}
+  {% else %}
+    <h2>Register a Theme Camp at {{event.name}}</h2>
+    <p>This page is for theme camps that would like to invite artists to dinner at {{event.name}}.</p>
 
-{% if not user.is_authenticated and not request.GET.u %}
-{% include "nourish/please_connect.html" %}
-{% else %}
-<form method="post">{% csrf_token %}
-{{ user_formset.management_form }}
-{{ group_formset.management_form }}
-{{ features_formset.management_form }}
-{% if not user.is_authenticated %} 
-<h3>Info about you</h3>
-<p>We presume that you are the person who will be coordinating meals for your theme camp.  We need the information below so that we can contact you with updates about your invites, as well as other FtA-related communications.  Plus, you'll need to be able to log back into the site later to confirm your invitations, etc.</p>
-{{ user_formset.0.non_field_errors }}
-<table class="regform">
-{% include "nourish/form_snippet.html" with form=user_formset.0 %}
-</table>
-{% endif %}
+    {% if not user.is_authenticated and not request.GET.u %}
+      {% include "nourish/please_connect.html" %}
+    {% else %}
+      <form method="post">{% csrf_token %}
+        {{ user_formset.management_form }}
+        {{ group_formset.management_form }}
+        {{ grouphost_formset.management_form }}
+        {{ features_formset.management_form }}
 
-<h3>Info about your group</h3>
-<p>The following information will be shared with artists groups who you invite to dinner.  The description is a good place for a brief description of your camp and any special dinner notes.</p>
-{% if is_fb %}
-<p>If your group doesn't have a Facebook page, <a href="?nofb">click here</a>.
-{% endif %}
-{{ group_formset.0.non_field_errors }}
-<table class="regform">
-{% include "nourish/form_snippet.html" with form=group_formset.0 %}
-{% include "nourish/form_snippet.html" with form=features_formset.0 %}
-</table>
-</ul>
-</table>
-<input type="submit" value="Register" />
-</form>
+        {% if not user.is_authenticated %} 
+          <h3>Info about you</h3>
+          <p>We presume that you are the person who will be coordinating meals for your theme camp.  We need the information below so that we can contact you with updates about your invites, as well as other FtA-related communications.  Plus, you'll need to be able to log back into the site later to confirm your invitations, etc.</p>
+          {{ user_formset.0.non_field_errors }}
+          <table class="regform">
+            {% include "nourish/form_snippet.html" with form=user_formset.0 %}
+          </table>
+        {% endif %}
 
-{% endif %}
-{% endif %}
+
+        {% if is_fb %}
+          {% if group_formset.0.group.field.choices %}
+            <h3>Pick a group</h3>
+            <p>We have found the following items in your Facebook profile that might be your theme camp.  If your theme camp isn't in the list below, keep reading...</p>
+            <table class="regform">
+              {{ group_formset.0.non_field_errors }}
+              {% include "nourish/group_form_snippet.html" with form=group_formset.0 %}
+            </table>
+            <h3>What if my {{type}} has no Facebook presence?</h3>
+            <ul>
+              <li><a href="{% nurl 'fb-newgroup-options' %}">Create a new facebook page</a></li>
+              <li><a href="?nofb">Continue without creating a Facebook page for your group</a></li>
+            </ul>
+          {% else %}
+          {% include "nourish/fb_newgroup_options.html" with type="theme camp" %}
+          <ul>
+            <li><a href="?nofb">Continue without creating a Facebook page for your group</a></li>
+          </ul>
+          {% endif %}
+        {% else %}
+          <h3>Info about your group.</h3>
+          <p>Tell us a little bit about your group in general</p>
+          {{ group_formset.0.non_field_errors }}
+          <table class="regform">
+            {% include "nourish/form_snippet.html" with form=group_formset.0 %}
+          </table>
+        {% endif %}
+
+        {% if group_formset.0.group.field.choices or not is_fb %}
+          <h3>Info about your dinners</h3>
+          {{ features_formset.0.non_field_errors }}
+          <table class="regform">
+            {% include "nourish/form_snippet.html" with form=grouphost_formset.0 %}
+            {% include "nourish/form_snippet.html" with form=features_formset.0 %}
+          </table>
+          <input type="submit" value="Register" />
+        {% endif %}
+      </form>
+    {% endif %}
+  {% endif %}
 {% endblock %}
