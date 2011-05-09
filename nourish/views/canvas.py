@@ -1,3 +1,5 @@
+from django.views.generic import TemplateView
+
 import re
 
 class HybridCanvasView(object):
@@ -17,3 +19,6 @@ rewriter_re = re.compile("\/nourish\/")
 
 def canvas_url_rewrite(url):
     return rewriter_re.sub('/nourish/fb/', u)
+
+class CanvasTemplateView(HybridCanvasView, TemplateView):
+    pass

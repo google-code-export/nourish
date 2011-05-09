@@ -1,6 +1,8 @@
 from django.db import models
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
+from django.template.loader import render_to_string
 import sys
 from pprint import pformat
 import datetime
@@ -9,6 +11,10 @@ from django.core import serializers
 import json
 from django.core.urlresolvers import reverse
 import re
+from socialregistration.models import FacebookProfile
+from urlparse import parse_qs
+import urllib2
+import urllib
 
 rewriter_re = re.compile("\/nourish\/")
 
@@ -95,8 +101,8 @@ class UserProfile(models.Model):
             self.provider = 'F'
             self.save()
 
-        if self.provider is not 'F':
-            raise Exception("UserProfile.provider is not Facebook")
+        if self.provider != 'F':
+            raise Exception("UserProfile.provider is not Facebook [%s]" % self.provider)
         try:
             fb_cache = FacebookProfileCache.objects.get(user=self.user)
         except FacebookProfileCache.DoesNotExist:
@@ -237,11 +243,23 @@ class EventGroup(models.Model):
         ('T', 'Theme Camp'),
         ('A', 'Artist Group'),
     )
+    FEATURE_CHOICES = (
+        ('v', 'Vegetarian Friendly'),
+        ('e', 'Vegan Friendly'),
+        ('g', 'Gluten Free'),
+        ('r', 'Raw Friendly'),
+        ('k', 'Kosher Friendly'),
+        ('h', 'Halal'),
+        ('d', 'Drinks Provided'),
+        ('p', 'Plates/Utensils/Cups Provided'),
+    )
     event = models.ForeignKey(Event)
     group = models.ForeignKey(Group)
     role = models.CharField(max_length=1, choices=ROLE_CHOICES, default='U')
-    features = models.CharField(max_length=100, default='')
+    playa_address = models.CharField(max_length=50, blank=True, default='')
     dinner_time = models.CharField(max_length=10,null=True,blank=True)
+    features = models.CharField(max_length=100, default='', choices=FEATURE_CHOICES)
+    notes = models.TextField(blank=True, default='')
     def __unicode__(self):
         return self.event.name + ' : ' + self.group.name
     def get_absolute_url(self, canvas=False):
@@ -263,7 +281,34 @@ class EventGroup(models.Model):
         return m
 
     def send_notification(self, recipient, action, objects):
-        sys.stderr.write("=== send notification [%s] from %s to %s with %d objects\n" % ( action, self.group.name, recipient.group.name, len(objects) ))
+            sys.stderr.write("=== send notification [%s] from %s to %s with %d objects\n" % ( action, self.group.name, recipient.group.name, len(objects) ))
+#        try:
+            access_token = parse_qs(urllib2.urlopen("https://graph.facebook.com/oauth/access_token", urllib.urlencode({
+                'client_id' : settings.FACEBOOK_APP_ID,
+                'client_secret' : settings.FACEBOOK_SECRET_KEY,
+                'grant_type' : 'client_credentials',
+            })).read())['access_token'][-1]
+            fbrecips = []
+            for gu in GroupUser.objects.filter(group=recipient.group,admin=True):
+                if gu.user.get_profile().provider == 'F':
+                    fbrecips.append(FacebookProfile.objects.get(user=gu.user).uid)
+                else:
+                    sys.stderr.write("%s is not facebook user\n" % gu.user )
+            
+            msg = render_to_string("nourish/notif/%s.txt" % action, { 'object' : objects[0] })
+            data = { 'type' : 'notif', 'action' : action, 'ot' : objects[0].__class__.__name__, 'objects' : [] }
+            for o in objects:
+                data['objects'].append(o.id)
+
+            for recip in fbrecips:
+                sys.stderr.write("sending to %s with %s [%s]\n" % (recip, msg, json.dumps(data)))
+                urllib2.urlopen("https://graph.facebook.com/%s/apprequests" %recip, urllib.urlencode({
+                    'message' : msg,
+                    'data' : json.dumps(data),
+                    'access_token' : access_token,
+                })).read()
+#        except:
+#            pass
 
     # host group sends invitations to guest groups
     def send_invites(self, meals):

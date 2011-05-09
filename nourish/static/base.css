@@ -190,3 +190,19 @@ ul.small_list {
 ul.small_list li {
     list-style: none;
 }
+
+ul.radioselect {
+    padding: 0;
+}
+
+ul.radioselect li {
+    list-style: none;
+}
+
+div.scroll_select {
+    margin-left: 50px;
+    margin-right: 50px;
+    border: 1px solid black;
+    height: 150px;
+    overflow: auto;
+}

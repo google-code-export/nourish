@@ -1,8 +1,6 @@
-{% if request.user.get_profile.provider == 'F' %}
-<input type=button value="Invite theme camps!" onclick="FB.ui({
+<a href="#" onClick="FB.ui({
   method: 'apprequests', 
   message: 'You should register your theme camp at {{event.name}}, so you can invite artists to dinner!', 
   data: { type: 'event_host_invite', event: {{ event.id }} }
-});">
+});">Know a theme camp organizer? Suggest this to them!</a>
 <br>
-{% endif %}
