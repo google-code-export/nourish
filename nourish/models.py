@@ -143,6 +143,18 @@ class UserProfile(models.Model):
     def public_events(self):
         return list(Event.objects.filter(display=True))
 
+    def notifications(self):
+        if not hasattr(self, '_notifications'):
+            setattr(self, '_notifications', self.get_notifications())
+        return self._notifications
+
+    def get_notifications(self):
+        if self.provider == 'F':
+            return Notification.get_fb_notifications(
+                facebook = FacebookProfile.objects.get(user=self.user),
+            )
+        return None
+
 class GroupUser(models.Model):
     group = models.ForeignKey('Group')
     user = models.ForeignKey(User)
@@ -516,7 +528,7 @@ class Notification(object):
             graph = facebook.graph
             token = facebook.user['access_token']
         else:
-            token = self.get_fb_token()
+            token = Notification.get_fb_token()
             graph = GraphAPI(access_token=token)
 
         if request_ids:

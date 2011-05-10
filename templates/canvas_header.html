@@ -9,6 +9,11 @@
     <a href="/nourish/fb/logged-in/"><img src="http://feedtheartists.net/images/logo1.gif" width=150></a>
     </center>
   </div>
+  {% if request.user.get_profile.notifications %}
+  <div class="pending_notif"><a href="{% nurl 'notification-list' %}">
+    You have {{ request.user.get_profile.notifications|length }} notice{% if request.user.get_profile.notifications.1 %}s{% endif %}.
+  </a></div>
+  {% endif %}
   {% if request.user.get_profile.upcoming_events %}
   <h3>My Events</h3>
   <ul class="event_list">
