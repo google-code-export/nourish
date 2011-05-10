@@ -1,6 +1,6 @@
 <a href="#" onClick="FB.ui({
   method: 'apprequests', 
-  message: 'You should register your art project at {{event.name}}, so you can get invited to dinner!', 
-  data: { type: 'event_guest_invite', event: {{ event.id }} }
-});">Know an art group organizer?  Suggest this to them!</a>
+  message: 'You should register your art project at {{event.name}}, so you can get invited to dinner!',
+  data: { type: 'notif', action: 'event_guest_siteinvite', ot: 'Event', objects: [{{ event.id }}] }
+});">Know someone who is organizing an art project at {{event.name}}?  Suggest this to them!</a>
 <br>

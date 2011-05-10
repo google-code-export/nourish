@@ -532,6 +532,8 @@ class Notification(object):
             graph = GraphAPI(access_token=token)
 
         if request_ids:
+            if not isinstance(request_ids, list):
+                request_ids = [ request_ids ]
             requests = []
             for i in request_ids:
                 try:
@@ -542,7 +544,7 @@ class Notification(object):
                         request = graph.get_object(i)
                     requests.append(request)
                 except:
-                    sys.stderr.write("bad id %s" % i)
+                    sys.stderr.write("bad id [%s]\n" % i)
         else:
             args = {
                 'format' : 'json',
@@ -558,7 +560,7 @@ class Notification(object):
             try:
                 notifications.append(Notification.from_request(request))
             except:
-                pass
+                sys.stderr.write("could not load request [%s]\n" % pformat(request))
         return notifications
 
     @staticmethod
@@ -575,9 +577,16 @@ class Notification(object):
             try:
                 objects.append(objclass.objects.get(id=o))
             except:
+                sys.stderr.write("couldn't load object [%s : %s]\n" % (d['ot'], o))
                 pass
 
+        if 'from' in request:
+            sender = request['from']
+        else:
+            sender = ''
+
         return Notification(
+            sender = sender,
             provider = 'F',
 #            template = 'nourish/%s/%s.html' % (d['type'], d['action']),
             template = 'nourish/%s/%s.html' % ('notif', d['action']),

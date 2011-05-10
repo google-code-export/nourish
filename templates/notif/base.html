@@ -8,6 +8,7 @@
       {% block message %}{% endblock %}
     </div>
     <div style="clear: both; text-align: right;">
+        {% block preactions %}{% endblock %}
         <form method="POST" style="display: inline;">
           {% block actions %}{% endblock %}
           <input type=hidden name="notification" value="{{notification.id}}">
