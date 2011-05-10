@@ -543,7 +543,10 @@ class Notification(object):
 
         notifications = []
         for request in requests:
-            notifications.append(Notification.from_request(request))
+            try:
+                notifications.append(Notification.from_request(request))
+            except:
+                pass
         return notifications
 
     @staticmethod
