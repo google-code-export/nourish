@@ -24,7 +24,10 @@ def register_event(request, canvas=False):
         is_fb = False
     if is_fb:
         EventFormset = formset_factory(EventFBForm, extra=0)
-        choices = get_event_choices(request.facebook.graph)
+        if request.facebook.user['uid']:
+            choices = get_event_choices(request.facebook.graph)
+        else:
+            choices = []
         sys.stderr.write("choices " + pformat(choices) + "\n")
     else:
         EventFormset = formset_factory(EventForm, extra=0)
