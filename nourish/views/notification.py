@@ -10,28 +10,49 @@ class NotificationListView(HybridCanvasView, TemplateView):
     def post(self, request, *args, **kwargs):
         if 'notification' not in request.POST:
             raise Exception("no notification specified")
-        n = Notification.get_fb_notifications(facebook=request.facebook,request_ids=[request.POST['notification']])[0]
+        n = self.get_notifications([request.POST['notification']])[0]
         if 'delete' in request.POST:
             n.remove()
         elif 'take_action' in request.POST:
             n.take_action()
         else:
             raise Exception("unknown method")
+
         return redirect(request.get_full_path())
 
-    def get_user_notifications(self, facebook=None, request_ids=None):
-        return Notification.get_fb_notifications(facebook, request_ids)
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+
+#        return redirect('/nourish/fb/logged-in')
+
+        if not len(context['notifications']):
+            if 'canvas' in kwargs:
+#                sys.stderr.write("in canvas\n")
+                if request.user.is_authenticated():
+                    return redirect('/nourish/fb/logged-in')
+                else:
+                    return redirect('/nourish/fb/')
+            else:
+#                sys.stderr.write("not in canvas\n")
+                if request.user.is_authenticated():
+                    return redirect('/nourish/logged-in')
+                else:
+                    return redirect('/nourish/')
+
+        return super(NotificationListView, self).get(request, *args, **kwargs)
+
+    def get_notifications(self, request_ids=None):
+        return Notification.get_fb_notifications(None, request_ids)
 
     def get_context_data(self, **kwargs):
         context = super(NotificationListView, self).get_context_data(**kwargs)
 
         if 'request_ids' in self.request.GET:
-            notifications = self.get_user_notifications(request_ids = self.request.GET['request_ids'])
+            notifications = self.get_notifications(self.request.GET['request_ids'])
         else:
-            notifications = self.get_user_notifications(facebook = self.request.facebook)
+            notifications = self.request.user.get_profile().notifications()
             
-        invites = [] 
-
         context['notifications'] = notifications
 
         return context

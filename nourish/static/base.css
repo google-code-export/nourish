@@ -206,3 +206,10 @@ div.scroll_select {
     height: 150px;
     overflow: auto;
 }
+
+div.pending_notif {
+    margin-top: 20px;
+    border: 1px solid red;
+    background-color: #fdd;
+    text-align: center;
+}
