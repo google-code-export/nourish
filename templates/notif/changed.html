@@ -7,9 +7,8 @@
 {% endblock %}
 
 {% block message %}
-  {{ notification.objects.0.host_eg.group.name }} invited {{ notification.objects.0.guest_eg.group.name }} to dinner at {{ notification.objects.0.host_eg.event.name }}!
+  {{ notification.objects.0.guest_eg.group.name }} changed details about their confirmed dinners with {{ notification.objects.0.host_eg.group.name }} at {{ notification.objects.0.host_eg.event.name }}!
   <ul>
-    <li>Dinner Time: {{ notification.objects.0.host_eg.dinner_time }}</li>
     {% for o in notification.objects %}
       <li>Date: {{ o.date }}</li>
     {% endfor %}
@@ -17,6 +16,5 @@
 {% endblock %}
 
 {% block actions %}
-  <a href"{% nurl notification.objects.0.guest_eg %}meals/" style="display: inline;">Manage All Meals</a>
-  <input type=submit name="take_action" value="Accept These Invitation(s)">
+  <a href="{% nurl notification.objects.0.host_eg %}invites/">Manage All Invites</a>
 {% endblock %}

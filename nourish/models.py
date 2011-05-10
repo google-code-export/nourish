@@ -15,6 +15,7 @@ from socialregistration.models import FacebookProfile
 from urlparse import parse_qs
 import urllib2
 import urllib
+from facebook import GraphAPI
 
 rewriter_re = re.compile("\/nourish\/")
 
@@ -390,8 +391,9 @@ class EventGroup(models.Model):
         # notify hosts that have sent any invites for any of the guests other meals
         for invite in MealInvite.objects.filter(guest_eg=self):
             if invite.host_eg not in host_egs:
-                self.send_notification(invite.host_eg, 'added', meals)
-                host_egs[invite.host_eg] = True
+                pass
+#                self.send_notification(invite.host_eg, 'added', meals)
+#                host_egs[invite.host_eg] = True
 
     # guest changes meals
     def change_meals(self, changes):
@@ -403,7 +405,7 @@ class EventGroup(models.Model):
                 invites_by_eg[meal.invite.host_eg].append(meal.invite)
             meal.change(data)
         # notify hosts of any selected or confirmed invitations associated with changed meal
-        for eg, invites in invites_by_eg:
+        for eg, invites in invites_by_eg.iteritems():
             self.send_notification(eg, 'changed', invites)
 
 class MealInvite(models.Model):
@@ -483,6 +485,7 @@ class Meal(models.Model):
             self.state = 'I'
         else:
             self.state = 'N'
+        self.save()
     
     def choose(self, invite):
         invites = MealInvite.objects.filter(meal=self)
@@ -495,7 +498,6 @@ class Meal(models.Model):
         self.state = 'S'
         self.invite = invite
         self.save()
-        invites = MealInvite.objects.filter(meal=self)
     
     def send_invite(self, host_eg):
         invite = MealInvite.objects.create(
@@ -519,8 +521,99 @@ class Meal(models.Model):
         self.save()
 
 
-class Notification(models.Model):
-    def __init__(self, action='', objects=[]):
+class Notification(object):
+    def __init__(self, *args, **kwargs):
+        for k in kwargs.keys():
+            setattr(self,k,kwargs[k])
+
+    @staticmethod
+    def get_notifications(facebook=None, request_ids=None):
+        if facebook and hasattr(facebook, 'graph'):
+            graph = facebook.graph
+            token = facebook.user['access_token']
+        else:
+            f = urllib2.urlopen("https://graph.facebook.com/oauth/access_token?client_id=%s&client_secret=%s&grant_type=client_credentials" % ( settings.FACEBOOK_APP_ID, settings.FACEBOOK_SECRET_KEY))
+            token = parse_qs(f.read())["access_token"][-1]
+            graph = GraphAPI(access_token=token)
+
+        if request_ids:
+            requests = []
+            for i in request_ids:
+                try:
+                    parts = i.split('.')
+                    if parts[0] == 'fb':
+                        request = graph.get_object(parts[1])
+                    else:
+                        request = graph.get_object(i)
+                    requests.append(request)
+                except:
+                    sys.stderr.write("bad id %s" % i)
+        else:
+            args = {
+                'format' : 'json',
+                'access_token' : token,
+            }
+            url = "https://graph.facebook.com/%s/apprequests?%s" % (facebook.uid, urllib.urlencode(args))
+            f = urllib2.urlopen(url).read()
+            d = json.loads(f)
+            requests = d['data']
+
+        notifications = []
+        for request in requests:
+            notifications.append(Notification.from_request(request))
+        return notifications
+
+    @staticmethod
+    def from_request(request):
+        d = json.loads(str(request['data']))
+        if 'type' not in d:
+            d['type'] = 'notif'
+        if 'action' not in d:
+            d['action'] = 'unknown'
+
+        objclass = get_class('nourish.models.' + d['ot'])
         objects = []
-        setattr(self, 'action', action)
-        setattr(self, 'objects')
+        for o in d['objects']:
+            try:
+                objects.append(objclass.objects.get(id=o))
+            except:
+                pass
+
+        return Notification(
+            provider = 'F',
+            template = 'nourish/%s/%s.html' % (d['type'], d['action']),
+            type = d['type'],
+            action = d['action'],
+            id = 'fb.' + str(request['id']),
+            objects = objects,
+        )
+
+    def take_action(self):
+        if self.action == 'invited':
+            self.objects[0].guest_eg.choose_invites(self.objects)
+        elif self.action == 'chosen':
+            self.objects[0].host_eg.confirm_invites(self.objects)
+        else:
+            raise Exception("nothing to do for this kind of notification [%s]" % self.action)
+        self.remove()
+
+    def remove(self):
+        f = urllib2.urlopen("https://graph.facebook.com/oauth/access_token?client_id=%s&client_secret=%s&grant_type=client_credentials" % ( settings.FACEBOOK_APP_ID, settings.FACEBOOK_SECRET_KEY))
+        token = parse_qs(f.read())["access_token"][-1]
+        graph = GraphAPI(access_token=token)
+        path = "https://graph.facebook.com/%s?access_token=%s&method=delete" % (self.fb_id(), token)
+        sys.stderr.write("path is %s\n" % path)
+        urllib2.urlopen(path).read()
+
+    def fb_id(self):
+        parts = self.id.split('.')
+        return parts[1]
+
+# from http://stackoverflow.com/questions/452969/does-python-have-an-equivalent-to-java-class-forname
+def get_class( kls ):
+    parts = kls.split('.')
+    module = ".".join(parts[:-1])
+    m = __import__( module )
+    for comp in parts[1:]:
+        m = getattr(m, comp)            
+    return m
