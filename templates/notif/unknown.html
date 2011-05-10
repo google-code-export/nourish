@@ -1,20 +1,10 @@
+{% extends "nourish/notif/base.html" %}
 {% load nourish %}
-<div>
-  <div>
-    <div style="float: left; width: 115px;">
-      <img src="http://graph.facebook.com/{{invite.from.id}}/picture" width=50 border=0>
-    </div>
-    <div style="float: left; width: 415px;">
-      FtA wants you to do something, but this request [{{ invite.id }}] is broken :(
-    </div>
-    <div style="clear: both;">
-      <center>
-        <form method="POST" style="display: inline;">
-          <input type="hidden" name="invite" value="{{invite.id}}">
-          <input type="hidden" name="action" value="delete_fb_request">
-          <input type=submit value="Delete Request">
-        </form>
-      </center>
-    </div>
-  </div>
-</div>
+
+{% block icons %}
+  <img src="http://graph.facebook.com/{{invite.from.id}}/picture" width=50 border=0>
+{% endblock %}
+
+{% block message %}
+  FtA wants you to do something, but this request [{{ invite.id }}] is broken :(
+{% endblock %}
