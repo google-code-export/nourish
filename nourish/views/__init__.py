@@ -4,7 +4,7 @@ from nourish.views.meal import *
 from nourish.views.group import *
 from nourish.views.event import *
 from nourish.views.socialreg import social_reg_setup
-from nourish.views.siteinvite import *
+from nourish.views.notification import *
 from django.db.models import signals
 from django.contrib.auth.models import User
 

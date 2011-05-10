@@ -16,5 +16,7 @@
 {% endblock %}
 
 {% block actions %}
-  <a href"{% nurl notification.objects.0.guest_eg %}meals/" style="display: inline;">Manage All Meals</a>
+{% if notification.objects.0 %}
+  <a href="{% NURL notification.objects.0.guest_eg %}meals/" style="display: inline;">Manage All Meals</a>
+{% endif %}
 {% endblock %}

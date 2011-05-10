@@ -16,5 +16,7 @@
 {% endblock %}
 
 {% block actions %}
+{% if notification.objects.0 %}
   <a href="{% nurl notification.objects.0.host_eg %}invites/">Manage All Invites</a>
+{% endif %}
 {% endblock %}

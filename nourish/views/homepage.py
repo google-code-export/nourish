@@ -33,10 +33,10 @@ def rootpage(request, canvas=False):
 
     if canvas:
         if 'request_ids' in request.GET:
-            return redirect('/nourish/fb/i/?request_ids=' + request.GET['request_ids'])
+            return redirect('/nourish/fb/_notif/?request_ids=' + request.GET['request_ids'])
         if 'ref' in request.GET and request.GET['ref'] == 'bookmarks':
             if 'count' in request.GET and request.GET['count']:
-                return redirect('/nourish/fb/i/?last=%s&ref=bookmarks' % request.GET['count'])
+                return redirect('/nourish/fb/_notif/?last=%s&ref=bookmarks' % request.GET['count'])
             return redirect('/nourish/fb/home/')
 
     return render_to_response('nourish/rootpage.html', { 
