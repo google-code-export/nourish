@@ -157,7 +157,7 @@ class Group(models.Model):
         ('A', 'Artist Group'),
     )
     name = models.CharField(max_length=100, unique=True, verbose_name="Group Name")
-    url = models.URLField(blank=True, null=True, verbose_name="Group Website")
+    url = models.CharField(max_length=250, blank=True, null=True, verbose_name="Group Website")
     image_url = models.URLField(blank=True, null=True, default='', verbose_name="Image URL")
     role = models.CharField(max_length=1, choices=ROLE_CHOICES, default='U')
     description = models.TextField(blank=True, null=True)
@@ -282,34 +282,18 @@ class EventGroup(models.Model):
         return m
 
     def send_notification(self, recipient, action, objects):
-            sys.stderr.write("=== send notification [%s] from %s to %s with %d objects\n" % ( action, self.group.name, recipient.group.name, len(objects) ))
-#        try:
-            access_token = parse_qs(urllib2.urlopen("https://graph.facebook.com/oauth/access_token", urllib.urlencode({
-                'client_id' : settings.FACEBOOK_APP_ID,
-                'client_secret' : settings.FACEBOOK_SECRET_KEY,
-                'grant_type' : 'client_credentials',
-            })).read())['access_token'][-1]
-            fbrecips = []
-            for gu in GroupUser.objects.filter(group=recipient.group,admin=True):
-                if gu.user.get_profile().provider == 'F':
-                    fbrecips.append(FacebookProfile.objects.get(user=gu.user).uid)
-                else:
-                    sys.stderr.write("%s is not facebook user\n" % gu.user )
-            
-            msg = render_to_string("nourish/notif/%s.txt" % action, { 'object' : objects[0] })
-            data = { 'type' : 'notif', 'action' : action, 'ot' : objects[0].__class__.__name__, 'objects' : [] }
-            for o in objects:
-                data['objects'].append(o.id)
+        sys.stderr.write("=== send notification [%s] from %s to %s with %d objects\n" % ( action, self.group.name, recipient.group.name, len(objects) ))
 
-            for recip in fbrecips:
-                sys.stderr.write("sending to %s with %s [%s]\n" % (recip, msg, json.dumps(data)))
-                urllib2.urlopen("https://graph.facebook.com/%s/apprequests" %recip, urllib.urlencode({
-                    'message' : msg,
-                    'data' : json.dumps(data),
-                    'access_token' : access_token,
-                })).read()
-#        except:
-#            pass
+        msg = render_to_string("nourish/notif/%s.txt" % action, { 'object' : objects[0] })
+
+        data = { 'action' : action, 'ot' : objects[0].__class__.__name__, 'objects' : [], 'type' : 'notif' }
+        for o in objects:
+            data['objects'].append(o.id)
+
+        for gu in GroupUser.objects.filter(group=recipient.group,admin=True):
+            if gu.user.get_profile().provider == 'F':
+                Notification.send_fb(gu.user, msg, data)
+            
 
     # host group sends invitations to guest groups
     def send_invites(self, meals):
@@ -527,13 +511,12 @@ class Notification(object):
             setattr(self,k,kwargs[k])
 
     @staticmethod
-    def get_notifications(facebook=None, request_ids=None):
+    def get_fb_notifications(facebook=None, request_ids=None):
         if facebook and hasattr(facebook, 'graph'):
             graph = facebook.graph
             token = facebook.user['access_token']
         else:
-            f = urllib2.urlopen("https://graph.facebook.com/oauth/access_token?client_id=%s&client_secret=%s&grant_type=client_credentials" % ( settings.FACEBOOK_APP_ID, settings.FACEBOOK_SECRET_KEY))
-            token = parse_qs(f.read())["access_token"][-1]
+            token = self.get_fb_token()
             graph = GraphAPI(access_token=token)
 
         if request_ids:
@@ -581,8 +564,9 @@ class Notification(object):
 
         return Notification(
             provider = 'F',
-            template = 'nourish/%s/%s.html' % (d['type'], d['action']),
-            type = d['type'],
+#            template = 'nourish/%s/%s.html' % (d['type'], d['action']),
+            template = 'nourish/%s/%s.html' % ('notif', d['action']),
+            type = 'notif',
             action = d['action'],
             id = 'fb.' + str(request['id']),
             objects = objects,
@@ -598,16 +582,33 @@ class Notification(object):
         self.remove()
 
     def remove(self):
-        f = urllib2.urlopen("https://graph.facebook.com/oauth/access_token?client_id=%s&client_secret=%s&grant_type=client_credentials" % ( settings.FACEBOOK_APP_ID, settings.FACEBOOK_SECRET_KEY))
-        token = parse_qs(f.read())["access_token"][-1]
+        token = self.get_fb_token()
         graph = GraphAPI(access_token=token)
         path = "https://graph.facebook.com/%s?access_token=%s&method=delete" % (self.fb_id(), token)
-        sys.stderr.write("path is %s\n" % path)
         urllib2.urlopen(path).read()
 
     def fb_id(self):
         parts = self.id.split('.')
         return parts[1]
+
+    @staticmethod
+    def get_fb_token():
+        return parse_qs(urllib2.urlopen("https://graph.facebook.com/oauth/access_token", urllib.urlencode({
+            'client_id' : settings.FACEBOOK_APP_ID,
+            'client_secret' : settings.FACEBOOK_SECRET_KEY,
+            'grant_type' : 'client_credentials',
+        })).read())['access_token'][-1]
+
+    @staticmethod
+    def send_fb(user, message, data):
+        profile = FacebookProfile.objects.get(user=user)
+        sys.stderr.write("sending to %s with %s [%s]\n" % (user, message, json.dumps(data)))
+        urllib2.urlopen("https://graph.facebook.com/%s/apprequests" % profile.uid, urllib.urlencode({
+            'message' : message,
+            'data' : json.dumps(data),
+            'access_token' : Notification.get_fb_token(),
+        })).read()
+
 
 # from http://stackoverflow.com/questions/452969/does-python-have-an-equivalent-to-java-class-forname
 def get_class( kls ):
