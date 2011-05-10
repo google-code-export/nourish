@@ -24,17 +24,13 @@ class NotificationListView(HybridCanvasView, TemplateView):
     def get(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
 
-#        return redirect('/nourish/fb/logged-in')
-
         if not len(context['notifications']):
             if 'canvas' in kwargs:
-#                sys.stderr.write("in canvas\n")
                 if request.user.is_authenticated():
                     return redirect('/nourish/fb/logged-in')
                 else:
                     return redirect('/nourish/fb/')
             else:
-#                sys.stderr.write("not in canvas\n")
                 if request.user.is_authenticated():
                     return redirect('/nourish/logged-in')
                 else:
@@ -51,7 +47,12 @@ class NotificationListView(HybridCanvasView, TemplateView):
         if 'request_ids' in self.request.GET:
             notifications = self.get_notifications(self.request.GET['request_ids'])
         else:
-            notifications = self.request.user.get_profile().notifications()
+            if self.request.user.is_authenticated():
+                notifications = self.request.user.get_profile().notifications()
+            elif 'uid' in self.request.facebook.user:
+                notifications = Notification.get_fb_notifications(self.request.facebook)
+            else:
+                notifications = [] 
             
         context['notifications'] = notifications
 
