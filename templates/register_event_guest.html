@@ -28,8 +28,8 @@
 
         {% if is_fb %}
           {% if group_formset.0.group.field.choices %}
-            <h3>Pick a group</h3>
-            <p>We have found the following items in your Facebook profile that might be your art project.  If your art project isn't in the list below, keep reading...</p>
+            <h3>Pick an artist group</h3>
+            <p>We have found the following groups in your Facebook profile that might be your art project.  If your art project isn't in the list below, keep reading...</p>
             <table class="regform">
               {{ group_formset.0.non_field_errors }}
               {% include "nourish/group_form_snippet.html" with form=group_formset.0 %}
