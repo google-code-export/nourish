@@ -439,7 +439,7 @@ def get_group_choices(graph, event, user):
         if can_select_group(e['name'], event, user):
             choices.append((e['id'], e['name'] + " (Event)"))
     for account in accounts['data']:
-        if 'category' in account:
+        if 'category' in account and 'name' in account and 'id' in account:
             if can_select_group(account['name'], event, user):
                 choices.append((account['id'], account['name'] + " (Page - " + account['category'] + ")"))
     return choices
