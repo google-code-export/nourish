@@ -56,7 +56,7 @@
 
         {% if group_formset.0.group.field.choices or not is_fb %}
           <h3>Meals</h3>
-          <p>Here's where you tell us how many crew members are looking for dinner each night of the event. Please specify each night that there will be crew with special dietary restrictions.</p>
+        <p>Here's where you tell us how many crew members are looking for dinner each night of the event. Please specify each night that there will be crew with special dietary restrictions.  If your crew is not available for one of the dates, just leave it blank.  Note: By registering the nights you are available, you are not guaranteed a meal.  A theme camp must invite you.</p>
             <table border=0 class="regtable">
               {{ meal_formset.non_field_errors }}
               <tr><th>Date</th><th>Crew</th><th>Restrictions</th><th>Notes</th></tr>
