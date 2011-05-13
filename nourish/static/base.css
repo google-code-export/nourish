@@ -3,7 +3,7 @@ html {
     margin:0;
     padding:0;
     color:#000;
-    background:#ffffff;
+    background:#312112;
     font-family: sans-serif;
 }
 p {
@@ -33,7 +33,7 @@ table.meals th.first {
     font-weight: normal;
 }
 #wrap {
-    width:800px;
+    width:1024px;
     margin:0 auto;
     background:#ffffff;
 }
@@ -100,7 +100,7 @@ td.features {
     text-align: center;
 }
 #left_wrap {
-    width:580px;
+    width:720px;
     float:left;
 }
 ul#event_details {
