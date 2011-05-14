@@ -143,7 +143,7 @@ class EventInviteView(HybridCanvasView, DetailView):
                     'state' : meal.state,
                     'notes' : meal.notes,
                 })
-                meal_initial.append({ 'meal_id' : meal.id, 'invited' : (meal.state == 'I') })
+                meal_initial.append({ 'meal_id' : meal.id, 'invited' : (meal.state != 'N') })
             raw.append(rec)
             meal_formset = meal_factory(prefix='d' + date.strftime("%Y%m%d"), initial=meal_initial)
             m = iter(meals)

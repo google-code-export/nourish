@@ -16,6 +16,9 @@ Notes: {{ object.notes }}<br>
   <span style="font-size: small;">[<a href="{% nurl object %}invites/">Manage Invitations</a>]</span>
 {% endif %}
 <br><br>
+{% if is_group_admin %}
+  <p><a href="{% nurl object.event %}invite/?eg={{ object.id }}">Invite Artists to Dinner!</a></p>
+{% endif %}
 <table class="meals">
   <tr><th class="first"></th><th>Invitations</th></tr>
   {% for date in dates %}
@@ -44,9 +47,6 @@ Notes: {{ object.notes }}<br>
                 </li>
               {% endif %}
             {% endfor %}
-            {% if is_group_admin %}
-              <li><a href="{% nurl object.event %}">Invite Artists to Dinner!</a></li>
-            {% endif %}
           </ul>
         </td>
       </tr>
