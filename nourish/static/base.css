@@ -101,6 +101,8 @@ td.features {
 }
 #left_wrap {
     width:720px;
+    margin-left: 15px;
+    margin-right: 15px;
     float:left;
 }
 ul#event_details {
