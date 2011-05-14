@@ -23,7 +23,9 @@ ADMIN_MEDIA_PREFIX = '/static/admin/'
 MEDIA_ROOT = '/home/marcus/fta/media'
 STATIC_ROOT = '/home/marcus/fta/static/'
 
-STATICFILES_DIRS = ()
+STATICFILES_DIRS = (
+    os.path.join(os.path.dirname(__file__), 'static'),
+)
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
