@@ -69,7 +69,6 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
     'djangotoolbox',
     'socialregistration',
-    'django_yuml',
 )
 
 AUTH_PROFILE_MODULE = 'nourish.UserProfile'
@@ -108,7 +107,7 @@ try:
         DATABASES['native'] = DATABASES['default']
         DATABASES['default'] = {'ENGINE': 'dbindexer', 'TARGET': 'native'}
         INSTALLED_APPS += ('dbindexer',)
-        DBINDEXER_SITECONF = 'ors.dbindexes'
+        DBINDEXER_SITECONF = 'ftasite.dbindexes'
         MIDDLEWARE_CLASSES = ('dbindexer.middleware.DBIndexerMiddleware',) + \
                              MIDDLEWARE_CLASSES
 except ImportError:
