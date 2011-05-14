@@ -15,17 +15,28 @@ table.meals th.first {
     font-weight: normal;
 }
 
-#nourish_nav {
+div.nourish_header h3 {
+    margin-right: 15px;
+    display: inline;
+}
+
+div.nourish_header ul {
     margin:0;
     padding:0;
     list-style:none;
     display: inline;
 }
-#nourish_nav li {
+
+div.nourish_header ul li {
     display:inline;
     margin:0;
     padding:0;
     padding-right: 10px;
+}
+
+div.nourish_header {
+    margin-bottom: 5px;
+    border-bottom: 1px solid black;
 }
 
 tr.regerror {

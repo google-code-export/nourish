@@ -10,8 +10,32 @@ p {
 }
 A {
     text-decoration: none;
-    color: #f22;
 }
+
+#site_sidebar A {
+    color: #700;
+}
+
+#site_sidebar A:hover {
+    color: red;
+}
+
+#site_content A {
+    color: #d22;
+}
+
+#site_content A:hover {
+    color: red;
+}
+
+#site_content .site_ext_link A {
+    color: #700;
+}
+
+#site_content .site_ext_link A:hover {
+    color: red;
+}
+
 A:hover {
     text-decoration: underline;
     color: red;
