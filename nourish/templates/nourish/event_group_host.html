@@ -6,19 +6,20 @@
   <span style="font-size: small;">[<a href="{% nurl object %}edit/">Edit Details</a>]</span>
 {% endif %}
 <br><br>
-Location at event: {{ object.playa_address }}<br>
-Dinner Time: {{ object.dinner_time }}<br>
-Features: {{ object.features }}<br>
-Notes: {{ object.notes }}<br>
+Location at event: {{ object.playa_address|default:"TBD" }}<br>
+Features: {{ object.features|default:"None" }}<br>
+{% if object.notes %}
+  Notes: {{ object.notes }}<br>
+{% endif %}
 <br>
+{% if is_group_admin %}
+{% endif %}
 <h3 style="display: inline;">Invitations</h3>
 {% if is_group_admin %}
   <span style="font-size: small;">[<a href="{% nurl object %}invites/">Manage Invitations</a>]</span>
+  <span style="font-size: small;">[<a href="{% nurl object.event %}invite/?eg={{ object.id }}">Invite Artists to Dinner!</a>]</span>
 {% endif %}
 <br><br>
-{% if is_group_admin %}
-  <p><a href="{% nurl object.event %}invite/?eg={{ object.id }}">Invite Artists to Dinner!</a></p>
-{% endif %}
 <table class="meals">
   <tr><th class="first"></th><th>Invitations</th></tr>
   {% for date in dates %}
