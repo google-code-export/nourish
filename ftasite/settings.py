@@ -105,7 +105,7 @@ try:
     if 'native' not in DATABASES:
         import dbindexer
         DATABASES['native'] = DATABASES['default']
-        DATABASES['default'] = {'ENGINE': 'dbindexer', 'TARGET': 'native'}
+        DATABASES['default'] = {'ENGINE': 'dbindexer', 'TARGET': 'native', 'NAME': DATABASES['native']['NAME']}
         INSTALLED_APPS += ('dbindexer',)
         DBINDEXER_SITECONF = 'ftasite.dbindexes'
         MIDDLEWARE_CLASSES = ('dbindexer.middleware.DBIndexerMiddleware',) + \
