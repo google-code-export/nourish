@@ -32,3 +32,11 @@ class EventGroupHostForm(ModelForm):
     class Meta:
         model = EventGroup
         exclude = ('event','group','role','features')
+
+class EventInviteDayForm(forms.Form):
+    date = forms.CharField(widget=forms.HiddenInput)
+    dinner_time = forms.TimeField()
+
+class EventInviteMealForm(forms.Form):
+    meal_id = forms.CharField(widget=forms.HiddenInput)
+    invited = forms.BooleanField()
