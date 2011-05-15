@@ -1,0 +1,45 @@
+{% extends "nourish/base.html" %}
+
+{% block title %}Register an Event{% endblock %}
+
+{% block content %}
+  {% if canvas and not user.is_authenticated %}
+    {% include "nourish/authorize_connect.html" %}
+  {% else %}
+    <h2>Register an Event</h2>
+    <p>say something</p>
+
+    {% if not user.is_authenticated and not request.GET.u %}
+      {% include "nourish/please_connect.html" %}
+    {% else %}
+      <form method="post">
+        {% csrf_token %}
+        {{ user_formset.management_form }}
+        {{ event_formset.management_form }}
+        {% if not user.is_authenticated %}
+          <h3>Info about you</h3>
+          <p>say something else</p>
+          {{ user_formset.0.non_field_errors }}
+          <table class="regform">
+            {% include "nourish/form_snippet.html" with form=user_formset.0 %}
+          </table>
+        {% endif %}
+
+        <h3>Info about your event</h3>
+        <p>say more stuff</p>
+
+        {% if is_fb %}
+          <p>To create a new Facebook event, <a target="_parent" href="http://www.facebook.com/events/create.php">click here</a>.</p>
+          <p>If your event doesn't have a Facebook page, <a href="?nofb">click here</a>.</p>
+        {% endif %}
+
+        {{ event_formset.0.non_field_errors }}
+        <table class="regform">
+          {% include "nourish/form_snippet.html" with form=event_formset.0 %}
+        </table>
+
+        <input type="submit" value="Register" />
+      </form>
+    {% endif %}
+  {% endif %}
+{% endblock %}

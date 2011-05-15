@@ -1,0 +1,12 @@
+{% load nourish %}
+
+<div id="site_auth">
+  {% if user.is_authenticated %}
+    {% userlink user %}[<a href="{% url logout %}">logout</a>]
+  {% else %} 
+    [<a href="{% url login %}">login</a>]
+  {% endif %}
+</div>
+<a href="http://www.feedtheartists.net">
+  <img src="http://feedtheartists.net/images/logo1.gif" border=0>
+</a>

@@ -1,0 +1,63 @@
+{% extends "nourish/base.html" %}
+{% load nourish %}
+
+{% block title %}Manage Invitations{% endblock %}
+
+{% block content %}
+
+<h2>Manage Invites for {{eg.group.name}} at {{eg.event.name}}</h2>
+
+<form action="{% nurl eg %}invites/" method="post">{% csrf_token %}
+{{ formset.management_form }}
+
+{% if forms.S %} 
+<h3>Unconfirmed Invitations</h3>
+The guest has chosen your invitation, but you have not confirmed.
+
+<ul>
+{% for f in forms.S %}
+    <li>{{ f.1.date }} - <a href="{% nurl f.1.guest_eg %}">{{ f.1.guest_eg.group.name }}</a> <em>({{ f.1.meal.members }} diners)</em> {{ f.0.invite_id }} {{ f.0.action }} <label>Confirm</label></li>
+{% endfor %}
+</ul>
+
+{% endif %}
+
+{% if forms.C %} 
+<h3>Confirmed Invitations</h3>
+These are confirmed reservations.
+
+<ul>
+{% for f in forms.C %}
+    <li>{{ f.1.date }} - <a href="{% nurl f.1.guest_eg %}">{{ f.1.guest_eg.group.name }}</a> <em>({{ f.1.meal.members }} diners)</em> {{ f.0.invite_id }} {{ f.0.action }} <label>Delete</label></li>
+{% endfor %}
+</ul>
+
+{% endif %}
+
+{% if forms.N %} 
+<h3>Pending Invitations</h3>
+These have been sent to the guest, but the guest hasn't chosen any invitations yet.
+
+<ul>
+{% for f in forms.N %}
+    <li>{{ f.1.date }} - <a href="{% nurl f.1.guest_eg %}">{{ f.1.guest_eg.group.name }}</a> <em>({{ f.1.meal.members }} diners)</em> {{ f.0.invite_id }} {{ f.0.action }}<label>Delete</label></li>
+{% endfor %}
+</ul>
+
+<hr>
+{% endif %}
+
+{% if forms.R %} 
+<h3>Declined Invitations</h3>
+The guest has chosen another invitation for this meal.
+
+<ul>
+{% for f in forms.R %}
+    <li>{{ f.1.date }} - <a href="{% nurl f.1.guest_eg %}">{{ f.1.guest_eg.group.name }}</a> <em>({{ f.1.meal.members }} diners)</em> {{ f.0.invite_id }} {{ f.0.action }} <label>Delete</label></li>
+{% endfor %}
+</ul>
+{% endif %}
+
+<input type="submit" value="Save Changes" />
+</form>
+{% endblock %}

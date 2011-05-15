@@ -1,0 +1,20 @@
+{% load nourish %}
+<a class="small_link" href="{% nurl eg %}">
+<div class="small_link" style="">
+{% if eg.group.image_url %}
+<div style="float:left; padding-right: 5px;">
+        <img width=50 src="{{eg.group.image_url}}?type=small" border=0>
+</div>
+{% endif %}
+{% if eg.event.image_url %}
+<div style="float:left; padding-right: 5px;">
+        <img width=50 src="{{eg.event.image_url}}?type=small" border=0>
+</div>
+{% endif %}
+<div style="float:left; width: 140px;">
+{{eg.group.name}}
+at {{eg.event.name}}
+</div>
+<div style="clear:both;"></div>
+</div>
+</a>
