@@ -47,7 +47,6 @@ def register_event(request, canvas=False):
 
             if request.user.is_authenticated():
                 user = request.user
-                profile = user.get_profile()
             else:
                 user_data = user_formset.cleaned_data[0];
                 user = User.objects.create_user(
@@ -60,11 +59,8 @@ def register_event(request, canvas=False):
                     password=user_data['password']
                 )
                 login(request, authuser)
-                profile = UserProfile.objects.create(
-                    user            = user,
-                    role            = 'E',
-                )
 
+            profile = user.get_profile()
             if profile.role == 'U' or not profile.role:
                 profile.role = 'E'
                 profile.save()
