@@ -5,13 +5,13 @@
 
 {% block title %}{{ object.name }} - Events{% endblock %}
 
-{% block content %}
+{% block content-logo %}
   {% if object.image_url %}
-    <div style="float: left; margin-right: 5px;">
-      <a target="_parent" href="{{ object.url }}"><img width=100 src="{{object.image_url}}?type=normal" border=0></a>
-    </div>
+    <a target="_parent" href="{{ object.url }}"><img width=100 src="{{object.image_url}}?type=normal" border=0></a>
   {% endif %}
-  <div style="float: left; width: 400px;">
+{% endblock %}
+
+{% block content-title %}
     <h2 style="display: inline;">{{ object.name }}</h2>
     {% if is_admin %}
       [<a href="{% nurl object %}edit/">Edit Event</a>]
@@ -21,11 +21,9 @@
     
     <br>
     <span class="site_ext_link">Event website: {{object.url|urlizetrunc:40}}</span>
-  </div>
-  <div style="clear: both;"></div>
+{% endblock %}
 
-  <br>
-
+{% block content-body %}
   <h4>Spread the word!</h4>
   <ul>
   {% include "nourish/fb/event_share_link.html" with event=object %}
