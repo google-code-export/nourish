@@ -8,44 +8,62 @@
 {% block content %}
   {% if object.image_url %}
     <div style="float: left; margin-right: 5px;">
+      <a target="_parent" href="{% nurl host_eg %}"><img width=100 src="{{host_eg.group.image_url}}?type=normal" border=0></a>
       <a target="_parent" href="{{ object.url }}"><img width=100 src="{{object.image_url}}?type=normal" border=0></a>
     </div>
   {% endif %}
   <div style="float: left; width: 400px;">
-    <h2 style="display: inline;">{{ object.name }}</h2>
-    {% if is_admin %}
-      [<a href="{% nurl object %}edit/">Edit Event</a>]
-    {% endif %}
-    <br>
+    <h2 style="display: inline;">{{ host_eg.group.name }}</h2><br>
+    at <h2 style="display: inline;">{{ object.name }}</h2><br>
     {{ object.start_date }} thru {{ object.end_date }}<br>
-    
-    <br>
-    Event website: {{object.url|urlizetrunc:40}}
   </div>
   <div style="clear: both;"></div>
 
-  <br>
+  <h1>Manage Invitations</h1>
 
   <script type="text/javascript">
     meals_by_date = {{ json|safe }};
   </script>
+  <form method="post">
+  {{ meal_formset.management_form }}
+  {{ day_formset.management_form }}
   <ul>
-    {% for d in daysets %}
+    {% for d in dates %}
       <li>
-        Date: {{ d.date }}
-        {{ d.form }}
+        <span>
+        {{ d.date|date:"M j" }} <em>({{ d.date|date:"D" }})</em>
+        {% for field in d.form.hidden_fields %}
+          {{ field }}
+        {% endfor %}
+        {{ d.form.dinner_time }}
+        {% if d.form.dinner_time.errors %}
+          <ul class="errorlist">
+            {% for error in d.form.dinner_time.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+        </span>
         <ul>
-          {% for m in d.mealsets %}
+          {% for m in d.meals %}
             <li>
-              {{ m.1 }}
-              {{ m.0.eg.group.name }}
-              <em>({{ m.0.members }} diners, {{ m.0.features }})</em>
-              <strong>[{{m.0.state}}]</strong>
+              <label for="id_{{ m.form.invited.html_name}}">
+                {% for field in m.form.hidden_fields %}
+                  {{ field }}
+                {% endfor %}
+                {{ m.form.invited }}
+                <a href="{% nurl m.meal.eg %}">{{ m.meal.eg.group.name }}</a>
+                <em>({{ m.meal.members }} diners, {{ m.meal.features }})</em>
+                <strong>[{{m.meal.state}}]</strong>
+              </label>
             </li>
           {% endfor %}
         </ul>
       </li>
     {% endfor %}
   </ul>
+  <br>
+  <input type="submit" value="Send Invites">
+  </form>
 
 {% endblock %}

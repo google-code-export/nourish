@@ -104,35 +104,182 @@ class EventInviteView(HybridCanvasView, DetailView):
     context_object_name = 'event_invite'
     model = Event
     template_name = 'nourish/event_invite.html'
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if 'host' not in request.GET:
+            raise Exception("no host_eg specified")
+        host_eg = EventGroup.objects.get(id=request.GET['host'])
+        if not request.user.is_authenticated() or not host_eg.group.is_admin(request.user):
+            raise PermissionDenied
+        guest_eg = None
+        if 'guest' in request.GET:
+            guest_eg = EventGroup.objects.get(id=request.GET['guest'])
+    
+        day_factory = formset_factory(EventInviteDayForm, extra=0)
+        meal_factory = formset_factory(EventInviteMealForm, extra=0)
+
+        day_formset = day_factory(request.POST, prefix='days')
+        meal_formset = meal_factory(request.POST, prefix='meals')
+
+        context = super(EventInviteView, self).get_context_data(object=self.object)
+
+        (dates, raw, day_initial, meal_initial) = self.get_meals(host_eg, guest_eg, 'manage' in self.request.GET)
+
+        dates = self.get_dates(dates, day_formset, meal_formset)
+
+        context['dates'] = dates
+        context['day_formset'] = day_formset
+        context['meal_formset'] = meal_formset
+        context['json'] = json.dumps(raw)
+        context['host_eg'] = host_eg
+
+        if (not meal_formset.is_valid()) or (not day_formset.is_valid()):
+            context['error'] = True
+            return self.render_to_response(context)
+
+        day_data = day_formset.cleaned_data
+        meal_data = meal_formset.cleaned_data
+
+        dd = iter(day_data)
+        md = iter(meal_data)
+        
+        missing = False;
+
+        for day in dates:
+            needed = False
+            for meal in day['meals']:
+                data = md.next()
+                if data['invited']:
+                    needed = True
+            data = dd.next()
+            if needed and not data['dinner_time']:
+                day['form'].errors['dinner_time'] = ['You must specify a dinner time']
+                missing = True
+
+        if missing:
+            context['error'] = True
+            return self.render_to_response(context)
+
+        dd = iter(day_data)
+        md = iter(meal_data)
+
+        to_invite = []
+        to_confirm = []
+        to_rescind = []
+        to_change = []
+
+        for day in dates:
+            data = dd.next()
+            dinner_time = data['dinner_time']
+            for m in day['meals']:
+                mdata = md.next()
+                meal = Meal.objects.get(id = mdata['meal_id'])
+#                if meal.state != 'N' and not meal.invite:
+                    # drop bad invites 
+                    # meal.state = 'N'
+                    # meal.save()
+                    # continue;
+                if (meal.state == 'N'):
+                    if 'invited' in mdata and mdata['invited']:
+                        to_invite.append( (meal, dinner_time) )
+                    continue
+                elif (meal.state == 'I'):
+                    if 'invited' not in mdata or not mdata['invited']:
+                        to_rescind.append(MealInvite.objects.get(host_eg=host_eg,meal=meal))
+                    continue
+                elif (meal.state == 'S'):
+                    if 'invited' in mdata and mdata['invited']:
+                        to_confirm.append(meal.invite)
+                        continue
+                    else:
+                        to_rescind.append(meal.invite)
+                        continue
+                elif (meal.state == 'C'):
+                    if 'invited' not in mdata or not mdata['invited']:
+                        to_rescind.append(meal.invite)
+                        continue
+                if str(meal.invite.dinner_time) != str(dinner_time):
+                    sys.stderr.write("[%s] != [%s]\n" % (meal.invite.dinner_time, dinner_time) )
+                    meal.invite.dinner_time = dinner_time
+                    to_change.append(meal.invite)
+
+        host_eg.rescind_invites(to_rescind)
+        host_eg.confirm_invites(to_confirm)
+        host_eg.send_invites(to_invite)
+        host_eg.change_invites(to_change)
+
+        return redirect(host_eg.get_absolute_url('canvas' in context))
+
     def get_context_data(self, **kwargs):
-        eg = None
-        if 'eg' in self.request.GET:
-            eg = EventGroup.objects.get(id=self.request.GET['eg'])
+        host_eg = None
+        if 'host' in self.request.GET:
+            host_eg = EventGroup.objects.get(id=self.request.GET['host'])
         context = super(EventInviteView, self).get_context_data(**kwargs)
+
+        guest_eg = None
+        if 'guest' in self.request.GET:
+            guest_eg = EventGroup.objects.get(id=self.request.GET['guest'])
+
+        (dates, raw, day_initial, meal_initial) = self.get_meals(host_eg, guest_eg, 'manage' in self.request.GET)
+
+        day_factory = formset_factory(EventInviteDayForm, extra=0)
+        meal_factory = formset_factory(EventInviteMealForm, extra=0)
+
+        day_formset = day_factory(prefix='days', initial=day_initial)
+        meal_formset = meal_factory(prefix='meals', initial=meal_initial)
+
+        dates = self.get_dates(dates, day_formset, meal_formset)
+                
+        context['dates'] = dates
+        context['day_formset'] = day_formset
+        context['meal_formset'] = meal_formset
+        context['json'] = json.dumps(raw)
+        context['host_eg'] = host_eg
+
+        return context
+
+    def get_meals(self, eg, guest_eg=None, manage=False):
         d = { }
-        meals = Meal.objects.filter(event=self.object).order_by('date')
+        if guest_eg:
+            meals = Meal.objects.filter(event=self.object,eg=guest_eg).order_by('date')
+        else:
+            meals = Meal.objects.filter(event=self.object).order_by('date')
         for meal in meals:
-            if meal.state != 'I':
-                if meal.invite and meal.invite.host_eg != eg:
+            if meal.state == 'S' or meal.state == 'C':
+                if not meal.invite:
+                    sys.stderr.write("no invite :(\n")
+                    continue
+            if meal.state == 'N':
+                if manage:
+                    continue
+            else:
+                invite = meal.invite
+                if meal.state == 'I':
+                    try:
+                        invite = MealInvite.objects.get(host_eg=eg, meal=meal)
+                    except MealInvite.DoesNotExist:
+                        invite = None
+                if not invite or invite.host_eg != eg:
+                    sys.stderr.write("not mine\n")
                     continue
             if meal.date not in d:
                 d[meal.date] = []
             d[meal.date].append(meal)
-        dates = []
+
+        raw = []
+        day_initial = []
+        meal_initial = []
+
         keys = d.keys()
         keys.sort()
-        raw = []
-        day_factory = formset_factory(EventInviteDayForm, extra=0)
-        meal_factory = formset_factory(EventInviteMealForm, extra=0)
-        day_initial = []
+
         for date in keys:
-            d[date].sort()
             rec = { 'date' : date.strftime("%b %d"), 'dinner_time' : '', 'meals' : [ ] }
-            day_initial.append({ 'date' : date, 'dinner_time' : '' })
-            meal_initial = []
-            meals = []
+            dinner_time = ''
+            
+            d[date].sort()
             for meal in d[date]:
-                meals.append(meal)
                 rec['meals'].append({
                     'id' : meal.id,
                     'guest_name' : meal.eg.group.name,
@@ -144,33 +291,31 @@ class EventInviteView(HybridCanvasView, DetailView):
                     'notes' : meal.notes,
                 })
                 meal_initial.append({ 'meal_id' : meal.id, 'invited' : (meal.state != 'N') })
+                if not dinner_time:
+                    if meal.invite:
+                        dinner_time = meal.invite.dinner_time
+                    else:
+                        try:    
+                            invite = MealInvite.objects.get(host_eg=eg,meal=meal)
+                            dinner_time = invite.dinner_time
+                        except MealInvite.DoesNotExist:
+                            pass
             raw.append(rec)
-            meal_formset = meal_factory(prefix='d' + date.strftime("%Y%m%d"), initial=meal_initial)
-            m = iter(meals)
-            f = iter(meal_formset)
-            mealsets = []
-            while True:
-                try:
-                    mealsets.append( (m.next(), f.next()) )
-                except:
-                    break
-            dates.append( { 
-                'date' : date, 
-                'meals' : meals,
-                'formset' : meal_formset,
-                'mealsets' : mealsets,
-            } )
-        daysets = []
-        day_formset = day_factory(prefix='days', initial=day_initial)
-        f = iter(day_formset)
-        for d in dates:
-            daysets.append({
-                'date' : d['date'],
-                'form' : f.next(),
-                'mealsets' : d['mealsets'],
-            })
-        context['daysets'] = daysets
-        context['day_formset'] = day_formset
-        context['dates'] = dates
-        context['json'] = json.dumps(raw)
-        return context
+            day_initial.append({ 'date' : date, 'dinner_time' : dinner_time })
+
+        return (d, raw, day_initial, meal_initial)
+
+    def get_dates(self, dates, day_formset, meal_formset):
+        df = iter(day_formset)
+        mf = iter(meal_formset)
+
+        keys = dates.keys()
+        keys.sort()
+        out = []
+        for date in keys:
+            meals = []
+            for meal in dates[date]:
+                meals.append({ 'meal' : meal, 'form' : mf.next() })
+            out.append({ 'date' : date, 'form' : df.next(), 'meals' : meals })
+
+        return out

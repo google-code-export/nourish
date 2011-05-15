@@ -378,7 +378,6 @@ def register_event_host(request, event_id, canvas=False):
             eg = event.group(group)
             if 'features' in features_data:
                 eg.features = ','.join(features_data['features'])
-            eg.dinner_time = grouphost_data['dinner_time']
             if 'playa_address' in grouphost_data:
                 eg.playa_address = grouphost_data['playa_address']
             if 'notes' in grouphost_data:

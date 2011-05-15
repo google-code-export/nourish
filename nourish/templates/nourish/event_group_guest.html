@@ -8,7 +8,7 @@
 {% endif %}
 <br><br>
 {% for eg in host_event_groups %}
-  <a href="{% nurl object %}invite/{{eg.id}}">Invite {{object.group.name}} to dinner with {{ eg.group.name }}</a>
+  <a href="{% nurl object.event %}invite/?guest={{object.id}}&host={{eg.id}}">Invite {{object.group.name}} to dinner with {{ eg.group.name }}</a>
   <br>
 {% endfor %}
 <table class="meals" width="100%">
