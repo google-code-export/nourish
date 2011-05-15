@@ -24,6 +24,7 @@ MEDIA_ROOT = '/home/marcus/fta/media'
 STATIC_ROOT = '/home/marcus/fta/static/'
 
 STATICFILES_DIRS = (
+    os.path.join(LOCALPATH, 'static'),
     os.path.join(os.path.dirname(__file__), 'static'),
 )
 
