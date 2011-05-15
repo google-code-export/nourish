@@ -4,8 +4,11 @@ from nourish.forms import GroupForm
 from django.core.exceptions import PermissionDenied
 from pprint import pformat
 import sys
+import os
 
-from nourish.views.canvas import HybridCanvasView
+sys.stderr.write("PATH " + os.getcwd() + "\n")
+
+from fbcanvas.views import HybridCanvasView
 
 class GroupDetailView(HybridCanvasView, DetailView):
     context_object_name = 'group'

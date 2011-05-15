@@ -14,6 +14,8 @@ class EventForm(ModelForm):
     def clean(self):
         start = self.cleaned_data.get("start_date")
         end = self.cleaned_data.get("end_date")
+        if not start or not end:
+            raise forms.ValidationError("dates must be specified")
         if start < date.today():
             raise forms.ValidationError("start date must be in the future!")
         if start > end:

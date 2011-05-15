@@ -1,15 +1,21 @@
 from django.conf.urls.defaults import patterns, url
 from django.contrib.auth.decorators import login_required
 
-from nourish.views import GroupDetailView, GroupUpdateView, EventDetailView, EventGroupView, EventUpdateView, EventListView, GroupListView, NotificationListView, EventGroupUpdateView, EventInviteView
-from nourish.views.canvas import CanvasTemplateView
+from nourish.views.group import GroupDetailView, GroupUpdateView, GroupListView
+from nourish.views.event import EventDetailView, EventGroupView, EventUpdateView, EventListView, EventGroupUpdateView, EventInviteView
+from nourish.views.notification import NotificationListView 
+from nourish.views.homepage import RootPageView, HomePageView
+from nourish.views.register.event import EventRegisterView
+from nourish.views.register.guest import EventGuestRegisterView
+from nourish.views.register.host import EventHostRegisterView
+from fbcanvas.views import CanvasTemplateView
 from nourish.models import Event, Group
 
 urlpatterns = patterns('',
     url('^logged-in/$', 'nourish.views.homepage_chooser', name='homepage-chooser'),
-    url('^register/event/$', 'nourish.views.register_event', name='register-event' ),
-    url('^home/$', 'nourish.views.homepage', name='homepage'),
-    url('^$',      'nourish.views.rootpage', name='rootpage'),
+    url('^register/event/$', EventRegisterView.as_view(), name='register-event'),
+    url('^home/$', HomePageView.as_view(), name='homepage'),
+    url('^$',      RootPageView.as_view(), name='rootpage'),
 
     url(r'^_notif/$', NotificationListView.as_view(), name='notification-list'),
     url(r'^events/$', EventListView.as_view(), name='event-list'),
@@ -18,10 +24,10 @@ urlpatterns = patterns('',
     url(r'^e/(?P<pk>\d+)-(?P<slug>[^\/]*)/invite/$', EventInviteView.as_view(), name='event-invite'),
     url(r'^e/(?P<pk>\d+)(-[^\/]*)?/edit/$', login_required(EventUpdateView.as_view())),
 
-    url(r'^e/(?P<event_id>\d+)(-[^\/]*)?/register/guest/$', 
-        'nourish.views.register_event_guest'),
-    url(r'^e/(?P<event_id>\d+)(-[^\/]*)?/register/host/$', 
-        'nourish.views.register_event_host'),
+    url(r'^e/(?P<pk>\d+)(-[^\/]*)?/register/guest/$', 
+        EventGuestRegisterView.as_view()),
+    url(r'^e/(?P<pk>\d+)(-[^\/]*)?/register/host/$', 
+        EventHostRegisterView.as_view()),
     url(r'^eg/(?P<pk>\d+)-(?P<slug>[^/]+)/$', 
         EventGroupView.as_view(), name='event-group-detail'),
     url(r'^eg/(?P<pk>\d+)(-[^\/]*)?/edit/$', 
