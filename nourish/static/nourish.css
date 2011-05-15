@@ -125,3 +125,16 @@ div.pending_notif {
     background-color: #fdd;
     text-align: center;
 }
+
+span ul.errorlist {
+    background: #fbb;
+    border: 1px solid red;
+    padding: 3px;
+    margin: 3px;
+    display: inline;
+}
+
+span ul.errorlist li {
+    color: black;
+    display: inline;
+}

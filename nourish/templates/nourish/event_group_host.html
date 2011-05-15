@@ -16,8 +16,8 @@ Features: {{ object.features|default:"None" }}<br>
 {% endif %}
 <h3 style="display: inline;">Invitations</h3>
 {% if is_group_admin %}
-  <span style="font-size: small;">[<a href="{% nurl object %}invites/">Manage Invitations</a>]</span>
-  <span style="font-size: small;">[<a href="{% nurl object.event %}invite/?eg={{ object.id }}">Invite Artists to Dinner!</a>]</span>
+  <span style="font-size: small;">[<a href="{% nurl object.event %}invite/?manage&host={{ object.id }}">Manage Existing Invitations</a>]</span>
+  <span style="font-size: small;">[<a href="{% nurl object.event %}invite/?host={{ object.id }}">Invite More Artists to Dinner</a>]</span>
 {% endif %}
 <br><br>
 <table class="meals">
