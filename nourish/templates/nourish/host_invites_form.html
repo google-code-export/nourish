@@ -6,7 +6,7 @@
 {{ meal_formset.management_form }}
 {{ day_formset.management_form }}
 <ul>
-  {% for d in dates %}
+  {% for d in invite_dates %}
     <li>
       <span>
       {{ d.date|date:"M j" }} <em>({{ d.date|date:"D" }})</em>

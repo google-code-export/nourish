@@ -103,8 +103,9 @@ class EventGroupRegisterView(FBRegisterView, HybridCanvasView, DetailView):
         if self.is_fb():
             try:
                 group = self.group_from_facebook(self.request.facebook.graph, group_data['group'], self.request.user)
-                group.role = self.default_role(),
-                group.save()
+                if group.role == 'U' or not group.role:
+                    group.role = self.default_role(),
+                    group.save()
             except AttributeError:
                 raise FacebookAuthTimeout
         else:
@@ -121,6 +122,8 @@ class EventGroupRegisterView(FBRegisterView, HybridCanvasView, DetailView):
         gu.save()
 
         eg = self.object.group(group)
+        eg.role = self.default_role()
+        eg.save()
 
         return eg
 
