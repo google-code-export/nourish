@@ -8,13 +8,18 @@
 {% block content %}
   {% if object.image_url %}
     <div style="float: left; margin-right: 5px;">
-      <a target="_parent" href="{% nurl host_eg %}"><img width=100 src="{{host_eg.group.image_url}}?type=normal" border=0></a>
+      {% if host_eg %}
+        <a target="_parent" href="{% nurl host_eg %}"><img width=100 src="{{host_eg.group.image_url}}?type=normal" border=0></a>
+      {% endif %}
       <a target="_parent" href="{{ object.url }}"><img width=100 src="{{object.image_url}}?type=normal" border=0></a>
     </div>
   {% endif %}
   <div style="float: left; width: 400px;">
-    <h2 style="display: inline;">{{ host_eg.group.name }}</h2><br>
-    at <h2 style="display: inline;">{{ object.name }}</h2><br>
+    {% if host_eg %}
+      <h2 style="display: inline;">{{ host_eg.group.name }}</h2><br>
+      at
+    {% endif %}
+    <h2 style="display: inline;">{{ object.name }}</h2><br>
     {{ object.start_date }} thru {{ object.end_date }}<br>
   </div>
   <div style="clear: both;"></div>
