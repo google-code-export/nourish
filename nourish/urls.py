@@ -2,12 +2,13 @@ from django.conf.urls.defaults import patterns, url
 from django.contrib.auth.decorators import login_required
 
 from nourish.views.group import GroupDetailView, GroupUpdateView, GroupListView
-from nourish.views.event import EventDetailView, EventGroupView, EventUpdateView, EventListView, EventGroupUpdateView, EventInviteView
+from nourish.views.event import EventDetailView, EventGroupView, EventUpdateView, EventListView, EventGroupUpdateView
 from nourish.views.notification import NotificationListView 
 from nourish.views.homepage import RootPageView, HomePageView
 from nourish.views.register.event import EventRegisterView
 from nourish.views.register.guest import EventGuestRegisterView
 from nourish.views.register.host import EventHostRegisterView
+from nourish.views.register.host_invite import EventHostInviteView
 from fbcanvas.views import CanvasTemplateView
 from nourish.models import Event, Group
 
@@ -21,7 +22,7 @@ urlpatterns = patterns('',
     url(r'^events/$', EventListView.as_view(), name='event-list'),
 
     url(r'^e/(?P<pk>\d+)-(?P<slug>[^\/]*)/$', EventDetailView.as_view(), name='event-detail'),
-    url(r'^e/(?P<pk>\d+)-(?P<slug>[^\/]*)/invite/$', EventInviteView.as_view(), name='event-invite'),
+    url(r'^e/(?P<pk>\d+)-(?P<slug>[^\/]*)/invite/$', EventHostInviteView.as_view(), name='event-invite'),
     url(r'^e/(?P<pk>\d+)(-[^\/]*)?/edit/$', login_required(EventUpdateView.as_view())),
 
     url(r'^e/(?P<pk>\d+)(-[^\/]*)?/register/guest/$', 
