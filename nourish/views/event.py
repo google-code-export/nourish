@@ -4,10 +4,9 @@ from nourish.forms import EventForm, EventGroupHostForm, EventInviteDayForm, Eve
 from nourish.forms.event import EventGroupHostFeaturesForm, EventGroupHostForm
 from nourish.forms.register import RegistrationStubForm
 from nourish.forms.group import GroupForm, GroupFBForm
-from nourish.views.register import get_group_choices
 from django.shortcuts import get_object_or_404, redirect
 from datetime import timedelta
-from nourish.views.canvas import HybridCanvasView
+from fbcanvas.views import HybridCanvasView
 from django.forms.formsets import formset_factory
 import json
 
@@ -260,7 +259,8 @@ class EventInviteView(HybridCanvasView, DetailView):
         }])
         features_formset = FeaturesFormset(prefix='features', initial=[{}])
         if is_fb:
-            choices = get_group_choices(self.request.facebook.graph, self.object, self.request.user)
+#            choices = get_group_choices(self.request.facebook.graph, self.object, self.request.user)
+            choices = []
             group_formset[0].fields['group'].choices = choices
                 
         context['dates'] = dates

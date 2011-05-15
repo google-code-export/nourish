@@ -45,6 +45,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
 #    'django.contrib.messages.middleware.MessageMiddleware',
     'socialregistration.middleware.FacebookMiddleware',
+    'fbcanvas.middleware.CanvasMiddleware',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -72,6 +73,7 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
     'djangotoolbox',
     'socialregistration',
+    'fbcanvas',
 )
 
 AUTH_PROFILE_MODULE = 'nourish.UserProfile'

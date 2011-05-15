@@ -8,7 +8,7 @@ handler500 = 'djangotoolbox.errorviews.server_error'
 
 urlpatterns = patterns('',
     url(r'^nourish/', include('nourish.urls')),
-    url(r'^nourish/fb/', include('nourish.urls', namespace='canvas'), { 'canvas' : True }),
+    url(r'^nourish/fb/', include('nourish.urls', namespace='fbcanvas'), { 'fbcanvas' : True }),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^social/', include('socialregistration.urls')),

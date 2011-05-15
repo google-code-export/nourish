@@ -9,6 +9,7 @@
   <head>
     <title>{% block title %}{% endblock %} - FtA ORS</title>
     <link rel="icon" href="http://www.feedtheartists.net/images/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="/static/base.css">
     {% if canvas %}
       <link rel="stylesheet" type="text/css" href="/static/canvas.css">
     {% else %}
@@ -45,7 +46,11 @@
         {% block content %}{% endblock %}
       </div>
       <div id="site_sidebar">
-        {% include "site/sidebar_header.html" %}
+        {% if canvas %}
+            {% include "site/canvas_sidebar_header.html" %}
+        {% else %}
+            {% include "site/sidebar_header.html" %}
+        {% endif %}
         {% block content-sidebar %}{% endblock %}
         {% block sidebar %}
           {% include "site/sidebar.html" %}

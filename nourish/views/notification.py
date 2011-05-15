@@ -1,6 +1,6 @@
 from django.views.generic import TemplateView
 from django.shortcuts import redirect
-from nourish.views.canvas import HybridCanvasView
+from fbcanvas.views import HybridCanvasView
 from nourish.models import Notification
 
 class NotificationListView(HybridCanvasView, TemplateView):
