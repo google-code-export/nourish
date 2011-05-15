@@ -9,7 +9,7 @@ class RootPageView(HybridCanvasView, TemplateView):
     template_name = "nourish/rootpage.html"
 
     def get_context_data(self, **kwargs):
-        context = super(RootPage, self).get_context_data(**kwargs)
+        context = super(RootPageView, self).get_context_data(**kwargs)
         context['events'] = Event.objects.filter(display=True)
         return context
 
@@ -21,13 +21,13 @@ class RootPageView(HybridCanvasView, TemplateView):
                 if 'count' in request.GET and request.GET['count']:
                     return redirect('/nourish/fb/_notif/?last=%s&ref=bookmarks' % request.GET['count'])
                 return redirect('/nourish/fb/home/')
-        return super(RootPage, self).get(request, **kwargs)
+        return super(RootPageView, self).get(request, **kwargs)
 
 class HomePageView(HybridCanvasView, TemplateView):
     template_name = "nourish/homepage.html"
 
     def get_context_data(self, **kwargs):
-        context = super(HomePage, self).get_context_data(**kwargs)
+        context = super(HomePageView, self).get_context_data(**kwargs)
 
         context['groups'] = [ ]
         context['events'] = []
