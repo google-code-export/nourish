@@ -15,6 +15,7 @@ import array
 import sys
 from pprint import pformat
 from django.core.urlresolvers import reverse
+import iso8601
 
 def register_event(request, canvas=False):
     is_fb = False
@@ -417,7 +418,7 @@ def register_event_host(request, event_id, canvas=False):
 
 def get_group_choices(graph, event, user):
     me = graph.get_object("me")
-    groups = graph.get_object("me/groups")
+    groups = graph.request("me/groups", { "fields" : "owner,name" })
     events = graph.get_object("me/events")
     accounts = graph.get_object("me/accounts")
     sys.stderr.write("me " + pformat(me) + "\n")
@@ -428,9 +429,13 @@ def get_group_choices(graph, event, user):
     if can_select_group(me['name'], event, user):
         choices.append((me['id'], me['name'] + " (Me)"))
     for group in groups['data']:
+        if 'owner' not in group or group['owner']['id'] != me['id']:
+            continue
         if can_select_group(group['name'], event, user):
             choices.append((group['id'], group['name'] + " (Group)"))
     for e in events['data']:
+        if iso8601.parse_date(e['end_time']).replace(tzinfo=None) < datetime.datetime.utcnow():
+            continue
         if can_select_group(e['name'], event, user):
             choices.append((e['id'], e['name'] + " (Event)"))
     for account in accounts['data']:
