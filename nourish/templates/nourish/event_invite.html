@@ -22,7 +22,7 @@
   <h1>Manage Invitations</h1>
 
   <script type="text/javascript">
-    meals_by_date = {{ json|safe }};
+    var uninvitedArtists = [ ];
   </script>
   <form method="post">
   {{ meal_formset.management_form }}
@@ -57,6 +57,19 @@
                 <strong>[{{m.meal.state}}]</strong>
               </label>
             </li>
+            <script type="text/javascript">
+              uninvitedArtists.push({
+                "id" : "{{ m.meal.id }}",
+                "name" : "{{ m.meal.eg.group.name }}",
+                "desc" : "{{ m.meal.eg.group.description }}",
+                "date" : new Date({{ m.meal.date|date:"Y, m, d" }}),
+                "url" : "{{ m.meal.eg.group.url }}",
+                "numPeople" : {{ m.meal.members }},
+                "features": "{{ m.meal.features }}",
+                "invite_input" : document.getElementById("id_{{ m.form.invited.html_name }}"),
+                "date_input" : document.getElementById("id_{{ d.form.dinner_time.html_name }}"),
+              });
+            </script>
           {% endfor %}
         </ul>
       </li>

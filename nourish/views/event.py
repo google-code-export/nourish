@@ -124,14 +124,13 @@ class EventInviteView(HybridCanvasView, DetailView):
 
         context = super(EventInviteView, self).get_context_data(object=self.object)
 
-        (dates, raw, day_initial, meal_initial) = self.get_meals(host_eg, guest_eg, 'manage' in self.request.GET)
+        (dates, day_initial, meal_initial) = self.get_meals(host_eg, guest_eg, 'manage' in self.request.GET)
 
         dates = self.get_dates(dates, day_formset, meal_formset)
 
         context['dates'] = dates
         context['day_formset'] = day_formset
         context['meal_formset'] = meal_formset
-        context['json'] = json.dumps(raw)
         context['host_eg'] = host_eg
 
         if (not meal_formset.is_valid()) or (not day_formset.is_valid()):
@@ -221,7 +220,7 @@ class EventInviteView(HybridCanvasView, DetailView):
         if 'guest' in self.request.GET:
             guest_eg = EventGroup.objects.get(id=self.request.GET['guest'])
 
-        (dates, raw, day_initial, meal_initial) = self.get_meals(host_eg, guest_eg, 'manage' in self.request.GET)
+        (dates, day_initial, meal_initial) = self.get_meals(host_eg, guest_eg, 'manage' in self.request.GET)
 
         day_factory = formset_factory(EventInviteDayForm, extra=0)
         meal_factory = formset_factory(EventInviteMealForm, extra=0)
@@ -234,7 +233,6 @@ class EventInviteView(HybridCanvasView, DetailView):
         context['dates'] = dates
         context['day_formset'] = day_formset
         context['meal_formset'] = meal_formset
-        context['json'] = json.dumps(raw)
         context['host_eg'] = host_eg
 
         return context
@@ -267,7 +265,6 @@ class EventInviteView(HybridCanvasView, DetailView):
                 d[meal.date] = []
             d[meal.date].append(meal)
 
-        raw = []
         day_initial = []
         meal_initial = []
 
@@ -275,21 +272,8 @@ class EventInviteView(HybridCanvasView, DetailView):
         keys.sort()
 
         for date in keys:
-            rec = { 'date' : date.strftime("%b %d"), 'dinner_time' : '', 'meals' : [ ] }
             dinner_time = ''
-            
-            d[date].sort()
             for meal in d[date]:
-                rec['meals'].append({
-                    'id' : meal.id,
-                    'guest_name' : meal.eg.group.name,
-                    'guest_url' : meal.eg.group.url,
-                    'guest_image_url' : meal.eg.group.image_url,
-                    'diners' : meal.members,
-                    'features' : meal.features,
-                    'state' : meal.state,
-                    'notes' : meal.notes,
-                })
                 meal_initial.append({ 'meal_id' : meal.id, 'invited' : (meal.state != 'N') })
                 if not dinner_time:
                     if meal.invite:
@@ -300,10 +284,9 @@ class EventInviteView(HybridCanvasView, DetailView):
                             dinner_time = invite.dinner_time
                         except MealInvite.DoesNotExist:
                             pass
-            raw.append(rec)
             day_initial.append({ 'date' : date, 'dinner_time' : dinner_time })
 
-        return (d, raw, day_initial, meal_initial)
+        return (d, day_initial, meal_initial)
 
     def get_dates(self, dates, day_formset, meal_formset):
         df = iter(day_formset)
