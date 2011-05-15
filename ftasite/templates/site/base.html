@@ -26,6 +26,18 @@
   <body>
     <div id="content_main">
       <div id="site_wrap">
+      <div id="fta_header">
+        <img src="../../static/image/tophead1.jpg" usemap="#Map"></img>
+      </div>
+      <map name="Map">
+          <area target="_blank" href="FtA-Vision.pdf" coords="119,62,207,110" shape="rect">
+          <area target="_blank" href="FtA-history.pdf" coords="217,39,316,83" shape="rect">
+          <area alt="FtA-2011" target="_blank" href="FtA-2011.pdf" coords="333,28,403,67" shape="rect">
+          <area target="_blank" href="FtA-QandA.pdf" coords="424,24,491,68" shape="rect">
+          <area target="_parent" href="archives.html" coords="511,23,636,73" shape="rect">
+          <area href="contactus.html" coords="755,59,899,110" shape="rect">
+          <area href="whatpeoplearesaying.html" coords="662,42,739,77" shape="rect">
+      </map>
       <div id="site_content">
         <div id="site_header">
           {% block header %}
@@ -52,6 +64,7 @@
         {% endblock %}
       </div>
       <div id="site_footer">
+        <div style="height: 50px"></div>
         {% block content-footer %}{% endblock %}
         {% block footer %}
           {% include "site/footer.html" %}

@@ -12,6 +12,10 @@ A {
     text-decoration: none;
 }
 
+#fta_header {
+    height: 123px;
+}
+
 #site_sidebar A {
     color: #700;
 }
@@ -56,27 +60,32 @@ A:hover {
 
 #site_sidebar {
     float:right;
-    width:200px;
+    width:210px;
     padding:10px;
     background:#ffffff;
 }
+
 #site_footer {
     clear:both;
     padding:5px 10px;
-    background:#ccc;
+    height: 105px;
+    background:url('/static/image/bottombg1.jpg');
 }
+
 #site_footer p {
     margin:0;
 }
 * html #site_footer {
     height:1px;
 }
+
 #site_footer_links {
     float: left;
     color: black;
+    vertical-align: bottom;
 }
 #site_footer_links A {
-    color: black;
+    color: white;
     text-decoration: underline;
 }
 #site_footer_links A:hover {
@@ -104,5 +113,5 @@ A:hover {
 }
 
 #content_main {
-    background-color: white;
+    background-color: #312112;
 }
