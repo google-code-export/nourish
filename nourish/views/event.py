@@ -7,6 +7,7 @@ from nourish.forms.group import GroupForm, GroupFBForm
 from django.shortcuts import get_object_or_404, redirect
 from datetime import timedelta
 from fbcanvas.views import HybridCanvasView
+from nourish.views.register.host import EventHostRegisterView
 from django.forms.formsets import formset_factory
 import json
 
@@ -103,50 +104,77 @@ class EventGroupUpdateView(HybridCanvasView, UpdateView):
         return super(EventGroupUpdateView, self).post(request, *args, **kwargs)
 
 
-class EventInviteView(HybridCanvasView, DetailView):
-    context_object_name = 'event_invite'
-    model = Event
+class EventInviteView(EventHostRegisterView):
     template_name = 'nourish/event_invite.html'
 
-    def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        if 'host' not in request.GET:
-            raise Exception("no host_eg specified")
-        host_eg = EventGroup.objects.get(id=request.GET['host'])
-        if not request.user.is_authenticated() or not host_eg.group.is_admin(request.user):
-            raise PermissionDenied
-        guest_eg = None
-        if 'guest' in request.GET:
-            guest_eg = EventGroup.objects.get(id=request.GET['guest'])
-    
+    def get_post_formsets(self, request):
+        formsets = super(EventInviteView, self).get_post_formsets(request)
+
         day_factory = formset_factory(EventInviteDayForm, extra=0)
         meal_factory = formset_factory(EventInviteMealForm, extra=0)
 
-        day_formset = day_factory(request.POST, prefix='days')
-        meal_formset = meal_factory(request.POST, prefix='meals')
+        formsets['day_formset'] = day_factory(request.POST, prefix='days')
+        formsets['meal_formset'] = meal_factory(request.POST, prefix='meals')
 
-        context = super(EventInviteView, self).get_context_data(object=self.object)
+        return formsets
 
         (dates, day_initial, meal_initial) = self.get_meals(host_eg, guest_eg, 'manage' in self.request.GET)
+        dates = self.get_meal_dates(dates, day_formset, meal_formset)
 
-        dates = self.get_dates(dates, day_formset, meal_formset)
+    def formsets_valid(self, formsets):
+        (host_eg, guest_eg) = self.get_egs()
+        (dates, day_initial, meal_initial) = self.get_meals(host_eg, guest_eg, 'manage' in self.request.GET)
+        dates = self.get_meal_dates(dates, formsets['day_formset'], formsets['meal_formset'])
+        sys.stderr.write("SETTING DATES\n\n" + pformat(dates) + "\n")
+        formsets['invite_dates'] = dates
 
-        context['dates'] = dates
-        context['day_formset'] = day_formset
-        context['meal_formset'] = meal_formset
-        context['host_eg'] = host_eg
+        if not self.request.user.is_authenticated():
+            if not formsets['user_formset'].is_valid():
+                return False
+        if 'host_eg' not in self.request.GET:
+            if not formsets['group_formset'].is_valid():
+                return False
+            if not formsets['grouphost_formset'].is_valid():
+                return False
+        if not formsets['day_formset'].is_valid():
+            return False
+        if not formsets['meal_formset'].is_valid():
+            return False
 
-        if (not meal_formset.is_valid()) or (not day_formset.is_valid()):
-            context['error'] = True
-            return self.render_to_response(context)
+        dd = iter(formsets['day_formset'].cleaned_data)
+        md = iter(formsets['meal_formset'].cleaned_data)
 
-        day_data = day_formset.cleaned_data
-        meal_data = meal_formset.cleaned_data
+        missing = False
+        for day in dates:
+            needed = False
+            for meal in day['meals']:
+                data = md.next()
+                if data['invited']:
+                    needed = True
+            data = dd.next()
+            if needed and not data['dinner_time']:
+                day['form'].errors['dinner_time'] = ['You must specify a dinner time']
+                missing = True
+        if missing:
+            return False
+
+        return True
+
+    def save_changes(self, formsets):
+        (host_eg, guest_eg) = self.get_egs()
+        if not host_eg:
+            host_eg = super(EventInviteView, self).save_changes(formsets)
+
+        day_data = formsets['day_formset'].cleaned_data
+        meal_data = formsets['meal_formset'].cleaned_data
 
         dd = iter(day_data)
         md = iter(meal_data)
         
         missing = False;
+
+        (dates, day_initial, meal_initial) = self.get_meals(host_eg, guest_eg, 'manage' in self.request.GET)
+        dates = self.get_meal_dates(dates, formsets['day_formset'], formsets['meal_formset'])
 
         for day in dates:
             needed = False
@@ -177,11 +205,6 @@ class EventInviteView(HybridCanvasView, DetailView):
             for m in day['meals']:
                 mdata = md.next()
                 meal = Meal.objects.get(id = mdata['meal_id'])
-#                if meal.state != 'N' and not meal.invite:
-                    # drop bad invites 
-                    # meal.state = 'N'
-                    # meal.save()
-                    # continue;
                 if (meal.state == 'N'):
                     if 'invited' in mdata and mdata['invited']:
                         to_invite.append( (meal, dinner_time) )
@@ -211,69 +234,41 @@ class EventInviteView(HybridCanvasView, DetailView):
         host_eg.send_invites(to_invite)
         host_eg.change_invites(to_change)
 
-        return redirect(host_eg.get_absolute_url('canvas' in context))
+        return host_eg
 
-    def get_context_data(self, **kwargs):
+    def get_egs(self):
         host_eg = None
         if 'host' in self.request.GET:
             host_eg = EventGroup.objects.get(id=self.request.GET['host'])
-        context = super(EventInviteView, self).get_context_data(**kwargs)
 
         guest_eg = None
         if 'guest' in self.request.GET:
             guest_eg = EventGroup.objects.get(id=self.request.GET['guest'])
 
+        return (host_eg, guest_eg)
+
+    def default_role(self):
+        return 'T'
+
+    def get_context_data(self, **kwargs):
+        context = super(EventInviteView, self).get_context_data(**kwargs)
+
+        (host_eg, guest_eg) = self.get_egs()
+
         (dates, day_initial, meal_initial) = self.get_meals(host_eg, guest_eg, 'manage' in self.request.GET)
 
         day_factory = formset_factory(EventInviteDayForm, extra=0)
         meal_factory = formset_factory(EventInviteMealForm, extra=0)
-
         day_formset = day_factory(prefix='days', initial=day_initial)
         meal_formset = meal_factory(prefix='meals', initial=meal_initial)
 
-        dates = self.get_dates(dates, day_formset, meal_formset)
+        dates = self.get_meal_dates(dates, day_formset, meal_formset)
 
-        is_fb = False
-        if self.request.user.is_authenticated() and self.request.user.get_profile().provider == 'F':
-            is_fb = True
-        if 'nofb' in self.request.GET:
-            is_fb = False
-
-        RegistrationFormset = formset_factory(RegistrationStubForm, extra=0)
-        GroupHostFormset = formset_factory(EventGroupHostForm, extra=0)
-        FeaturesFormset = formset_factory(EventGroupHostFeaturesForm, extra=0)
-        if is_fb:
-            GroupFormset = formset_factory(GroupFBForm, extra=0)
-        else:
-            GroupFormset = formset_factory(GroupForm, extra=0)
-
-        user_formset = RegistrationFormset(prefix='user', initial=[{
-            'role': 'A',
-        }])
-        grouphost_formset = GroupHostFormset(prefix='grouphost', initial=[{
-            'dinner_time' : '6:00pm',
-            'features' : [ 'd', 'p' ],
-        }])
-        group_formset = GroupFormset(prefix='group', initial=[{
-            'role' : 'A',
-        }])
-        features_formset = FeaturesFormset(prefix='features', initial=[{}])
-        if is_fb:
-#            choices = get_group_choices(self.request.facebook.graph, self.object, self.request.user)
-            choices = []
-            group_formset[0].fields['group'].choices = choices
-                
-        context['dates'] = dates
+        context['invite_dates'] = dates
         context['day_formset'] = day_formset
         context['meal_formset'] = meal_formset
         context['host_eg'] = host_eg
-
-        context['user_formset'] = user_formset
-        context['grouphost_formset'] = grouphost_formset
-        context['group_formset'] = group_formset
-        context['features_formset'] = features_formset
-
-        context['is_fb'] = is_fb
+        context['guest_eg'] = guest_eg
 
         return context
 
@@ -328,7 +323,7 @@ class EventInviteView(HybridCanvasView, DetailView):
 
         return (d, day_initial, meal_initial)
 
-    def get_dates(self, dates, day_formset, meal_formset):
+    def get_meal_dates(self, dates, day_formset, meal_formset):
         df = iter(day_formset)
         mf = iter(meal_formset)
 

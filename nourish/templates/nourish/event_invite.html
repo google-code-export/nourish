@@ -27,26 +27,34 @@
   <h1>Manage Invitations</h1>
 
   <form method="post">
+    {{ user_formset.management_form }}
+    {{ group_formset.management_form }}
+    {{ grouphost_formset.management_form }}
+    {{ features_formset.management_form }}
 
-  {% if not user.is_authenticated %} 
-    {% include "nourish/user_registration_form.html" %}
-  {% endif %}
-
-  {% if not host_eg %}
-    {% if is_fb %}
-      {% include "nourish/group_select_form.html" %}
+    {% if not user.is_authenticated and not request.GET.u %}
+      {% include "nourish/please_connect.html" %}
     {% else %}
-      {% include "nourish/group_registration_form.html" %}
-    {% endif %}
+      {% if not user.is_authenticated %} 
+        {% include "nourish/user_registration_form.html" %}
+      {% endif %}
 
-    {% if group_formset.0.group.field.choices or not is_fb %}
-      {% include "nourish/host_meal_form.html" %}
-    {% endif %}
+      {% if not host_eg %}
+        {% if is_fb %}
+          {% include "nourish/group_select_form.html" %}
+        {% else %}
+          {% include "nourish/group_registration_form.html" %}
+        {% endif %}
+
+        {% if group_formset.0.group.field.choices or not is_fb %}
+          {% include "nourish/host_meal_form.html" %}
+        {% endif %}
+      {% endif %}
+
+      {% include "nourish/host_invites_form.html" %}
+      <br>
+      <input type="submit" value="Send Invites">
+    </form>
   {% endif %}
-
-  {% include "nourish/host_invites_form.html" %}
-  <br>
-  <input type="submit" value="Send Invites">
-  </form>
 
 {% endblock %}
