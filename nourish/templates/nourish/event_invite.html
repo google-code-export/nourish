@@ -26,60 +26,25 @@
 {% block content-body %}
   <h1>Manage Invitations</h1>
 
-  <script type="text/javascript">
-    var uninvitedArtists = [ ];
-  </script>
   <form method="post">
-  {{ meal_formset.management_form }}
-  {{ day_formset.management_form }}
-  <ul>
-    {% for d in dates %}
-      <li>
-        <span>
-        {{ d.date|date:"M j" }} <em>({{ d.date|date:"D" }})</em>
-        {% for field in d.form.hidden_fields %}
-          {{ field }}
-        {% endfor %}
-        {{ d.form.dinner_time }}
-        {% if d.form.dinner_time.errors %}
-          <ul class="errorlist">
-            {% for error in d.form.dinner_time.errors %}
-              <li>{{ error }}</li>
-            {% endfor %}
-          </ul>
-        {% endif %}
-        </span>
-        <ul>
-          {% for m in d.meals %}
-            <li>
-              <label for="id_{{ m.form.invited.html_name}}">
-                {% for field in m.form.hidden_fields %}
-                  {{ field }}
-                {% endfor %}
-                {{ m.form.invited }}
-                <a href="{% nurl m.meal.eg %}">{{ m.meal.eg.group.name }}</a>
-                <em>({{ m.meal.members }} diners, {{ m.meal.features }})</em>
-                <strong>[{{m.meal.state}}]</strong>
-              </label>
-            </li>
-            <script type="text/javascript">
-              uninvitedArtists.push({
-                "id" : "{{ m.meal.id }}",
-                "name" : "{{ m.meal.eg.group.name }}",
-                "desc" : "{{ m.meal.eg.group.description }}",
-                "date" : new Date({{ m.meal.date|date:"Y, m, d" }}),
-                "url" : "{{ m.meal.eg.group.url }}",
-                "numPeople" : {{ m.meal.members }},
-                "features": "{{ m.meal.features }}",
-                "invite_input" : document.getElementById("id_{{ m.form.invited.html_name }}"),
-                "date_input" : document.getElementById("id_{{ d.form.dinner_time.html_name }}"),
-              });
-            </script>
-          {% endfor %}
-        </ul>
-      </li>
-    {% endfor %}
-  </ul>
+
+  {% if not user.is_authenticated %} 
+    {% include "nourish/user_registration_form.html" %}
+  {% endif %}
+
+  {% if not host_eg %}
+    {% if is_fb %}
+      {% include "nourish/group_select_form.html" %}
+    {% else %}
+      {% include "nourish/group_registration_form.html" %}
+    {% endif %}
+
+    {% if group_formset.0.group.field.choices or not is_fb %}
+      {% include "nourish/host_meal_form.html" %}
+    {% endif %}
+  {% endif %}
+
+  {% include "nourish/host_invites_form.html" %}
   <br>
   <input type="submit" value="Send Invites">
   </form>
