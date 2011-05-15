@@ -9,56 +9,6 @@ from datetime import timedelta
 import sys
 from pprint import pformat
 
-def event_guest_invite(request, pk, host_eg_id, canvas=False):
-    eg = EventGroup.objects.get(id=pk)
-    host_eg = EventGroup.objects.get(id=host_eg_id)
-    event = eg.event
-    meals = Meal.objects.filter(eg=eg,state__in=['N','I','S'])
-    if request.method == 'POST': 
-        form = EventGroupInviteForm(request.POST) # A form bound to the POST data
-        form.fields['meals'].queryset = meals
-        if form.is_valid():
-            data = form.cleaned_data
-            to_invite = []
-            to_rescind = []
-            for meal in meals:
-                if meal in data['meals']:
-                    try:
-                        invite = MealInvite.objects.get(meal=meal,host_eg=host_eg)
-                    except MealInvite.DoesNotExist:
-                        to_invite.append(meal)
-                else:
-                    try:
-                        invite = MealInvite.objects.get(meal=meal,host_eg=host_eg)
-                    except MealInvite.DoesNotExist:
-                        continue
-                    to_rescind.append(invite)
-
-            host_eg.send_invites(to_invite)
-            host_eg.rescind_invites(to_rescind)
-
-            return redirect(eg.get_absolute_url(canvas)) # Redirect after POST
-
-    else:
-        form = EventGroupInviteForm() # An unbound form
-
-        ms = []
-        for meal in meals:
-            ms.append(meal.id)
-
-        form.fields['meals'].queryset = meals
-
-        form.initial = { 'meals' : ms }
-
-    return render_to_response('nourish/event_guest_invite.html', {
-        'form': form,
-        'host_eg': host_eg,
-        'eg': eg,
-        'event' : event,
-        'request': request,
-        'canvas': canvas,
-    }, context_instance=RequestContext(request))
-
 @login_required
 def event_guest_meals(request, pk, canvas=False):
     eg = EventGroup.objects.get(id=pk)
@@ -198,56 +148,4 @@ def event_guest_meals(request, pk, canvas=False):
         'days' : iter(dates),
         'f_m' : forms_and_meals,
         'canvas' : canvas
-    }, context_instance=RequestContext(request))
-
-def event_host_invites(request, pk, canvas=False):
-    eg = EventGroup.objects.get(id=pk)
-    event = eg.event
-    
-    initial = [] 
-    invites = { }
-    for invite in MealInvite.objects.filter(host_eg=eg):
-        action = False
-        if invite.state == 'S':
-            action = True
-        initial.append({
-            'invite_id' : invite.id,
-            'action' : action
-        })
-        invites[invite.id] = invite
-
-    InvitesFormSet = formset_factory(EventGroupInvitesForm,extra=0)
-    if request.method == 'POST': # If the form has been submitted...
-        formset = InvitesFormSet(request.POST)
-        if formset.is_valid(): # All validation rules pass
-            to_confirm = []
-            to_rescind = []
-            data = formset.cleaned_data
-            for form in data:
-                invite = invites[int(form['invite_id'])]
-                if form['action']:
-                    if invite.state == 'S':
-                        to_confirm.append(invite)
-                    else:
-                        to_rescind.append(invite)
-            eg.confirm_invites(to_confirm)
-            eg.rescind_invites(to_rescind)
-            return redirect(eg.get_absolute_url(canvas)) 
-
-    else:
-        formset = InvitesFormSet(initial=initial)
-
-    forms = { 'N' : [ ], 'S' : [ ], 'C' : [ ], 'R' : [ ], }
-    for form in formset:
-        invite = invites[int(form['invite_id'].value())]
-        forms[invite.state].append((form,invite))
-
-    return render_to_response('nourish/event_host_invites.html', {
-        'formset': formset,
-        'eg': eg,
-        'event' : event,
-        'request' : request,
-        'invites' : invites,
-        'forms' : forms,
-        'canvas' : canvas,
     }, context_instance=RequestContext(request))
