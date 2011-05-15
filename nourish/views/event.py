@@ -1,6 +1,10 @@
 from django.views.generic import DetailView, UpdateView, ListView
 from nourish.models import EventGroup, Event, GroupUser, Meal, MealInvite, EventUser
 from nourish.forms import EventForm, EventGroupHostForm, EventInviteDayForm, EventInviteMealForm
+from nourish.forms.event import EventGroupHostFeaturesForm, EventGroupHostForm
+from nourish.forms.register import RegistrationStubForm
+from nourish.forms.group import GroupForm, GroupFBForm
+from nourish.views.register import get_group_choices
 from django.shortcuts import get_object_or_404, redirect
 from datetime import timedelta
 from nourish.views.canvas import HybridCanvasView
@@ -229,11 +233,47 @@ class EventInviteView(HybridCanvasView, DetailView):
         meal_formset = meal_factory(prefix='meals', initial=meal_initial)
 
         dates = self.get_dates(dates, day_formset, meal_formset)
+
+        is_fb = False
+        if self.request.user.is_authenticated() and self.request.user.get_profile().provider == 'F':
+            is_fb = True
+        if 'nofb' in self.request.GET:
+            is_fb = False
+
+        RegistrationFormset = formset_factory(RegistrationStubForm, extra=0)
+        GroupHostFormset = formset_factory(EventGroupHostForm, extra=0)
+        FeaturesFormset = formset_factory(EventGroupHostFeaturesForm, extra=0)
+        if is_fb:
+            GroupFormset = formset_factory(GroupFBForm, extra=0)
+        else:
+            GroupFormset = formset_factory(GroupForm, extra=0)
+
+        user_formset = RegistrationFormset(prefix='user', initial=[{
+            'role': 'A',
+        }])
+        grouphost_formset = GroupHostFormset(prefix='grouphost', initial=[{
+            'dinner_time' : '6:00pm',
+            'features' : [ 'd', 'p' ],
+        }])
+        group_formset = GroupFormset(prefix='group', initial=[{
+            'role' : 'A',
+        }])
+        features_formset = FeaturesFormset(prefix='features', initial=[{}])
+        if is_fb:
+            choices = get_group_choices(self.request.facebook.graph, self.object, self.request.user)
+            group_formset[0].fields['group'].choices = choices
                 
         context['dates'] = dates
         context['day_formset'] = day_formset
         context['meal_formset'] = meal_formset
         context['host_eg'] = host_eg
+
+        context['user_formset'] = user_formset
+        context['grouphost_formset'] = grouphost_formset
+        context['group_formset'] = group_formset
+        context['features_formset'] = features_formset
+
+        context['is_fb'] = is_fb
 
         return context
 
