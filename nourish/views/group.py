@@ -13,7 +13,7 @@ from fbcanvas.views import HybridCanvasView
 class GroupDetailView(HybridCanvasView, DetailView):
     context_object_name = 'group'
     model = Group
-    template_name='nourish/group_detail.html'
+    template_name='nourish/GroupDetailView.html'
 
     def get_context_data(self, **kwargs):
         context = super(GroupDetailView, self).get_context_data(**kwargs)
@@ -47,5 +47,4 @@ class GroupUpdateView(HybridCanvasView, UpdateView):
 
 class GroupListView(HybridCanvasView, ListView):
     model=Group
-    template_name='nourish/group_list.html'
-
+    template_name='nourish/GroupListView.html'

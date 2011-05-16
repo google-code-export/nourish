@@ -16,7 +16,7 @@ from pprint import pformat
 import pprint
 
 class EventHostInviteView(EventHostRegisterView):
-    template_name = 'nourish/event_invite.html'
+    template_name = 'nourish/EventHostInviteView.html'
 
     def get_post_formsets(self, request):
         formsets = super(EventHostInviteView, self).get_post_formsets(request)

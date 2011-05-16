@@ -11,7 +11,7 @@ from django.views.generic import TemplateView, DetailView
 from nourish.views.register.group import EventGroupRegisterView
 
 class EventHostRegisterView(EventGroupRegisterView):
-    template_name = "nourish/register_event_host.html"
+    template_name = "nourish/EventGroupRegisterView.html"
 
     def default_role(self):
         return 'T'

@@ -9,7 +9,7 @@ from django.views.generic import TemplateView, DetailView
 from nourish.views.register.group import EventGroupRegisterView
 
 class EventGuestRegisterView(EventGroupRegisterView):
-    template_name = "nourish/register_event_guest.html"
+    template_name = "nourish/EventGuestRegisterView.html"
 
     def default_role(self):
         return 'A'

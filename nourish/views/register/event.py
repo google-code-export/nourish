@@ -18,7 +18,7 @@ from django.views.generic import TemplateView, DetailView
 from nourish.views.register.base import FBRegisterView
 
 class EventRegisterView(FBRegisterView, HybridCanvasView, TemplateView):
-    template_name = 'nourish/register_event.html'
+    template_name = 'nourish/EventRegisterView.html'
 
     def get_context_data(self, **kwargs):
         context = super(EventRegisterView, self).get_context_data(**kwargs)
