@@ -37,12 +37,16 @@ class EventHostInviteView(EventHostRegisterView):
         (dates, day_initial, meal_initial) = self.get_meals(host_eg, guest_eg, 'manage' in self.request.GET)
         dates = self.get_meal_dates(dates, formsets['day_formset'], formsets['meal_formset'])
         sys.stderr.write("SETTING DATES\n\n" + pformat(dates) + "\n")
+
+        # XXX - at least this gets it into the context...
         formsets['invite_dates'] = dates
+        formsets['host_eg'] = host_eg
+        formsets['guest_eg'] = guest_eg
 
         if not self.request.user.is_authenticated():
             if not formsets['user_formset'].is_valid():
                 return False
-        if 'host_eg' not in self.request.GET:
+        if not host_eg:
             if not formsets['group_formset'].is_valid():
                 return False
             if not formsets['grouphost_formset'].is_valid():
