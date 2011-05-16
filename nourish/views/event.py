@@ -18,7 +18,7 @@ import pprint
 class EventDetailView(HybridCanvasView, DetailView):
     context_object_name = 'event'
     model = Event
-    template_name='nourish/event_detail.html'
+    template_name='nourish/EventDetailView.html'
 
     def get_context_data(self, **kwargs):
         context = super(EventDetailView, self).get_context_data(**kwargs)
@@ -36,7 +36,7 @@ class EventDetailView(HybridCanvasView, DetailView):
 class EventGroupView(HybridCanvasView, DetailView):
     context_object_name = 'event_group'
     model = EventGroup
-    template_name='nourish/event_group.html'
+    template_name='nourish/EventGroupView.html'
     
     def get_context_data(self, **kwargs):
         context = super(EventGroupView, self).get_context_data(**kwargs)
@@ -84,7 +84,7 @@ class EventUpdateView(HybridCanvasView, UpdateView):
         return super(EventUpdateView, self).post(request, *args, **kwargs)
 
 class EventListView(HybridCanvasView, ListView):
-    template_name='nourish/event_list.html',
+    template_name='nourish/EventListView.html',
     queryset=Event.objects.filter(display=True)
 
 class EventGroupUpdateView(HybridCanvasView, UpdateView):

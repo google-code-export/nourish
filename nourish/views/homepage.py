@@ -6,7 +6,7 @@ from fbcanvas.views import HybridCanvasView
 import re
 
 class RootPageView(HybridCanvasView, TemplateView):
-    template_name = "nourish/rootpage.html"
+    template_name = "nourish/RootPageView.html"
 
     def get_context_data(self, **kwargs):
         context = super(RootPageView, self).get_context_data(**kwargs)
@@ -24,7 +24,7 @@ class RootPageView(HybridCanvasView, TemplateView):
         return super(RootPageView, self).get(request, **kwargs)
 
 class HomePageView(HybridCanvasView, TemplateView):
-    template_name = "nourish/homepage.html"
+    template_name = "nourish/HomePageView.html"
 
     def get_context_data(self, **kwargs):
         context = super(HomePageView, self).get_context_data(**kwargs)
