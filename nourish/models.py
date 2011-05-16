@@ -530,6 +530,12 @@ class Meal(models.Model):
         self.notes = ''.join(data['notes'])
         self.save()
 
+    def invites(self):
+        if self.state in ('S', 'C'):
+            return [ self.invite ]
+        if self.state == 'N':
+            return [ ]
+        return list(MealInvite.objects.filter(meal=self))
 
 class Notification(object):
     def __init__(self, *args, **kwargs):
