@@ -1,0 +1,26 @@
+<tr class="meal"><th rowspan=3 class="first">
+{{ f.form.meal_id }} {{ f.date|date:"N j" }} <em>({{ f.date|date:"D." }})</em>
+</th>
+<td colspan=3>
+{{ f.form.non_field_errors }}
+</td>
+<tr>
+<td>{{ f.form.members.errors }}
+    {{ f.form.members }}</td>
+<td>{{ f.form.features.errors }}
+    {{ f.form.features }}</td>
+<td>{{ f.form.notes.errors }}
+    {{ f.form.notes }}</td>
+</tr>
+<tr> <td colspan=3>
+        {{ f.form.invite.errors }}
+    {% if f.meal.state == 'C' %}
+      <em>Confirmed with {{ f.meal.invite.host_eg.group.name }}</em>
+    {% else %}
+      {% if f.form.fields.invite.choices %}
+        {{ f.form.invite.errors }}
+        {{ f.form.invite }}
+      {% endif %}
+    {% endif %}
+</td> </tr>
+
