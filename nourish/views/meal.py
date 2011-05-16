@@ -1,151 +1,151 @@
 from django.shortcuts import render_to_response, redirect
 from django.core.exceptions import PermissionDenied
-from django.template import RequestContext
-from nourish.models import GroupUser, EventGroup, Meal, MealInvite
-from nourish.forms.meal import EventGroupInviteForm, EventGroupMealForm, EventGroupInvitesForm
+from nourish.models import EventGroup, Meal, MealInvite
+from nourish.forms.meal import EventGroupMealForm
 from django.forms.formsets import formset_factory
-from django.contrib.auth.decorators import login_required
 from datetime import timedelta
-import sys
-from pprint import pformat
+from fbcanvas.views import HybridCanvasView
+from django.views.generic import DetailView
 
-@login_required
-def event_guest_meals(request, pk, canvas=False):
-    eg = EventGroup.objects.get(id=pk)
-    event = eg.event
+class EventGuestManageView(HybridCanvasView, DetailView):
+    template_name = "nourish/EventGuestManageView.html"
+    context_object_name = 'eg'
+    model = EventGroup
 
-    try:
-        gu = GroupUser.objects.get(group=eg.group,user=request.user,admin=True)
-    except GroupUser.DoesNotExist:
-        raise PermissionDenied
+    def get_context_data(self, **kwargs):
+        context = super(EventGuestManageView, self).get_context_data(**kwargs)
 
-    dates = []
-    date = event.start_date
-    while date <= event.end_date:
-        dates.append(date)
-        date += timedelta(days=1)
+        (meals_by_date, invites_by_meal) = self.meals_info()
 
-    show_meals = [ ('D', 'Dinner') ]
-
-    meals = Meal.objects.filter(eg=eg)
-    invites = MealInvite.objects.filter(guest_eg=eg)
-
-    m = {}
-    for meal in meals:
-        k = str(meal.date) + ':' + meal.meal
-        m[k] = meal
-    meals = m
-
-
-    invites_by_meal = {}
-    for invite in invites:
-        if invite.meal not in invites_by_meal:
-            invites_by_meal[invite.meal] = []
-        invites_by_meal[invite.meal].append(invite)
-    
-    initial = []
-    choices = []
-    display_info = []
-    has_invites = []
-    mealset = []
-    for date in dates:
-        for sm in show_meals:
-            display_info.append(sm[1])
-            k = str(date) + ':' + sm[0]
-            i = { 'date' : date, 'meal' : sm[0] }
-            c = [ ]
-            if k in meals:
-                has_invites.append(True)
-                i['meal_id'] = meals[k].id
-                i['meal'] = meals[k].meal
-                i['members'] = meals[k].members
-                i['features'] = meals[k].features
-                i['notes'] = meals[k].notes
-                if meals[k].invite:
-                    i['invite'] = str(meals[k].invite.id)
+        initial = []
+        for date in self.get_dates():
+            if date in meals_by_date:
+                meal = meals_by_date[date]
+                if meal.invite:
+                    invite = str(meal.invite.id)
                 else:
-                    i['invite'] = 'un'
-                meal = Meal.objects.get(id=meals[k].id)
-                if meal.state in [ 'I', 'S' ]:
-                    c.append(('un', 'Select an Invitation!'))
-                    if meals[k] in invites_by_meal:
-                        for invite in invites_by_meal[meals[k]]:
-                            c.append( ( invite.id, invite.host_eg.group.name ) )
-                mealset.append(meals[k])
+                    invite = 'un'
+                initial.append({
+                    'meal_id' : meal.id,
+                    'members' : meal.members,
+                    'features' : meal.features,
+                    'notes' : meal.notes,
+                    'invite' : invite,
+                })
             else:
-                mealset.append(None)
-                has_invites.append(False)
-            choices.append(c)
-            initial.append(i)
+                initial.append({})
 
-    MealFormSet = formset_factory(EventGroupMealForm,extra=0)
-    if request.method == 'POST':
+        MealFormSet = formset_factory(EventGroupMealForm,extra=0)
+        meal_formset = MealFormSet(initial=initial)
+
+        forms = self.forms_by_date(meal_formset, meals_by_date, invites_by_meal)
+
+        context['meal_formset'] = meal_formset
+        context['forms_by_date'] = forms
+
+        return context
+
+    def forms_by_date(self, formset, meals_by_date, invites_by_meal):
+        f = iter(formset)
+
+        forms = []
+
+        for date in self.get_dates():
+            form = f.next()
+            if date in meals_by_date:
+                meal = meals_by_date[date]
+            else:
+                meal = None
+            if meal in invites_by_meal:
+                choices = [ ('un', 'Choose an Invite') ]
+                for invite in invites_by_meal[meal]:
+                    choices.append( (invite.id, invite.host_eg.group.name) )
+                form.fields['invite'].choices = choices
+            forms.append({'form' : form, 'date' : date, 'meal' : meal })
+
+        return forms
+
+    def get_dates(self):
+        dates = []
+        date = self.object.event.start_date
+        while date <= self.object.event.end_date:
+            dates.append(date)
+            date += timedelta(days=1)
+        return dates
+
+    def meals_info(self):
+        meals = Meal.objects.filter(eg=self.object)
+        invites = MealInvite.objects.filter(guest_eg=self.object)
+
+        invites_by_meal = {}
+        for invite in invites:
+            if invite.meal not in invites_by_meal:
+                invites_by_meal[invite.meal] = []
+            invites_by_meal[invite.meal].append(invite)
+
+        meals_by_date = {}
+        for meal in meals:
+            meals_by_date[meal.date] = meal
+
+        return (meals_by_date, invites_by_meal)
+
+    def post(self, request, *args, **kwargs):
+        super(EventGuestManageView, self).post(request, *args, **kwargs)
+        self.object = self.get_object()
+
+        MealFormSet = formset_factory(EventGroupMealForm,extra=0)
         formset = MealFormSet(request.POST)
-        i = iter(choices)
-        for form in formset:
-            form.fields['invite'].choices = i.next()
-        date = iter(dates)
-        if formset.is_valid():
-            to_choose = []
-            to_unchoose = []
-            to_delete = []
-            to_add = []
-            to_change = []
-            for form in formset.cleaned_data:
-                d = date.next()
-                if form['meal_id']:
-                    # existing meal
-                    meal = Meal.objects.get(pk=form['meal_id'])
-                    if form['members'] < 1:
-                        # got deleted
-                        to_delete.append(meal)
-                        continue
-                    if form['invite']:
-                        if form['invite'] == 'un':
-                            if meal.invite:
-                                to_unchoose.append(meal)
-                        else:
-                            invite = MealInvite.objects.get(id=form['invite'])
-                            if meal.invite != invite:
-                                to_choose.append(invite)
-                    if meal.members != form['members'] or meal.features != ''.join(form['features']) or meal.notes != ''.join(form['notes']):
-                        to_change.append( (meal, form) )
-                else:
-                    if form['members'] > 0:
-                        meal = eg.meal(d, 'D')
-                        meal.members = form['members']
-                        meal.features = ''.join(form['features'])
-                        meal.notes = ''.join(form['notes'])
-                        to_add.append(meal)
-                        continue
+        (meals_by_date, invites_by_meal) = self.meals_info()
+        forms = self.forms_by_date(formset, meals_by_date, invites_by_meal)
 
-    
-            eg.delete_meals(to_delete)
-            eg.unchoose_meals(to_unchoose)
-            eg.change_meals(to_change)
-            eg.choose_invites(to_choose)
-            eg.add_meals(to_add)
+        if not formset.is_valid():
+            return self.render_to_response({
+                'eg' : self.object,
+                'meal_formset' : formset,
+                'forms_by_date' : forms,
+            })
 
-            return redirect(eg.get_absolute_url(canvas)) 
-    else:
-        formset = MealFormSet(initial=initial)
-        i = iter(choices)
-        for form in formset:
-            form.fields['invite'].choices = i.next()
+        to_choose = []
+        to_unchoose = []
+        to_delete = []
+        to_add = []
+        to_change = []
 
-    forms_and_meals = []
-    meals = iter(mealset)
-    for form in formset:
-        forms_and_meals.append((form, meals.next()))
+        date = iter(self.get_dates())
 
-    return render_to_response('nourish/event_guest_meals.html', {
-        'formset': formset,
-        'eg': eg,
-        'event' : event,
-        'request' : request,
-        'meals' : iter(display_info),
-        'dates' : iter(dates),
-        'days' : iter(dates),
-        'f_m' : forms_and_meals,
-        'canvas' : canvas
-    }, context_instance=RequestContext(request))
+        for form in formset.cleaned_data:
+            d = date.next()
+            if form['meal_id']:
+                # existing meal
+                meal = Meal.objects.get(pk=form['meal_id'])
+                if form['members'] < 1:
+                    # got deleted
+                    to_delete.append(meal)
+                    continue
+                if form['invite']:
+                    if form['invite'] == 'un':
+                        if meal.invite:
+                            to_unchoose.append(meal)
+                    else:
+                        invite = MealInvite.objects.get(id=form['invite'])
+                        if meal.invite != invite:
+                            to_choose.append(invite)
+                if meal.members != form['members'] or meal.features != ''.join(form['features']) or meal.notes != ''.join(form['notes']):
+                    to_change.append( (meal, form) )
+            else:
+                if form['members'] > 0:
+                    meal = self.object.meal(d, 'D')
+                    meal.members = form['members']
+                    meal.features = ''.join(form['features'])
+                    meal.notes = ''.join(form['notes'])
+                    to_add.append(meal)
+                    continue
+
+
+        self.object.delete_meals(to_delete)
+        self.object.unchoose_meals(to_unchoose)
+        self.object.change_meals(to_change)
+        self.object.choose_invites(to_choose)
+        self.object.add_meals(to_add)
+
+        return redirect(self.object.get_absolute_url(hasattr(request, 'fbcanvas') and request.fbcanvas))
