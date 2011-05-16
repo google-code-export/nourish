@@ -84,7 +84,7 @@ class EventUpdateView(HybridCanvasView, UpdateView):
         return super(EventUpdateView, self).post(request, *args, **kwargs)
 
 class EventListView(HybridCanvasView, ListView):
-    template_name='nourish/EventListView.html',
+    template_name='nourish/EventListView.html'
     queryset=Event.objects.filter(display=True)
 
 class EventGroupUpdateView(HybridCanvasView, UpdateView):
