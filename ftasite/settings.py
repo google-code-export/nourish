@@ -1,7 +1,7 @@
 # Django settings for ors project.
 import os
 import sys
-from localsettings import SECRET_KEY, FACEBOOK_APP_ID, FACEBOOK_API_KEY, FACEBOOK_SECRET_KEY, DATABASES, LOCALPATH, DEBUG
+from localsettings import SECRET_KEY, FACEBOOK_APP_ID, FACEBOOK_API_KEY, FACEBOOK_SECRET_KEY, DATABASES, LOCALPATH, DEBUG, MEDIA_ROOT, STATIC_ROOT
 
 sys.path.append(os.path.join(LOCALPATH, 'allbuttonspressed'))
 
@@ -22,10 +22,8 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 ADMIN_MEDIA_PREFIX = '/static/admin/'
 
-MEDIA_ROOT = '/home/marcus/fta/media'
-STATIC_ROOT = '/home/marcus/fta/static/'
-
 STATICFILES_DIRS = (
+    os.path.join(LOCALPATH, os.path.join('allbuttonspressed', 'static')),
     os.path.join(LOCALPATH, 'static'),
     os.path.join(os.path.dirname(__file__), 'static'),
 )
@@ -33,10 +31,9 @@ STATICFILES_DIRS = (
 # for django-mediagenerator
 PRODUCTION_MEDIA_URL = '/media/'
 DEV_MEDIA_URL = '/devmedia/'
-#GLOBAL_MEDIA_DIRS = STATICFILES_DIRS + tuple ( os.path.join(LOCALPATH, os.path.join('allbuttonspressed', 'static')) )
-GLOBAL_MEDIA_DIRS = (
-    '/home/marcus/fta/root/allbuttonspressed/static',
-)
+GLOBAL_MEDIA_DIRS = STATICFILES_DIRS
+GENERATED_MEDIA_DIR = os.path.join(LOCALPATH, '_generated_media')
+GENERATED_MEDIA_NAMES_FILE = os.path.join(LOCALPATH, '_generated_media_names.py')
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -81,6 +78,7 @@ NON_REDIRECTED_PATHS = ('/admin/',)
 ROOT_URLCONF = 'ftasite.urls'
 
 TEMPLATE_DIRS = (
+#    os.path.join(LOCALPATH, os.path.join('allbuttonspressed', 'templates')),
     os.path.join(LOCALPATH, 'templates'),
     os.path.join(os.path.dirname(__file__), 'templates'),
 )
