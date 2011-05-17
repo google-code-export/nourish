@@ -139,3 +139,11 @@ span ul.errorlist li {
     color: black;
     display: inline;
 }
+
+ul.fb_connect_options li {
+    list-style: none;
+}
+
+ul.fb_connect_options input {
+    margin-right: 10px;
+}
