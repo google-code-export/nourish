@@ -1,11 +1,10 @@
 # Django settings for ors project.
 import os
 import sys
-from localsettings import SECRET_KEY, FACEBOOK_APP_ID, FACEBOOK_API_KEY, FACEBOOK_SECRET_KEY, DATABASES, LOCALPATH
+from localsettings import SECRET_KEY, FACEBOOK_APP_ID, FACEBOOK_API_KEY, FACEBOOK_SECRET_KEY, DATABASES, LOCALPATH, DEBUG
 
 sys.path.append(os.path.join(LOCALPATH, 'allbuttonspressed'))
 
-DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = ()
@@ -34,7 +33,6 @@ STATICFILES_DIRS = (
 # for django-mediagenerator
 PRODUCTION_MEDIA_URL = '/media/'
 DEV_MEDIA_URL = '/devmedia/'
-MEDIA_DEV_MODE = DEBUG
 #GLOBAL_MEDIA_DIRS = STATICFILES_DIRS + tuple ( os.path.join(LOCALPATH, os.path.join('allbuttonspressed', 'static')) )
 GLOBAL_MEDIA_DIRS = (
     '/home/marcus/fta/root/allbuttonspressed/static',
@@ -172,3 +170,5 @@ MEDIA_BUNDLES = (
         'rest.css',
     ),
 )
+
+MEDIA_DEV_MODE = DEBUG
