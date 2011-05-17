@@ -5,12 +5,12 @@
   {% if canvas and not user.is_authenticated %}
     {% include "nourish/authorize_connect.html" %}
   {% else %}
-    <h2>Register a Theme Camp at {{event.name}}</h2>
-    <p>This page is for theme camps that would like to invite artists to dinner at {{event.name}}.</p>
-
     {% if not user.is_authenticated and not request.GET.u %}
       {% include "nourish/please_connect.html" %}
     {% else %}
+      <h2>Register a Theme Camp at {{event.name}}</h2>
+      <p>This page is for theme camps that would like to invite artists to dinner at {{event.name}}.</p>
+
       <form method="post">{% csrf_token %}
         {{ user_formset.management_form }}
         {{ group_formset.management_form }}

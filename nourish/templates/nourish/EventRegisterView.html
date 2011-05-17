@@ -6,12 +6,12 @@
   {% if canvas and not user.is_authenticated %}
     {% include "nourish/authorize_connect.html" %}
   {% else %}
-    <h2>Register an Event</h2>
-    <p>say something</p>
-
     {% if not user.is_authenticated and not request.GET.u %}
       {% include "nourish/please_connect.html" %}
     {% else %}
+      <h2>Register an Event</h2>
+      <p>say something</p>
+
       <form method="post">
         {% csrf_token %}
         {{ user_formset.management_form }}

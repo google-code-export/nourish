@@ -5,12 +5,12 @@
   {% if canvas and not user.is_authenticated %}
     {% include "nourish/authorize_connect.html" %}
   {% else %}
-    <h2>Register an Artists Group at {{object.name}}</h2>
-    <p>This page is for artist groups that would like to be invited to dinner at {{object.name}}.</p>
-
     {% if not user.is_authenticated and not request.GET.u %}
       {% include "nourish/please_connect.html" %}
     {% else %}
+      <h2>Register an Artists Group at {{object.name}}</h2>
+      <p>This page is for artist groups that would like to be invited to dinner at {{object.name}}.</p>
+  
       <form method="post">{% csrf_token %}
         {{ user_formset.management_form }}
         {{ group_formset.management_form }}
