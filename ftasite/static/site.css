@@ -1,14 +1,54 @@
+body {
+    background-color: #312112;
+}
+
+#site_top {
+    width:1024px;
+    height: 123px;
+    margin:0 auto;
+    background-image: url(http://fta.outer.org/images/tophead1.jpg);
+}
+
+#site_bottom {
+    width:1024px;
+    height: 106px;
+    margin: 0 auto;
+    background-image: url(http://fta.outer.org/images/bottombg1.jpg);
+}
+
 #site_wrap {
     width:1024px;
     margin:0 auto;
+    background-image: url(http://fta.outer.org/images/testimonialbg1.jpg);
 }
 
 #site_content {
-    width:720px;
-    float:left;
+    width:480px;
+    padding-right: 140px;
+    float:right;
 }
 
 #site_sidebar {
-    float:right;
+    float:left;
+    padding-left: 160px;
     width:200px;
+}
+
+ul.site_menu {
+    margin: 0 auto;
+    padding: 0;
+}
+
+ul.site_menu li {
+    float: left;
+    text-align: left;
+    list-style: none;
+    padding: 1px 5px 1px 5px;
+    margin: 5px;
+    border: 1px solid gray;
+}
+
+#site_footer {
+    padding-left: 180px;
+    padding-right: 120px;
 }
