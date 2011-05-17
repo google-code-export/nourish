@@ -147,3 +147,22 @@ ul.fb_connect_options li {
 ul.fb_connect_options input {
     margin-right: 10px;
 }
+
+div.nourish_sidebar {
+    padding: 5px;
+    margin: 10px;
+    border: 1px solid #aaa;
+    background-color: #f0f0f0;
+}
+
+div.nourish_sidebar ul {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+div.nourish_sidebar h2 {
+    padding: 0px;
+    margin: 0px;
+    padding-bottom: 5px;
+    line-height: 20px;
+}
