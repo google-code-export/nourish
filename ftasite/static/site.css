@@ -6,20 +6,20 @@ body {
     width:1024px;
     height: 123px;
     margin:0 auto;
-    background-image: url(http://fta.outer.org/images/tophead1.jpg);
+    background-image: url(/static/fta/tophead1.jpg);
 }
 
 #site_bottom {
     width:1024px;
     height: 106px;
     margin: 0 auto;
-    background-image: url(http://fta.outer.org/images/bottombg1.jpg);
+    background-image: url(/static/fta/bottombg1.jpg);
 }
 
 #site_wrap {
     width:1024px;
     margin:0 auto;
-    background-image: url(http://fta.outer.org/images/testimonialbg1.jpg);
+    background-image: url(/static/fta/testimonialbg1.jpg);
 }
 
 #site_content {
