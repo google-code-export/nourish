@@ -24,41 +24,25 @@
 {% endblock %}
 
 {% block content-body %}
-  <h4>Spread the word!</h4>
-  <ul>
-  {% include "nourish/fb/event_share_link.html" with event=object %}
-  <li>{% include "nourish/fb/event_guest_siteinvite_link.html" with event=object %}</li>
-  <li>{% include "nourish/fb/event_host_siteinvite_link.html" with event=object %}</li>
-  </ul>
-
   <div style="clear: both;"></div>
   <div style="float: left;">
     <a href="{% nurl object %}register/guest">
       <img width=250 src="http://feedtheartists.net/images/home-artists.jpg" alt="Register New Artist Group" border=0>
     </a>
-    {% if guest_list %}
-      <h3>Registered Artist Groups</h3>
-      <ul class="small_list">
-        {% for eg in guest_list %}
-          <li>{% include "nourish/eg_group_small.html" with eg=eg %}</li>
-        {% endfor %}
-      </ul>
-    {% endif %}
   </div>
 
   <div style="float: left;">
     <a href="{% nurl object %}register/host">
       <img width=250 src="http://feedtheartists.net/images/burningman2.jpg" alt="Register New Theme Camp" border=0>
     </a>
-    {% if host_list %}
-      <h3>Registered Theme Camps</h3>
-      <ul class="small_list">
-        {% for eg in host_list %}
-          <li>{% include "nourish/eg_group_small.html" with eg=eg %}</li>
-        {% endfor %}
-      </ul>
-    {% endif %}
   </div>
   <div style="clear: both;"></div>
+
+  <h4>Spread the word!</h4>
+  <ul>
+  {% include "nourish/fb/event_share_link.html" with event=object %}
+  <li>{% include "nourish/fb/event_guest_siteinvite_link.html" with event=object %}</li>
+  <li>{% include "nourish/fb/event_host_siteinvite_link.html" with event=object %}</li>
+  </ul>
   {% facebook_js %}
 {% endblock %}
