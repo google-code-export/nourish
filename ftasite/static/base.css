@@ -34,7 +34,6 @@ A:hover {
     color: red;
 }
 #site_wrap {
-    background:#ffffff;
     margin:0 auto;
 }
 #site_content {
@@ -43,14 +42,12 @@ A:hover {
 }
 #site_sidebar {
     padding:10px;
-    background:#ffffff;
 }
 
 
 #site_footer {
     clear:both;
     padding:5px 10px;
-    background:#ccc;
 }
 #site_footer p {
     margin:0;
@@ -72,11 +69,11 @@ A:hover {
 #site_attribution {
     float: right;
     font-size: small;
-    color: #eee;
+    color: #999;
 }
 #site_attribution A {
     text-decoration: underline;
-    color: #eee;
+    color: #999;
 }
 #site_attribution A:hover {
     text-decoration: underline;
@@ -84,12 +81,6 @@ A:hover {
 }
 
 #site_auth {
-    padding-right: 10px;
-    padding-bottom: 10px;
-    float: right;
-    text-align: right;
-}
-
-#content_main {
-    background-color: white;
+    padding: 7px;
+    text-align: center;
 }

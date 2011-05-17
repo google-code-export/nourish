@@ -120,7 +120,8 @@ div.scroll_select {
 }
 
 div.pending_notif {
-    margin-top: 20px;
+    margin-top: 5px;
+    margin-bottom: 5px;
     border: 1px solid red;
     background-color: #fdd;
     text-align: center;

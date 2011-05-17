@@ -1,4 +1,6 @@
 {% load nourish %}
+{% load cms %}
+{% load media %}
 <!DOCTYPE html 
     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -16,7 +18,9 @@
       <link rel="stylesheet" type="text/css" href="/static/site.css">
     {% endif %}
  
-    {% block css %}{% endblock %}
+    {% block css %}
+        {% include_media 'main.css' %}
+    {% endblock %}
     {% block content-css %}{% endblock %}
     {% block preload_js %}{% endblock %}
     {% block extra-head %}{% endblock %}
@@ -26,6 +30,7 @@
 
   <body>
     <div id="content_main">
+      <div id="site_top"></div>
       <div id="site_wrap">
       <div id="site_content">
         <div id="site_header">
@@ -33,7 +38,7 @@
             {% include "site/header.html" %}
           {% endblock %}
         </div>
-        {% block content-header %} {% endblock %}
+        {% block content-header %}{% endblock %}
         {% block content-messages %}
           {% if error %}<div class="error">{{ error }}</div>{% endif %}
           {% if info %}<div class="info">{{ info }}</div>{% endif %}
@@ -62,6 +67,7 @@
           {% include "site/footer.html" %}
         {% endblock %}
       </div>
+      <div id="site_bottom"></div>
     </div>
     {% block js %}{% endblock %}
   </body>
