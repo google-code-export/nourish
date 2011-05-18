@@ -79,8 +79,12 @@ ul#event_details {
     padding: 0;
 }
     
+.regtable input {
+    width: auto;    
+}
 
 .regtable th {
+    text-align: left;
     color: #600;
 }
 
