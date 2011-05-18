@@ -14,6 +14,8 @@ class EventForm(ModelForm):
     def clean(self):
         start = self.cleaned_data.get("start_date")
         end = self.cleaned_data.get("end_date")
+        if not start or not end:
+            raise forms.ValidationError("dates must be specified")
         if start < date.today():
             raise forms.ValidationError("start date must be in the future!")
         if start > end:
@@ -35,8 +37,8 @@ class EventGroupHostForm(ModelForm):
 
 class EventInviteDayForm(forms.Form):
     date = forms.CharField(widget=forms.HiddenInput)
-    dinner_time = forms.TimeField()
+    dinner_time = forms.TimeField(required=False)
 
 class EventInviteMealForm(forms.Form):
     meal_id = forms.CharField(widget=forms.HiddenInput)
-    invited = forms.BooleanField()
+    invited = forms.BooleanField(required=False)

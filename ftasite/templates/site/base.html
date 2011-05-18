@@ -1,4 +1,6 @@
 {% load nourish %}
+{% load cms %}
+{% load media %}
 <!DOCTYPE html 
     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -9,13 +11,23 @@
   <head>
     <title>{% block title %}{% endblock %} - FtA ORS</title>
     <link rel="icon" href="http://www.feedtheartists.net/images/favicon.ico">
+
+    <!-- Google Font for headers -->
+    <link href='http://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+      
+    <!-- Base HTML is shared between FB and Site views. -->
+    <link rel="stylesheet" type="text/css" href="/static/base.css">
+      
+    <!-- Choose between canvas.css for FB viewing or site.css for onsite viewing -->  
     {% if canvas %}
       <link rel="stylesheet" type="text/css" href="/static/canvas.css">
     {% else %}
       <link rel="stylesheet" type="text/css" href="/static/site.css">
     {% endif %}
  
-    {% block css %}{% endblock %}
+    {% block css %}
+        {% include_media 'main.css' %}
+    {% endblock %}
     {% block content-css %}{% endblock %}
     {% block preload_js %}{% endblock %}
     {% block extra-head %}{% endblock %}
@@ -25,26 +37,27 @@
 
   <body>
     <div id="content_main">
-      <div id="site_wrap">
-      <div id="fta_header">
-        <img src="../../static/image/tophead1.jpg" usemap="#Map"></img>
+      <div id="site_top">
+        <img src="/static/fta/tophead1.jpg" usemap="#headermap"></img>
       </div>
-      <map name="Map">
-          <area target="_blank" href="FtA-Vision.pdf" coords="119,62,207,110" shape="rect">
-          <area target="_blank" href="FtA-history.pdf" coords="217,39,316,83" shape="rect">
-          <area alt="FtA-2011" target="_blank" href="FtA-2011.pdf" coords="333,28,403,67" shape="rect">
-          <area target="_blank" href="FtA-QandA.pdf" coords="424,24,491,68" shape="rect">
-          <area target="_parent" href="archives.html" coords="511,23,636,73" shape="rect">
-          <area href="contactus.html" coords="755,59,899,110" shape="rect">
-          <area href="whatpeoplearesaying.html" coords="662,42,739,77" shape="rect">
+      <map name="headermap">
+        <area shape="rect" coords="118,63,200,110" href="vision" title="Our Vision">
+        <area shape="rect" coords="220,43,314,83" href="history" title="FtA History">
+        <area shape="rect" coords="337,34,396,64" href="fta2011" title="FtA-2011">
+        <area shape="rect" coords="431,27,493,62" href="questionanswer" title="Question and Answer">
+        <area shape="rect" coords="513,25,637,65" href="archives" title="Archives">
+        <area shape="rect" coords="659,39,738,78" href="whatpeoplearesaying" title="What people are saying about FtA">
+        <area shape="rect" coords="759,54,900,114" href="contactus" title="Contact us!!!">
       </map>
+      
+      <div id="site_wrap">
       <div id="site_content">
         <div id="site_header">
           {% block header %}
             {% include "site/header.html" %}
           {% endblock %}
         </div>
-        {% block content-header %} {% endblock %}
+        {% block content-header %}{% endblock %}
         {% block content-messages %}
           {% if error %}<div class="error">{{ error }}</div>{% endif %}
           {% if info %}<div class="info">{{ info }}</div>{% endif %}
@@ -57,7 +70,11 @@
         {% block content %}{% endblock %}
       </div>
       <div id="site_sidebar">
-        {% include "site/sidebar_header.html" %}
+        {% if canvas %}
+            {% include "site/canvas_sidebar_header.html" %}
+        {% else %}
+            {% include "site/sidebar_header.html" %}
+        {% endif %}
         {% block content-sidebar %}{% endblock %}
         {% block sidebar %}
           {% include "site/sidebar.html" %}
@@ -70,6 +87,7 @@
           {% include "site/footer.html" %}
         {% endblock %}
       </div>
+      <div id="site_bottom"></div>
     </div>
     {% block js %}{% endblock %}
   </body>

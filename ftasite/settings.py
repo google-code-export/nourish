@@ -1,8 +1,10 @@
 # Django settings for ors project.
 import os
-from localsettings import SECRET_KEY, FACEBOOK_APP_ID, FACEBOOK_API_KEY, FACEBOOK_SECRET_KEY, DATABASES, LOCALPATH
+import sys
+from localsettings import SECRET_KEY, FACEBOOK_APP_ID, FACEBOOK_API_KEY, FACEBOOK_SECRET_KEY, DATABASES, LOCALPATH, DEBUG, MEDIA_ROOT, STATIC_ROOT
 
-DEBUG = True
+sys.path.append(os.path.join(LOCALPATH, 'allbuttonspressed'))
+
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = ()
@@ -20,12 +22,18 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 ADMIN_MEDIA_PREFIX = '/static/admin/'
 
-MEDIA_ROOT = '/home/marcus/fta/media'
-STATIC_ROOT = '/home/marcus/fta/static/'
-
 STATICFILES_DIRS = (
+    os.path.join(LOCALPATH, os.path.join('allbuttonspressed', 'static')),
+    os.path.join(LOCALPATH, 'static'),
     os.path.join(os.path.dirname(__file__), 'static'),
 )
+
+# for django-mediagenerator
+PRODUCTION_MEDIA_URL = '/media/'
+DEV_MEDIA_URL = '/devmedia/'
+GLOBAL_MEDIA_DIRS = STATICFILES_DIRS
+GENERATED_MEDIA_DIR = os.path.join(LOCALPATH, '_generated_media')
+GENERATED_MEDIA_NAMES_FILE = os.path.join(LOCALPATH, '_generated_media_names.py')
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -38,23 +46,39 @@ TEMPLATE_LOADERS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'autoload.middleware.AutoloadMiddleware',
+    'mediagenerator.middleware.MediaMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'djangotoolbox.middleware.RedirectMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
 #    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
 #    'django.contrib.messages.middleware.MessageMiddleware',
     'socialregistration.middleware.FacebookMiddleware',
+    'fbcanvas.middleware.CanvasMiddleware',
+    'urlrouter.middleware.URLRouterFallbackMiddleware',
+)
+
+URL_ROUTE_HANDLERS = (
+    'minicms.urlroutes.PageRoutes',
+    'blog.urlroutes.BlogRoutes',
+    'blog.urlroutes.BlogPostRoutes',
+    'redirects.urlroutes.RedirectRoutes',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.auth.context_processors.auth',
     'django.core.context_processors.media',
     'django.core.context_processors.request',
+    'minicms.context_processors.cms',
 )
+
+NON_REDIRECTED_PATHS = ('/admin/',)
 
 ROOT_URLCONF = 'ftasite.urls'
 
 TEMPLATE_DIRS = (
+#    os.path.join(LOCALPATH, os.path.join('allbuttonspressed', 'templates')),
     os.path.join(LOCALPATH, 'templates'),
     os.path.join(os.path.dirname(__file__), 'templates'),
 )
@@ -69,14 +93,28 @@ INSTALLED_APPS = (
     'nourish',
     'django.contrib.admin',
     'django.contrib.admindocs',
+    'urlrouter',
+    'minicms',
+    'blog',
+    'redirects',
+    'simplesocial',
+    'autoload',
     'djangotoolbox',
+    'google_analytics',
+    'google_cse',
+    'disqus',
     'socialregistration',
+    'mediagenerator',
+    'fbcanvas',
+#    'permission_backend_nonrel',
+    'dbindexer'
 )
 
 AUTH_PROFILE_MODULE = 'nourish.UserProfile'
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'socialregistration.auth.FacebookAuth',
+#    'permission_backend_nonrel.backends.NonrelPermissionBackend',
 )
 LOGIN_URL          = '/login/'
 LOGIN_REDIRECT_URL = '/nourish/logged-in/'
@@ -114,3 +152,21 @@ try:
                              MIDDLEWARE_CLASSES
 except ImportError:
     pass
+
+SITE_NAME = 'Feed The Artists'
+SITE_DESCRIPTION = 'Feeding Artists'
+SITE_COPYRIGHT = '2011'
+
+DISQUS_SHORTNAME = ''
+GOOGLE_ANALYTICS_ID = ''
+GOOGLE_CUSTOM_SEARCH_ID = ''
+TWITTER_USERNAME = ''
+
+MEDIA_BUNDLES = (
+    ('main.css',
+        'design.sass',
+        'rest.css',
+    ),
+)
+
+MEDIA_DEV_MODE = DEBUG

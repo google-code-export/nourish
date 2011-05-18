@@ -1,0 +1,89 @@
+body,
+html {
+    margin:0;
+    padding:0;
+    color:#000;
+    font-family: sans-serif;
+}
+
+p {
+}
+A {
+    text-decoration: none;
+}
+
+#site_sidebar A {
+    color: #700;
+}
+#site_sidebar A:hover {
+    color: red;
+}
+#site_content A {
+    color: #d22;
+}
+#site_content A:hover {
+    color: red;
+}
+#site_content .site_ext_link A {
+    color: #700;
+}
+#site_content .site_ext_link A:hover {
+    color: red;
+}
+A:hover {
+    text-decoration: underline;
+    color: red;
+}
+#site_wrap {
+    margin:0 auto;
+}
+#site_content {
+    margin-left: 15px;
+    margin-right: 15px;
+}
+#site_sidebar {
+    padding:10px;
+}
+
+#site_footer {
+    clear:both;
+    padding:5px 10px;
+}
+
+#site_footer p {
+    margin:0;
+}
+* html #site_footer {
+    height:1px;
+}
+
+#site_footer_links {
+    float: left;
+    color: black;
+    vertical-align: bottom;
+}
+#site_footer_links A {
+    color: white;
+    text-decoration: underline;
+}
+#site_footer_links A:hover {
+    color: red;
+}
+#site_attribution {
+    float: right;
+    font-size: small;
+    color: #999;
+}
+#site_attribution A {
+    text-decoration: underline;
+    color: #999;
+}
+#site_attribution A:hover {
+    text-decoration: underline;
+    color: #b00;
+}
+
+#site_auth {
+    padding: 7px;
+    text-align: center;
+}

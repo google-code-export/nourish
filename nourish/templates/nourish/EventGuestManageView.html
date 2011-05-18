@@ -1,0 +1,35 @@
+{% extends "nourish/base.html" %}
+
+{% load facebook_tags %}
+{% load nourish %}
+
+{% block title %}{{ eg.group.name }} at {{eg.event.name}} - Manage Meals{% endblock %}
+
+{% block content-logo %}
+  {% if object.image_url %}
+    <a href="{% nurl eg.group %}"><img width=100 src="{{eg.group.image_url}}?type=normal" border=0></a>
+    <a href="{% nurl eg.event %}"><img width=100 src="{{eg.event.image_url}}?type=normal" border=0></a>
+  {% endif %}
+{% endblock %}
+
+{% block content-title %}
+  <h2 style="display: inline;">{{ eg.group.name }}</h2><br>
+  at
+  <h2 style="display: inline;">{{ eg.event.name }}</h2><br>
+  {{ eg.event.start_date }} thru {{ eg.event.end_date }}<br>
+{% endblock %}
+
+{% block content-body %}
+  <h1>Manage Meals</h1>
+
+  <form method="post">{% csrf_token %}
+    {{ meal_formset.management_form }}
+    <table border=0 class="meals" width="100%">
+      <tr><th class="first"></th><th>Diners</th><th>Restr.</th><th>Notes</th></tr>
+      {% for f in forms_by_date %}
+        {% include "nourish/EventGuestManageView_day.html" %}
+      {% endfor %}
+    </table>
+    <input type="submit" value="Update Meals">
+  </form>
+{% endblock %}

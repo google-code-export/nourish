@@ -1,9 +1,13 @@
 from django.views.generic import DetailView, UpdateView, ListView
 from nourish.models import EventGroup, Event, GroupUser, Meal, MealInvite, EventUser
 from nourish.forms import EventForm, EventGroupHostForm, EventInviteDayForm, EventInviteMealForm
+from nourish.forms.event import EventGroupHostFeaturesForm, EventGroupHostForm
+from nourish.forms.register import RegistrationStubForm
+from nourish.forms.group import GroupForm, GroupFBForm
 from django.shortcuts import get_object_or_404, redirect
 from datetime import timedelta
-from nourish.views.canvas import HybridCanvasView
+from fbcanvas.views import HybridCanvasView
+from nourish.views.register.host import EventHostRegisterView
 from django.forms.formsets import formset_factory
 import json
 
@@ -14,7 +18,7 @@ import pprint
 class EventDetailView(HybridCanvasView, DetailView):
     context_object_name = 'event'
     model = Event
-    template_name='nourish/event_detail.html'
+    template_name='nourish/EventDetailView.html'
 
     def get_context_data(self, **kwargs):
         context = super(EventDetailView, self).get_context_data(**kwargs)
@@ -32,7 +36,7 @@ class EventDetailView(HybridCanvasView, DetailView):
 class EventGroupView(HybridCanvasView, DetailView):
     context_object_name = 'event_group'
     model = EventGroup
-    template_name='nourish/event_group.html'
+    template_name='nourish/EventGroupView.html'
     
     def get_context_data(self, **kwargs):
         context = super(EventGroupView, self).get_context_data(**kwargs)
@@ -80,7 +84,7 @@ class EventUpdateView(HybridCanvasView, UpdateView):
         return super(EventUpdateView, self).post(request, *args, **kwargs)
 
 class EventListView(HybridCanvasView, ListView):
-    template_name='nourish/event_list.html',
+    template_name='nourish/EventListView.html'
     queryset=Event.objects.filter(display=True)
 
 class EventGroupUpdateView(HybridCanvasView, UpdateView):
@@ -98,79 +102,3 @@ class EventGroupUpdateView(HybridCanvasView, UpdateView):
         if request.user.is_authenticated() and not self.get_object().group.is_admin(self.request.user):
             raise PermissionDenied
         return super(EventGroupUpdateView, self).post(request, *args, **kwargs)
-
-
-class EventInviteView(HybridCanvasView, DetailView):
-    context_object_name = 'event_invite'
-    model = Event
-    template_name = 'nourish/event_invite.html'
-    def get_context_data(self, **kwargs):
-        eg = None
-        if 'eg' in self.request.GET:
-            eg = EventGroup.objects.get(id=self.request.GET['eg'])
-        context = super(EventInviteView, self).get_context_data(**kwargs)
-        d = { }
-        meals = Meal.objects.filter(event=self.object).order_by('date')
-        for meal in meals:
-            if meal.state != 'I':
-                if meal.invite and meal.invite.host_eg != eg:
-                    continue
-            if meal.date not in d:
-                d[meal.date] = []
-            d[meal.date].append(meal)
-        dates = []
-        keys = d.keys()
-        keys.sort()
-        raw = []
-        day_factory = formset_factory(EventInviteDayForm, extra=0)
-        meal_factory = formset_factory(EventInviteMealForm, extra=0)
-        day_initial = []
-        for date in keys:
-            d[date].sort()
-            rec = { 'date' : date.strftime("%b %d"), 'dinner_time' : '', 'meals' : [ ] }
-            day_initial.append({ 'date' : date, 'dinner_time' : '' })
-            meal_initial = []
-            meals = []
-            for meal in d[date]:
-                meals.append(meal)
-                rec['meals'].append({
-                    'id' : meal.id,
-                    'guest_name' : meal.eg.group.name,
-                    'guest_url' : meal.eg.group.url,
-                    'guest_image_url' : meal.eg.group.image_url,
-                    'diners' : meal.members,
-                    'features' : meal.features,
-                    'state' : meal.state,
-                    'notes' : meal.notes,
-                })
-                meal_initial.append({ 'meal_id' : meal.id, 'invited' : (meal.state != 'N') })
-            raw.append(rec)
-            meal_formset = meal_factory(prefix='d' + date.strftime("%Y%m%d"), initial=meal_initial)
-            m = iter(meals)
-            f = iter(meal_formset)
-            mealsets = []
-            while True:
-                try:
-                    mealsets.append( (m.next(), f.next()) )
-                except:
-                    break
-            dates.append( { 
-                'date' : date, 
-                'meals' : meals,
-                'formset' : meal_formset,
-                'mealsets' : mealsets,
-            } )
-        daysets = []
-        day_formset = day_factory(prefix='days', initial=day_initial)
-        f = iter(day_formset)
-        for d in dates:
-            daysets.append({
-                'date' : d['date'],
-                'form' : f.next(),
-                'mealsets' : d['mealsets'],
-            })
-        context['daysets'] = daysets
-        context['day_formset'] = day_formset
-        context['dates'] = dates
-        context['json'] = json.dumps(raw)
-        return context

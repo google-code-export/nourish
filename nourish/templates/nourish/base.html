@@ -11,3 +11,14 @@
 {% block content-sidebar %}
   {% include "nourish/sidebar.html" %}
 {% endblock %}
+
+{% block content %}
+  <div style="float: left; margin-right: 5px;">
+    {% block content-logo %}{% endblock %}
+  </div>
+  <div style="float: left; width: 370px;">
+    {% block content-title %}{% endblock %}
+  </div>
+  <div style="clear: both;"></div>
+  {% block content-body %}{% endblock %}
+{% endblock %}
