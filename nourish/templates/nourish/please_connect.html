@@ -1,0 +1,40 @@
+{% if canvas %}
+{% include "nourish/please_connect_canvas.html" %}
+{% else %}
+<h1>Use Facebook to Register</h1>
+
+<p>If you have a facebook account, you can link it to the ORS.  This will save you having to remember a new password, and it will save you some typing.</p>
+
+{% load facebook_tags %}
+<form class="connect-button" name="login" method="post" action="{% if logged_in %}{% url facebook_connect %}{% else %}{% url facebook_login %}{% endif %}">
+<ul class="fb_connect_options">
+<li>
+  <label for="email">
+  <input name=perms type=checkbox value="email" id="email" checked>Email me for important updates
+  </label>
+</li>
+<li>
+  <label for="groups">
+  <input name=perms type=checkbox value="user_groups" id="groups" checked>Integrate my Groups
+  </label>
+</li>
+<li>
+  <label for="events">
+  <input name=perms type=checkbox value="user_events" id="events" checked>Integrate my Events
+  </label>
+</li>
+</ul>
+{% facebook_button 1 %}
+</form>
+<br>
+<br>
+
+<h1>But Facebook Is evil!</h1>
+
+<p>Yeah, you're right.</p>
+
+<a href="?u=y">Click here to register without a Facebook account</a>
+
+
+{% facebook_js %}
+{% endif %}

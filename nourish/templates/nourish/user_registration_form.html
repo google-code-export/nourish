@@ -1,0 +1,6 @@
+<h3>Info about you</h3>
+<p>We presume that you are the person who will be coordinating meals for your theme camp.  We need the information below so that we can contact you with updates about your invites, as well as other FtA-related communications.  Plus, you'll need to be able to log back into the site later to confirm your invitations, etc.</p>
+{{ user_formset.0.non_field_errors }}
+<table class="regform">
+  {% include "nourish/form_snippet.html" with form=user_formset.0 %}
+</table>

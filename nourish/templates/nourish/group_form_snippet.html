@@ -1,0 +1,19 @@
+{% for field in form.hidden_fields %}
+{{ field }}
+{% endfor %}
+
+{% if field.errors %}
+<div style="border: 1px solid red;">
+  {{field.errors}}
+</div>
+{% endif %}
+<div class="{% if scroll_select %}scroll_select{% endif %}">
+<ul class="radioselect">
+{% for choice in form.group.field.choices %}
+  <li><label class="radiooption" for="id_{{form.group.html_name}}_{{forloop.counter0}}">
+    <input type=radio name="{{form.group.html_name}}" value="{{choice.0}}" id="id_{{form.group.html_name}}_{{forloop.counter0}}">
+    <img width=50 src="http://graph.facebook.com/{{choice.0}}/picture">{{choice.1}}
+  </label></li>
+{% endfor %}
+</ul>
+</div>

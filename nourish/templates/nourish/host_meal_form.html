@@ -1,0 +1,7 @@
+<h3>Info about your dinners</h3>
+{{ grouphost_formset.0.non_field_errors }}
+{{ features_formset.0.non_field_errors }}
+<table class="regform">
+  {% include "nourish/form_snippet.html" with form=grouphost_formset.0 %}
+  {% include "nourish/form_snippet.html" with form=features_formset.0 %}
+</table>

@@ -1,0 +1,65 @@
+body {
+    background-color: #312112;
+}
+
+#site_top {
+    width:1024px;
+    height: 123px;
+    margin:0 auto;
+}
+
+#site_bottom {
+    width:1024px;
+    height: 384px;
+    margin: -280px 0 0 0;
+    background-image: url(/static/fta/bottombg2.jpg);
+}
+
+#site_wrap {
+    width:1024px;
+    margin:0 auto;
+    background-image: url(/static/fta/testimonialbg1.jpg);
+}
+
+#site_content {
+    width:570px;
+    padding-right: 120px;
+    float:right;
+    margin: 0px;
+}
+
+#site_sidebar {
+    float:left;
+    padding-left: 120px;
+    padding-right: 0px;
+    width:200px;
+}
+
+ul.site_menu {
+    margin: 0 auto;
+    padding: 0;
+}
+
+ul.site_menu li {
+    float: left;
+    text-align: left;
+    list-style: none;
+    padding: 1px 5px 1px 5px;
+    margin: 5px;
+    border: 1px solid gray;
+}
+
+#site_footer {
+    position: relative;
+    bottom: -100px;
+    padding-left: 180px;
+    padding-right: 120px;
+}
+
+#site_footer_links {
+    color: white;
+}
+
+#site_footer a {
+    color: white;
+}

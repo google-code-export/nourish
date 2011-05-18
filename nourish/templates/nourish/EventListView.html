@@ -1,0 +1,14 @@
+{% extends "nourish/base.html" %}
+{% load nourish %}
+
+{% block title %}Events{% endblock %}
+
+{% block content %}
+    <h2>Events</h2>
+    <ul class="small_list">
+        <li><a href="{% nurl 'register-event' %}">Register a New Event</a></li>
+        {% for event in object_list %}
+            <li>{% include "nourish/event_small.html" with event=event %}</li>
+    	{% endfor %}
+    </ul>
+{% endblock %}
