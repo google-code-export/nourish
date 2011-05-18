@@ -9,7 +9,7 @@
     xml:lang="{% firstof LANGUAGE_CODE 'en' %}"
     lang="{% firstof LANGUAGE_CODE 'en' %}">
   <head>
-    <title>{% block title %}{% endblock %} - FtA ORS</title>
+    <title>{% block sitetitle %}{% block title %}{% endblock %} - Feed The Artists{% endblock %}</title>
     <link rel="icon" href="http://www.feedtheartists.net/images/favicon.ico">
 
     <!-- Google Font for headers -->

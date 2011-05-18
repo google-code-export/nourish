@@ -78,11 +78,6 @@ ul#event_details {
     list-style: none;
     padding: 0;
 }
-    
-
-.regtable th {
-    color: #600;
-}
 
 .regdate {
     color: #600;
@@ -163,6 +158,15 @@ div.nourish_sidebar ul {
 div.nourish_sidebar h2 {
     padding: 0px;
     margin: 0px;
-    padding-bottom: 5px;
+    margin-left: 25px;
+    margin-right: 25px;
+    padding-bottom: 3px;
+    margin-bottom: 3px;
     line-height: 20px;
+    text-align: center;
+    border-bottom: 1px solid gray;
+}
+
+td.diners input {
+    width: 30px;
 }
