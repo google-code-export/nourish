@@ -2,6 +2,7 @@ syntax: glob
 *~
 *.tmp
 *.swp
+*.DS_Store
 *.egg-info
 *.pot
 *.py[co]
