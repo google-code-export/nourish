@@ -11,7 +11,14 @@
   <head>
     <title>{% block title %}{% endblock %} - FtA ORS</title>
     <link rel="icon" href="http://www.feedtheartists.net/images/favicon.ico">
+
+    <!-- Google Font for headers -->
+    <link href='http://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+      
+    <!-- Base HTML is shared between FB and Site views. -->
     <link rel="stylesheet" type="text/css" href="/static/base.css">
+      
+    <!-- Choose between canvas.css for FB viewing or site.css for onsite viewing -->  
     {% if canvas %}
       <link rel="stylesheet" type="text/css" href="/static/canvas.css">
     {% else %}
