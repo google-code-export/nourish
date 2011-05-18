@@ -22,15 +22,15 @@ body {
 }
 
 #site_content {
-    width:570px;
-    padding-right: 120px;
+    width:540px;
+    padding-right: 125px;
     float:right;
     margin: 0px;
 }
 
 #site_sidebar {
     float:left;
-    padding-left: 120px;
+    padding-left: 140px;
     padding-right: 0px;
     width:200px;
 }

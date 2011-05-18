@@ -3,7 +3,15 @@ html {
     margin:0;
     padding:0;
     color:#000;
-    font-family: sans-serif;
+    font-family: arial, sans-serif;
+    
+}
+
+h1, h2 {
+    font-family: 'Special Elite', arial, sans-serif !important;
+    text-shadow: 6px 6px 6px #ccc;
+    font-style: normal;
+    font-weight: 700;
 }
 
 p {
