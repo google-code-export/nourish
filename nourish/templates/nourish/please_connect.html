@@ -3,14 +3,15 @@
 {% else %}
 <h1>Use Facebook to Register</h1>
 
-<p>If you have a facebook account, you can link it to the ORS.  This will save you having to remember a new password, and it will save you some typing.</p>
+<p>If you have a Facebook account, you can use it to login to the Online Reservation System.  This will save you having to remember a new password, and it will save you some typing.</p>
 
+<p>We won't spam you or share any of your information with anyone else.  For more details, check out our <a href="/privacy">Privacy Policy</a> and <a href="/tos">Terms of Service</a>.
 {% load facebook_tags %}
 <form class="connect-button" name="login" method="post" action="{% if logged_in %}{% url facebook_connect %}{% else %}{% url facebook_login %}{% endif %}">
 <ul class="fb_connect_options">
 <li>
   <label for="email">
-  <input name=perms type=checkbox value="email" id="email" checked>Email me for important updates
+  <input name=perms type=checkbox value="email" id="email" checked>Email me important updates
   </label>
 </li>
 <li>
