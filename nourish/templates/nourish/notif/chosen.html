@@ -16,6 +16,6 @@
 {% endblock %}
 
 {% block actions %}
-  <a href"{% nurl notification.objects.0.host_eg %}Invites/" style="display: inline;">Manage All Invites</a>
+  <a href="{% nurl notification.objects.0.host_eg.event %}invite/?host={{ notification.objects.0.host_eg.id }}" style="display: inline;">Manage All Invites</a>
   <input type=submit name="take_action" value="Confirm These Invitation(s)">
 {% endblock %}

@@ -17,6 +17,6 @@
 
 {% block actions %}
 {% if notification.objects.0 %}
-  <a href="{% nurl notification.objects.0.host_eg %}invites/">Manage All Invites</a>
+  <a href="{% nurl notification.objects.0.host_eg.event %}invite/?host={{notification.objects.0.host_eg.id}}">Manage All Invites</a>
 {% endif %}
 {% endblock %}
