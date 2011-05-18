@@ -120,8 +120,49 @@ div.scroll_select {
 }
 
 div.pending_notif {
-    margin-top: 20px;
+    margin-top: 5px;
+    margin-bottom: 5px;
     border: 1px solid red;
     background-color: #fdd;
     text-align: center;
+}
+
+span ul.errorlist {
+    background: #fbb;
+    border: 1px solid red;
+    padding: 3px;
+    margin: 3px;
+    display: inline;
+}
+
+span ul.errorlist li {
+    color: black;
+    display: inline;
+}
+
+ul.fb_connect_options li {
+    list-style: none;
+}
+
+ul.fb_connect_options input {
+    margin-right: 10px;
+}
+
+div.nourish_sidebar {
+    padding: 5px;
+    margin: 10px;
+    border: 1px solid #aaa;
+    background-color: #f0f0f0;
+}
+
+div.nourish_sidebar ul {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+div.nourish_sidebar h2 {
+    padding: 0px;
+    margin: 0px;
+    padding-bottom: 5px;
+    line-height: 20px;
 }

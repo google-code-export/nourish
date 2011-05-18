@@ -1,5 +1,7 @@
 {% load nourish %}
 
+<div class="nourish_sidebar">
+<h2>FtA ORS</h2>
 {% if request.user.get_profile.notifications %}
 <div class="pending_notif"><a href="{% nurl 'notification-list' %}">
   You have {{ request.user.get_profile.notifications|length }} notice{% if request.user.get_profile.notifications.1 %}s{% endif %}.
@@ -35,3 +37,4 @@
   <li><a target="_blank" href="http://code.google.com/p/nourish/issues/entry?labels=Type-Defect,Path-{{request.path}}&summary=Problem on {{request.path}}">Report Bug</a></li>
   <li><a target="_blank" href="http://code.google.com/p/nourish/issues/entry?template=Feature%20Request&labels=Path-{{request.path}}">Request Feature</a></li>
 </ul>
+</div>

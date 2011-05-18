@@ -14,7 +14,6 @@ class EventGroupInvitesForm(forms.Form):
 
 class EventGroupMealForm(forms.Form):
     meal_id = forms.IntegerField(widget=forms.HiddenInput,required=False)
-    meal = forms.CharField(widget=forms.HiddenInput)
     members = forms.IntegerField(widget=forms.TextInput(attrs={'size':'3'}), required=False)
     invite = forms.ChoiceField(choices=[], required=False)
     features = forms.ChoiceField(choices=[('', 'No'), ('R', 'Yes')], required=False)

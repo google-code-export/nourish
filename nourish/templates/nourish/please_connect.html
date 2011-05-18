@@ -1,28 +1,40 @@
 {% if canvas %}
 {% include "nourish/please_connect_canvas.html" %}
 {% else %}
-<div style="border: 1px solid red; float: left; margin: 10px; padding: 10px; background-color: #fdd;">
-<h2>Do you use facebook?</h2>
+<h1>Use Facebook to Register</h1>
 
-<p>If you do, that will save you some typing, not to mention having to remember another password!</p>
-
+<p>If you have a facebook account, you can link it to the ORS.  This will save you having to remember a new password, and it will save you some typing.</p>
 
 {% load facebook_tags %}
 <form class="connect-button" name="login" method="post" action="{% if logged_in %}{% url facebook_connect %}{% else %}{% url facebook_login %}{% endif %}">
-Updates: <input name=perms type=radio value="" checked>Facebook Only</input>
-<input name=perms type=radio value="email">Email and Facebook</input>
-<br>
-Integrate my: <input name=perms type=checkbox value="user_groups" checked>Groups</input>
-<input name=perms type=checkbox value="user_events" checked>Events</input>
-<br>
+<ul class="fb_connect_options">
+<li>
+  <label for="email">
+  <input name=perms type=checkbox value="email" id="email" checked>Email me for important updates
+  </label>
+</li>
+<li>
+  <label for="groups">
+  <input name=perms type=checkbox value="user_groups" id="groups" checked>Integrate my Groups
+  </label>
+</li>
+<li>
+  <label for="events">
+  <input name=perms type=checkbox value="user_events" id="events" checked>Integrate my Events
+  </label>
+</li>
+</ul>
 {% facebook_button 1 %}
 </form>
+<br>
+<br>
 
-<p>If you're not a Facebook user, that's OK too...</p>
+<h1>But Facebook Is evil!</h1>
 
-<a href="?u=y">Register without a Facebook account</a>
+<p>Yeah, you're right.</p>
+
+<a href="?u=y">Click here to register without a Facebook account</a>
 
 
 {% facebook_js %}
-</div>
 {% endif %}

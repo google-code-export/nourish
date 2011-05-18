@@ -270,8 +270,7 @@ class EventGroup(models.Model):
     group = models.ForeignKey(Group)
     role = models.CharField(max_length=1, choices=ROLE_CHOICES, default='U')
     playa_address = models.CharField(max_length=50, blank=True, default='')
-    dinner_time = models.CharField(max_length=10,null=True,blank=True)
-    features = models.CharField(max_length=100, default='', choices=FEATURE_CHOICES)
+    features = models.CharField(max_length=100, default='', choices=FEATURE_CHOICES, blank=True)
     notes = models.TextField(blank=True, default='')
     def __unicode__(self):
         return self.event.name + ' : ' + self.group.name
@@ -310,10 +309,11 @@ class EventGroup(models.Model):
     # host group sends invitations to guest groups
     def send_invites(self, meals):
         invites_by_eg = { }
-        for meal in meals:
+        for m in meals:
+            (meal, dinner_time) = m
             if meal.eg not in invites_by_eg:
                 invites_by_eg[meal.eg] = []
-            invites_by_eg[meal.eg].append(meal.send_invite(self))
+            invites_by_eg[meal.eg].append(meal.send_invite(self, dinner_time))
         # notify all guest groups
         for eg, invites in invites_by_eg.iteritems():
             self.send_notification(eg, 'invited', invites)
@@ -342,6 +342,18 @@ class EventGroup(models.Model):
         # notify guests
         for eg, invites in invites_by_eg.iteritems():
             self.send_notification(eg, 'confirmed', invites)
+
+    # host group changes invitations (ie. dinner_time)
+    def change_invites(self, invites):
+        invites_by_eg = { }
+        for invite in invites:
+            if invite.host_eg not in invites_by_eg:
+                invites_by_eg[invite.host_eg] = []
+            invites_by_eg[invite.host_eg].append(invite)
+            invite.save()
+        # notify guests
+        for eg, invites in invites_by_eg.iteritems():
+            self.send_notification(eg, 'host_changed', invites)
 
     # guest group chooses invitations
     def choose_invites(self, invites):
@@ -417,8 +429,9 @@ class MealInvite(models.Model):
     guest_eg = models.ForeignKey('EventGroup', related_name='foo')
     meal = models.ForeignKey('Meal')
     state = models.CharField(max_length=1, choices=STATE_CHOICES, default='N')
+    dinner_time = models.CharField(max_length=10, blank=True,default='')
     def __unicode__(self):
-        return str(self.date) + ' - ' + self.host_eg.group.name + ' (' + str(self.host_eg.dinner_time) + ', '  + self.host_eg.features + ') [' + self.state + ']'
+        return str(self.date) + ' - ' + self.host_eg.group.name + ' (' + str(self.dinner_time) + ', '  + self.host_eg.features + ') [' + self.state + ']'
     def rescind(self):
         invites = MealInvite.objects.filter(meal=self.meal)
         if self.meal.invite == self:
@@ -465,7 +478,7 @@ class Meal(models.Model):
     eg = models.ForeignKey('EventGroup')
     state = models.CharField(max_length=1, choices=STATE_CHOICES, default='N')
     members = models.IntegerField(default=0)
-    features = models.CharField(max_length=40, default='')
+    features = models.CharField(max_length=40, default='', blank=True)
     notes = models.CharField(max_length=100, null=True, blank=True)
     invite = models.ForeignKey('MealInvite', null=True, blank=True, related_name='invite_link')
     def __unicode__(self):
@@ -495,7 +508,7 @@ class Meal(models.Model):
         self.invite = invite
         self.save()
     
-    def send_invite(self, host_eg):
+    def send_invite(self, host_eg, dinner_time):
         invite = MealInvite.objects.create(
             meal = self,
             date = self.date, 
@@ -503,6 +516,7 @@ class Meal(models.Model):
             guest_eg = self.eg,
             event = self.eg.event,
             state = 'N',
+            dinner_time = dinner_time,
         )
         if self.state == 'N':
             self.state = 'I'
@@ -516,6 +530,12 @@ class Meal(models.Model):
         self.notes = ''.join(data['notes'])
         self.save()
 
+    def invites(self):
+        if self.state in ('S', 'C'):
+            return [ self.invite ]
+        if self.state == 'N':
+            return [ ]
+        return list(MealInvite.objects.filter(meal=self))
 
 class Notification(object):
     def __init__(self, *args, **kwargs):

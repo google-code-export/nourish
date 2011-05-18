@@ -1,60 +1,57 @@
-from django.shortcuts import render_to_response, redirect
+from django.shortcuts import redirect
 from nourish.models import EventUser, GroupUser, Group, EventGroup, UserProfile, Event
-import array
-from django.template import RequestContext
 from django.core.urlresolvers import reverse
-import sys
+from django.views.generic import TemplateView
+from fbcanvas.views import HybridCanvasView
 import re
 
-def homepage(request, canvas=False):
-    groups = [ ]
-    events = []
-    if request.user.is_authenticated():
-        for gm in GroupUser.objects.filter(user=request.user):
-            groups.append(gm.group)
+class RootPageView(HybridCanvasView, TemplateView):
+    template_name = "nourish/RootPageView.html"
 
-        egs = list(EventGroup.objects.filter(group__in=groups))
+    def get_context_data(self, **kwargs):
+        context = super(RootPageView, self).get_context_data(**kwargs)
+        context['events'] = Event.objects.filter(display=True)
+        return context
 
-        for eu in EventUser.objects.filter(user=request.user):
-            events.append(eu.event)
-    else:
-        egs = None
+    def get(self, request, *args, **kwargs):
+        if 'fbcanvas' in kwargs and kwargs['fbcanvas']:
+            if 'request_ids' in request.GET:
+                return redirect('/nourish/fb/_notif/?request_ids=' + request.GET['request_ids'])
+            if 'ref' in request.GET and request.GET['ref'] == 'bookmarks':
+                if 'count' in request.GET and request.GET['count']:
+                    return redirect('/nourish/fb/_notif/?last=%s&ref=bookmarks' % request.GET['count'])
+                return redirect('/nourish/fb/home/')
+        return super(RootPageView, self).get(request, **kwargs)
 
-    return render_to_response('nourish/homepage.html', { 
-        'request': request,
-        'events' : events,
-        'egs' : egs,
-        'groups' : groups,
-        'canvas' : canvas,
-    }, context_instance=RequestContext(request))
+class HomePageView(HybridCanvasView, TemplateView):
+    template_name = "nourish/HomePageView.html"
 
-def rootpage(request, canvas=False):
-    events = Event.objects.filter(display=True)
+    def get_context_data(self, **kwargs):
+        context = super(HomePageView, self).get_context_data(**kwargs)
 
-    if canvas:
-        if 'request_ids' in request.GET:
-            return redirect('/nourish/fb/_notif/?request_ids=' + request.GET['request_ids'])
-        if 'ref' in request.GET and request.GET['ref'] == 'bookmarks':
-            if 'count' in request.GET and request.GET['count']:
-                return redirect('/nourish/fb/_notif/?last=%s&ref=bookmarks' % request.GET['count'])
-            return redirect('/nourish/fb/home/')
+        context['groups'] = [ ]
+        context['events'] = []
+        context['egs'] = []
 
-    return render_to_response('nourish/rootpage.html', { 
-        'request': request,
-        'events' : events,
-        'canvas' : canvas,
-    }, context_instance=RequestContext(request))
+        if self.request.user.is_authenticated():
+            for gm in GroupUser.objects.filter(user=self.request.user):
+                context['groups'].append(gm.group)
 
-def homepage_chooser(request, canvas=False):
-    url = homepage_chooser_url(request)
-    sys.stderr.write("path is " + request.path + "\n")
-    if canvas:
+            context['egs'] = list(EventGroup.objects.filter(group__in=context['groups']))
+    
+            for eu in EventUser.objects.filter(user=self.request.user):
+                context['events'].append(eu.event)
+
+        return context
+
+def homepage_chooser(request, fbcanvas=False):
+    url = homepage_chooser_url(request, fbcanvas)
+    if fbcanvas:
         p = re.compile("\/nourish\/")
         url = p.sub('/nourish/fb/', url)
     return redirect(url)
 
-
-def homepage_chooser_url(request, canvas=False):
+def homepage_chooser_url(request, fbcanvas=False):
     user = request.user
     try:
         profile = UserProfile.objects.get(user=user)
