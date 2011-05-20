@@ -4,11 +4,4 @@
   <img src="/static/fta/FeedTheArtistsLogo.png" border=0>
 </a>
 
-<div id="site_auth">
-  {% if user.is_authenticated %}
-    {% userlink user %}[<a href="{% url logout %}">logout</a>]
-  {% else %} 
-    [<a href="{% url login %}">login</a>]
-  {% endif %}
-</div>
 <div style="clear: both;"></div>

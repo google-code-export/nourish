@@ -1,4 +1,5 @@
 syntax: glob
+.idea
 *~
 *.tmp
 *.swp

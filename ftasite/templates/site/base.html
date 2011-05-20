@@ -39,7 +39,14 @@
     <div id="content_main">
 
       <div id="site_top">
-        {% if canvas %}
+        {% if not canvas %}
+        <div id="site_auth">
+          {% if user.is_authenticated %}
+          {% userlink user %}[<a href="{% url logout %}">logout</a>]
+          {% else %} 
+            [<a href="{% url login %}">login</a>]
+          {% endif %}
+        </div>
         <img src="/static/fta/tophead1.jpg" usemap="#headermap"></img>
         <map name="headermap">
           <area shape="rect" coords="118,63,200,110" href="/vision" title="Our Vision">
