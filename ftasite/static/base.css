@@ -92,6 +92,14 @@ A:hover {
 }
 
 #site_auth {
+    position: absolute;
+    top: 0px;
+    right: 10px;
     padding: 7px;
     text-align: center;
+    color: white;
+}
+
+#site_auth a {
+    color: white;
 }
