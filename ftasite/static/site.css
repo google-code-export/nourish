@@ -60,6 +60,10 @@ ul.site_menu li {
     color: white;
 }
 
+#site_footer_links a {
+    color: white;
+}
+
 #site_footer a {
     color: white;
 }
