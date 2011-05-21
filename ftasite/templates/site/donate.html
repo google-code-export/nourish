@@ -1,0 +1,74 @@
+{% extends "site/base.html" %}
+
+{% block sitetitle %}Donate to FtA{% endblock %}
+
+{% block content-css %}
+  <link rel="stylesheet" type="text/css" href="/static/donate.css">
+  <link rel="stylesheet" type="text/css" href="/static/shadowbox.css">
+{% endblock %}
+
+{% block content-header %}
+{% endblock %}
+
+{% block content-sidebar %}
+<script type="text/javascript" src="/static/js/shadowbox.js"></script>
+<script type="text/javascript">
+Shadowbox.init({
+    animate: true
+});
+</script>
+<div class="reward-images">
+  <a href="/static/fta/donateImages/sb1.jpg" rel="shadowbox[rewards]">
+    <img src="/static/fta/donateImages/ss1.jpg" border="0"></img>
+  </a>
+  <a href="/static/fta/donateImages/sb2.jpg" rel="shadowbox[rewards]">
+    <img src="/static/fta/donateImages/ss2.jpg" border="0"></img>
+  </a>
+  <a href="/static/fta/donateImages/sb3.jpg" rel="shadowbox[rewards]">
+    <img src="/static/fta/donateImages/ss3.jpg" border="0"></img>
+  </a>
+  <a href="/static/fta/donateImages/sb4.jpg" rel="shadowbox[rewards]">
+    <img src="/static/fta/donateImages/ss4.jpg" border="0"></img>
+  </a>
+  <a href="/static/fta/donateImages/sb5.jpg" rel="shadowbox[rewards]">
+    <img src="/static/fta/donateImages/ss5.jpg" border="0"></img>
+  </a>
+  <a href="/static/fta/donateImages/medal-large.jpg" rel="shadowbox[rewards]">
+    <img src="/static/fta/donateImages/medallion1.jpg" border="0"></img>
+  </a>
+  <h3> FtA Medallions </h3>
+</div>
+{% endblock %}
+
+{% block content %}
+<h2>Thank you so much for donating to Feed the Artists.</h2>
+<p>You are truly helping us create a new paradigm at Burning Man, in support of the principles of Gifting, Immediacy, Civic Responsibility, and Communal Effort, in which theme camps with early arrival status take it upon themselves to invite artists and their crews to join them in their pre-event camp dinners.</p>
+<p>Our primary goal has always been to build this project to the point that it becomes a self-sustaining, and established part of the Burning Man tradition; much like leaving notes and mementos at the Temple is today. Our aim is to continue to increase theme camp participation to the point that, early-arrival theme camps are feeding all the funded artists at least once, and our role can become much more supportive and consultative. Planned obsolescence, so to speak.</p>
+<p>But we can't do this without you!!!! We are a small, geographically dispersed group, with limited fundraising capability, so your willingness to donate here and now is a real godsend to us.</p>
+<p>To show our appreciation, anyone who donates $25-$99 will receive an official, very crass, FtA Bumper Sticker <span class="small-hint">(Click the images at your left to view larger image).</span> And anyone who donates $100 or more will receive one of the much talked about, limited edition FtA medallions (while supplies last). These high-quality metal medallions were the most sought after schwag on the playa last year.</p>
+
+<div align="center">
+  <form target="_blank" method="post" action="https://www.paypal.com/cgi-bin/webscr">
+    <input type="hidden" value="_s-xclick" name="cmd">
+    <input type="hidden" value="http://www.feedtheartists.net" name="cancel_return">
+    <input type="hidden" value="5878848" name="hosted_button_id">
+    <input border="0" type="image" alt="PayPal - The safer, easier way to pay online!" name="submit" src="/static/fta/donateNow.gif">
+    <img border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" alt="">
+  </form>
+</div>
+<br />
+<p>
+  OR, please mail a check to:
+  <br />
+  <span class="address-text">
+  Feed the Artists
+  <br/>
+  195 Inland Ridge Way
+  <br/>
+  Atlanta, GA 30342
+  </span>
+</p>
+
+<p>And thanks again for helping us support BM's artists, create healthy and meaningful interactions between artists and theme camps that promote bonding, collaboration and the sharing of resources, and elevate the role of food on the playa to an art form.</p>
+{% endblock %}
+

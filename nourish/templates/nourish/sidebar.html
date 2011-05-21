@@ -1,7 +1,6 @@
 {% load nourish %}
 
 <div class="nourish_sidebar">
-<h2>Nourish</h2>
 {% if request.user.get_profile.notifications %}
 <div class="pending_notif"><a href="{% nurl 'notification-list' %}">
   You have {{ request.user.get_profile.notifications|length }} notice{% if request.user.get_profile.notifications.1 %}s{% endif %}.
@@ -9,7 +8,7 @@
 {% endif %}
 
 {% if request.user.get_profile.upcoming_events %}
-<h3>My Events</h3>
+<h2>My Events</h2>
 <ul class="event_list">
   <ul>
   {% for er in request.user.get_profile.upcoming_events %}
@@ -25,7 +24,7 @@
 </ul>
 
 {% else %}
-<h3>Public Events</h3>
+<h2>Public Events</h2>
 <ul class="event_list">
   {% for e in request.user.get_profile.public_events %}
     <li><a href="{% nurl e %}">{{ e.name }}</a></li>

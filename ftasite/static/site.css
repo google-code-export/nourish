@@ -4,7 +4,7 @@ body {
 
 #site_top {
     width:1024px;
-    height: 123px;
+    height: 122px;
     margin:0 auto;
 }
 
@@ -24,8 +24,8 @@ body {
 #site_content {
     width:540px;
     padding-right: 125px;
+    margin: 10px 0 0 0;
     float:right;
-    margin: 0px;
 }
 
 #site_sidebar {
