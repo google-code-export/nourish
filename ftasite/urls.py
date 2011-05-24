@@ -16,4 +16,5 @@ urlpatterns = patterns('',
     url(r'^login/$', login, name='login'),
     url(r'^logout/$', logout, name='logout'),
     (r'^donate/$', direct_to_template, {'template': 'site/donate.html'}),
+    (r'^$', direct_to_template, {'template': 'site/home.html'}),
 )

@@ -158,8 +158,8 @@ div.nourish_sidebar ul {
 div.nourish_sidebar h2 {
     padding: 0px;
     margin: 0px;
-    margin-left: 25px;
-    margin-right: 25px;
+    margin-left: 5px;
+    margin-right: 5px;
     padding-bottom: 3px;
     margin-bottom: 3px;
     line-height: 20px;
@@ -168,5 +168,9 @@ div.nourish_sidebar h2 {
 }
 
 td.diners input {
-    width: 30px;
+    width: 20px;
+}
+
+td.notes input {
+    width: 250px;
 }
