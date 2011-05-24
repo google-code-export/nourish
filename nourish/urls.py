@@ -16,7 +16,7 @@ from nourish.models import Event, Group
 urlpatterns = patterns('',
     url('^logged-in/$', 'nourish.views.homepage_chooser', name='homepage-chooser'),
     url('^register/event/$', EventRegisterView.as_view(), name='register-event'),
-    url('^home/$', HomePageView.as_view(), name='homepage'),
+    url('^home/$', login_required(HomePageView.as_view()), name='homepage'),
     url('^$',      RootPageView.as_view(), name='rootpage'),
 
     url(r'^_notif/$', NotificationListView.as_view(), name='notification-list'),
