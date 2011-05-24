@@ -18,7 +18,7 @@
 
         {% if not user.is_authenticated %} 
           <h3>Info about you</h3>
-          <p>We presume that you are the person who will be coordinating meals for your theme camp.  We need the information below so that we can contact you with updates about your invites, as well as other FtA-related communications.  Plus, you'll need to be able to log back into the site later to confirm your invitations, etc.</p>
+          <p>We presume that you are the leader who will be coordinating meals for your Artist Group.  We need the information below so that we can contact you with updates about your invites, as well as other FtA-related communications.  Plus, you'll need to be able to log back into the site later to confirm your invitations, etc.</p>
           {{ user_formset.0.non_field_errors }}
           <table class="regform">
             {% include "nourish/form_snippet.html" with form=user_formset.0 %}
@@ -47,7 +47,7 @@
           {% endif %}
         {% else %}
           <h3>Info about your group.</h3>
-          <p>Tell us a little bit about your group in general</p>
+          <p>Please provide us a little information about your group so theme camps (your potential hosts) can know a bit about you.</p>
           {{ group_formset.0.non_field_errors }}
           <table class="regform">
             {% include "nourish/form_snippet.html" with form=group_formset.0 %}
@@ -56,10 +56,11 @@
 
         {% if group_formset.0.group.field.choices or not is_fb %}
           <h3>Meals</h3>
-        <p>Here's where you tell us how many crew members are looking for dinner each night of the event. Please specify each night that there will be crew with special dietary restrictions.  If your crew is not available for one of the dates, just leave it blank.  Note: By registering the nights you are available, you are not guaranteed a meal.  A theme camp must invite you.</p>
+        <p>Here's where you tell us how many crew members will be at dinner each night of the event and if there are any special notes regarding dietary restrictions and the such. If you are not available for one of the dates, just leave it blank.<br/><strong>We know this information can change as we get closer to the event. If it does, please update this information here so we can notify the theme camps about the changes.</strong></p>
+        <p style="color: #696969">Note: By registering the nights you are available, you are not guaranteed a meal; you are simply making yourselves available to be invited.</p>
             <table border=0 class="regform">
               {{ meal_formset.non_field_errors }}
-              <tr><th>Date</th><th>Crew</th><th>Restrictions</th><th>Notes</th></tr>
+              <tr><th>Date</th><th>Crew</th><th>Diet Restrictions</th><th>Notes</th></tr>
               {% for form in meal_formset %}
                 {% if form.non_field_errors %}
                   <tr><td colspan=2>{{ form.non_field_errors }}</td></tr>
@@ -68,7 +69,7 @@
                 <td class="regdate">{{ dates.next|date:"N j" }} <em>({{ days.next|date:"D." }})</em>{{ form.date }}{% for field in form.hidden_fields %}{{ field }}{% endfor %}</td>
                 <td class="diners">{{ form.members.errors }} {{ form.members }}</td>
                 <td class="features">{{ form.features.errors }} {{ form.features }}</td>
-                <td>{{ form.notes.errors }} {{ form.notes }}</td>
+                <td class="notes">{{ form.notes.errors }} {{ form.notes }}</td>
               </tr>
             {% endfor %}
           </table>
