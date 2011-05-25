@@ -71,7 +71,8 @@ ul#event_details {
 }
 
 .regform th {
-    text-align: left;
+    text-align: center;
+    vertical-align: bottom;
     color: #600;
 }
 .regform ul {
@@ -167,8 +168,11 @@ div.nourish_sidebar h2 {
     border-bottom: 1px solid gray;
 }
 
+td.regdate {
+    width: 115px;
+}
 td.diners input {
-    width: 20px;
+    width: 27px;
 }
 
 td.notes input {
