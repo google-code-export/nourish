@@ -1,0 +1,33 @@
+{% extends "site/base.html" %}
+
+{% block sitetitle %}Feed the Artists :: Archives{% endblock %}
+
+{% block content-css %}
+{% endblock %}
+
+{% block content-header %}
+{% endblock %}
+
+{% block content-sidebar %}
+  
+{% endblock %}
+
+{% block content %}
+<div align="center">
+  <br />
+  <br />
+  <img border="0" usemap="#Map" src="/static/images/photoGalleries.gif">
+  <br />
+  <br />
+  <br />
+  <a target="_blank" href="/static/fta/FtA_menu.pdf"><img border="0" src="/static/images/previousMenus.gif"></a>
+  <br />
+</div>
+
+<map name="Map">
+  <area onmouseout="tooltip.hide();" onmouseover="tooltip.show('FeedTheArtists&lt;br&gt; &lt;strong&gt;2009&lt;/strong&gt;&lt;br&gt;Photo Gallery');" target="_blank" href="http://picasaweb.google.com/fedtheartists/FeedTheArtists2009?feat=directlink" coords="166,85,243,144" shape="rect">
+  <area onmouseout="tooltip.hide();" onmouseover="tooltip.show('FeedTheArtists&lt;br&gt; &lt;strong&gt;2007&lt;/strong&gt;&lt;br&gt;Photo Gallery');" target="_blank" href="http://picasaweb.google.com/fedtheartists/FeedTheArtists2007?feat=directlink" coords="66,84,8,84,7,139,67,143" shape="poly">
+  <area onmouseout="tooltip.hide();" onmouseover="tooltip.show('FeedTheArtists&lt;br&gt; &lt;strong&gt;2008&lt;/strong&gt;&lt;br&gt;Photo Gallery');" target="_blank" href="http://picasaweb.google.com/fedtheartists/FeedTheArtists2008?feat=directlink " coords="156,161,92,163,89,225,155,226" shape="poly">
+  <area onmouseout="tooltip.hide();" onmouseover="tooltip.show('FeedTheArtists&lt;br&gt; &lt;strong&gt;2010&lt;/strong&gt;&lt;br&gt;Photo Gallery');" target="_blank" href="https://picasaweb.google.com/fedtheartists/FeedTheArtists2010" coords="282,195,35" shape="circle">
+</map>
+{% endblock %}
