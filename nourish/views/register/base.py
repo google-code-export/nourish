@@ -28,7 +28,7 @@ class FBRegisterView(object):
     def get_group_choices(self, graph, event, user):
         me = graph.get_object("me")
         groups = graph.request("me/groups", { "fields" : "owner,name" })
-        events = graph.get_object("me/events")
+        events = graph.get_object("me/events", { "fields" : "owner,name" })
         accounts = graph.get_object("me/accounts")
         sys.stderr.write("me " + pformat(me) + "\n")
         sys.stderr.write("groups " + pformat(groups) + "\n")
@@ -43,6 +43,8 @@ class FBRegisterView(object):
             if self.can_select_group(group['name'], event, user):
                 choices.append((group['id'], group['name'] + " (Group)"))
         for e in events['data']:
+            if 'owner' not in e or e['owner']['id'] != me['id']:
+                continue
             if iso8601.parse_date(e['end_time']).replace(tzinfo=None) < datetime.datetime.utcnow():
                 continue
             if self.can_select_group(e['name'], event, user):
