@@ -7,7 +7,7 @@
     {{ group_formset.0.non_field_errors }}
     {% include "nourish/group_form_snippet.html" with form=group_formset.0 %}
   </table>
-  <p>We are only showing groups that you're an admin for.  If your group is not here, contact your Facebook group admin to grant you admin rights.</p>
+  <p>We are only showing groups for which you're an admin.  If your group is not here, contact your Facebook group admin to grant you admin rights.</p>
   <p>Or if you're group doesnt have any facebook presense, <a href="{% nurl 'fb-newgroup-options' %}">Create a new facebook page.</a></p>
   <p>You can also <a href="?nofb">Continue without creating a Facebook page for your group</a></p>
   

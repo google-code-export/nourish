@@ -10,13 +10,6 @@
     {% else %}
       <h2>Register a Theme Camp at {{event.name}}</h2>
       <p>This page is for theme camps that would like to invite artists to dinner at {{event.name}}.</p>
-      
-      <p>Please read the <a href="/static/fta/FtA-TCG.pdf" target="_blank">Theme Camp Guide</a> for more information on hosting a successful FtA Dinner!</a>
-      <div style="text-align: center; margin: 10px">
-        <a href="/static/fta/FtA-TCG.pdf" target="_blank">
-          <img src="/static/images/campguidepdf1.jpg" border="0" height="110" width="200">
-        </a>
-      </div>
 
       <form method="post">{% csrf_token %}
         {{ user_formset.management_form }}
@@ -39,6 +32,13 @@
           <input type="submit" value="Register" />
         {% endif %}
       </form>
+      
+      <p>Please read the <a href="/static/fta/FtA-TCG.pdf" target="_blank">Theme Camp Guide</a> for more information on hosting a successful FtA Dinner!</a>
+      <div style="text-align: center; margin: 10px">
+        <a href="/static/fta/FtA-TCG.pdf" target="_blank">
+          <img src="/static/images/campguidepdf1.jpg" border="0" height="110" width="200">
+        </a>
+      </div>
     {% endif %}
   {% endif %}
 {% endblock %}
