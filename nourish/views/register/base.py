@@ -28,7 +28,7 @@ class FBRegisterView(object):
     def get_group_choices(self, graph, event, user):
         me = graph.get_object("me")
         groups = graph.request("me/groups", { "fields" : "owner,name" })
-        events = graph.get_object("me/events", { "fields" : "owner,name" })
+        events = graph.request("me/events", { "fields" : "owner,name" })
         accounts = graph.get_object("me/accounts")
         sys.stderr.write("me " + pformat(me) + "\n")
         sys.stderr.write("groups " + pformat(groups) + "\n")
