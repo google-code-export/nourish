@@ -1,5 +1,6 @@
 from django.conf.urls.defaults import patterns, url
 from django.contrib.auth.decorators import login_required
+from django.views.generic.simple import direct_to_template
 
 from nourish.views.group import GroupDetailView, GroupUpdateView, GroupListView
 from nourish.views.event import EventDetailView, EventGroupView, EventUpdateView, EventListView, EventGroupUpdateView
@@ -25,6 +26,7 @@ urlpatterns = patterns('',
     url(r'^e/(?P<pk>\d+)-(?P<slug>[^\/]*)/$', EventDetailView.as_view(), name='event-detail'),
     url(r'^e/(?P<pk>\d+)-(?P<slug>[^\/]*)/invite/$', EventHostInviteView.as_view(), name='event-invite'),
     url(r'^e/(?P<pk>\d+)(-[^\/]*)?/edit/$', login_required(EventUpdateView.as_view())),
+    url(r'^artistschart/$', direct_to_template, {'template': 'nourish/artistchart.html'}),
 
     url(r'^e/(?P<pk>\d+)(-[^\/]*)?/register/guest/$', 
         EventGuestRegisterView.as_view()),
