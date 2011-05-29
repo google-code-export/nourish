@@ -3,21 +3,24 @@ html {
     margin:0;
     padding:0;
     color:#000;
-    font-family: arial, sans-serif;
+    font-family: 'Metrophobic', verdana, serif;
     
+}
+
+p, h3, h4, h5, h6 {
+    font-family: 'Metrophobic', verdana, serif;
+}
+
+a {
+    font-family: 'Metrophobic', verdana, serif;
+    text-decoration: none;
 }
 
 h1, h2 {
     font-family: 'Special Elite', arial, sans-serif !important;
-    text-shadow: 6px 6px 6px #ccc;
+    text-shadow: 4px 4px 4px #ccc;
     font-style: normal;
     font-weight: 700;
-}
-
-p {
-}
-A {
-    text-decoration: none;
 }
 
 #site_sidebar A {
