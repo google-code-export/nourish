@@ -1,6 +1,15 @@
 {% extends "nourish/base.html" %}
 {% load nourish %}
 {% block title %}Register an Artist Group at {{event.name}}{% endblock %}
+
+{% block sidebar%}
+  <div style="text-align: center; margin: 10px; cursor: pointer">
+    <a href="/static/fta/FtA-TCG.pdf" target="_blank">
+      <img style="cursor:pointer" src="/static/images/campguidepdf1.jpg" border="0" height="110" width="200">
+    </a>
+  </div>
+{% endblock%}
+
 {% block content %}
   {% if canvas and not user.is_authenticated %}
     {% include "nourish/authorize_connect.html" %}
@@ -32,14 +41,6 @@
           <input type="submit" value="Register" />
         {% endif %}
       </form>
-      <br />
-      <br />
-      <p>Please read the <a href="/static/fta/FtA-TCG.pdf" target="_blank">Theme Camp Guide</a> for more information on hosting a successful FtA Dinner!</a>
-      <div style="text-align: center; margin: 10px">
-        <a href="/static/fta/FtA-TCG.pdf" target="_blank">
-          <img src="/static/images/campguidepdf1.jpg" border="0" height="110" width="200">
-        </a>
-      </div>
     {% endif %}
   {% endif %}
 {% endblock %}
