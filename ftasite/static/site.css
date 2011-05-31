@@ -11,7 +11,7 @@ body {
 #site_bottom {
     width:1024px;
     height: 384px;
-    margin: -280px 0 0 0;
+    margin: -350px 0 0 0;
     background-image: url(/static/fta/bottombg2.jpg);
 }
 
@@ -51,7 +51,7 @@ ul.site_menu li {
 
 #site_footer {
     position: relative;
-    bottom: -100px;
+    bottom: -35px;
     padding-left: 180px;
     padding-right: 120px;
 }

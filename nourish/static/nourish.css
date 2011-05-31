@@ -71,10 +71,14 @@ ul#event_details {
 }
 
 .regform th {
-    text-align: center;
-    vertical-align: bottom;
     color: #600;
 }
+
+.artist-meal-info th {
+    text-align: center;
+    vertical-align: bottom;
+}
+
 .regform ul {
     list-style: none;
     padding: 0;
@@ -146,7 +150,7 @@ ul.fb_connect_options input {
 
 div.nourish_sidebar {
     padding: 5px;
-    margin: 30px 10px 10px 10px;
+    margin: 60px 10px 10px 10px;
     border: 1px solid #aaa;
     background-color: #f0f0f0;
 }
@@ -177,4 +181,8 @@ td.diners input {
 
 td.notes input {
     width: 250px;
+}
+
+.description {
+    color: #808080;
 }
