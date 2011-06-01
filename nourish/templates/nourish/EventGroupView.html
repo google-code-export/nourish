@@ -5,6 +5,14 @@
 
 {% block content %}
 
+  {% if object.role == 'A' %}
+  <h1>Artist Group</h1>
+  {% endif %}
+
+  {% if object.role == 'T' %}
+  <h1>Theme Camp</h1>
+  {% endif %}
+  
   {% if object.group.image_url %}
     <div style="float: left; margin-right: 5px;">
       <a href="{% nurl object.group %}"><img width=100 src="{{object.group.image_url}}?type=normal" border=0></a>

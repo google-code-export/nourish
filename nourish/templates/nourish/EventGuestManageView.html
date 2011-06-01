@@ -13,19 +13,23 @@
 {% endblock %}
 
 {% block content-title %}
-  <h2 style="display: inline;">{{ eg.group.name }}</h2><br>
+  <h1>Manage Meals</h1>
+  <h2 style="display: inline;">{{ eg.group.name }}</h2>
   at
   <h2 style="display: inline;">{{ eg.event.name }}</h2><br>
-  {{ eg.event.start_date }} thru {{ eg.event.end_date }}<br>
+  <span class="eventDates">{{ eg.event.start_date }} thru {{ eg.event.end_date }}</span>
+  <br/>
+  <br/>
 {% endblock %}
 
 {% block content-body %}
-  <h1>Manage Meals</h1>
 
   <form method="post">{% csrf_token %}
     {{ meal_formset.management_form }}
-    <table border=0 class="meals" width="100%">
-      <tr><th class="first"></th><th>Diners</th><th>Restr.</th><th>Notes</th></tr>
+    <p>Here's where you tell us how many crew members will be available for dinner each night of the event and if there are any special notes regarding dietary restrictions that your potential hosts should know. If you are not available for one of the dates, just leave it blank.<br/><strong>We know this information can change as we get closer to the event. If it does, please update this information here so we can notify the theme camps about the changes. (We wouldn't want 12 of you showing up when your hosts only expected 5!!!)</strong></p>
+    <p class="description">Note: By registering the nights you are available, you are not guaranteed a meal; you are simply making yourselves available to be invited.</p>
+    <table border=0 class="regform artist-meal-info" width="100%">
+      <tr><th>Date</th><th>Crew</th><th style="width: 40px">Dietary Restrictions</th><th>If yes, please explain</th></tr>
       {% for f in forms_by_date %}
         {% include "nourish/EventGuestManageView_day.html" %}
       {% endfor %}
