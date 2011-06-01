@@ -2,11 +2,25 @@
 
 <h3>About Us</h3>
 <p>{{ object.group.description }}</p>
+<br/>
+
+{% if is_admin %}
+  <p>The current meals your artist group is registered for dinner on can be found below.<br/>
+  pay close attention to the status of the meals to see if you have been invited or are in need of confirmation of your invites.
+  <br/>Click the 'Edit or Add Meals' button to make changes to your registered dates.
+  </p>
+{% else %}
+  <p>{{object.group.name}} is registered for the meals below.</p>
+{% endif %}
+
 <h3 style="display:inline;">Meals</h3>
 {% if is_admin %}
   <span style="font-size: small;">[<a href="{% nurl object %}meals/">Edit or Add Meals</a>]</span>
 {% endif %}
-<br><br>
+
+<br/>
+<br/>
+
 {% for eg in host_event_groups %}
   <a href="{% nurl object.event %}invite/?guest={{object.id}}&host={{eg.id}}">Invite {{object.group.name}} to dinner with {{ eg.group.name }}</a>
   <br>
@@ -14,10 +28,10 @@
 <ul>
   {% for meal in meals %}
     <li>
-      {{ meal.date|date:"N j" }} <em>({{ meal.date|date:"D." }})</em>
+      <span class="eventDate">{{ meal.date|date:"N j" }} <em>({{ meal.date|date:"D." }})</em></span>
       - {{ meal.members }} Crew
       <ul>
-        {% if meal.state == 'N' %}<li>Posted, waiting for invitations.</li>{% endif %}
+        {% if meal.state == 'N' %}<li>Waiting for an invitation.</li>{% endif %}
         {% if meal.state == 'I' %}
           {% for invite in meal.invites %}
             <li>Invited by <a href="{% nurl invite.host_eg %}">{{ invite.host_eg.group.name }}</a> <em>({{invite.dinner_time}} @ {{invite.host_eg.event_location|default:"TBD"}})</em>.</li>

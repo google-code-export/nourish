@@ -79,6 +79,11 @@ ul#event_details {
     vertical-align: bottom;
 }
 
+.artist-meal-info td {
+    vertical-align: middle;
+    text-align: center;
+}
+
 .regform ul {
     list-style: none;
     padding: 0;
@@ -180,9 +185,17 @@ td.diners input {
 }
 
 td.notes input {
-    width: 250px;
+    width: 300px;
 }
 
 .description {
     color: #808080;
+}
+
+.eventDates {
+    color: #808080;
+}
+
+.eventDate {
+    color: #600;
 }
