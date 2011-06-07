@@ -269,7 +269,7 @@ class EventGroup(models.Model):
     event = models.ForeignKey(Event)
     group = models.ForeignKey(Group)
     role = models.CharField(max_length=1, choices=ROLE_CHOICES, default='U')
-    playa_address = models.CharField("Event Address", max_length=50, blank=True, default='')
+    playa_address = models.CharField("event address", max_length=50, blank=True, default='')
     features = models.CharField(max_length=100, default='', choices=FEATURE_CHOICES, blank=True)
     notes = models.TextField(blank=True, default='')
     def __unicode__(self):
