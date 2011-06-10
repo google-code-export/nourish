@@ -5,6 +5,10 @@
 </script>
 {{ meal_formset.management_form }}
 {{ day_formset.management_form }}
+<p>
+  Invite artist groups to dinner by clicking the checkbox next to the artist group name on the day that you are having the dinner.
+  <br/>
+  If an artist group has dietary restrictions, it will be noted in parenthesis next to the number of crew members for that artist group.</p>
 <ul>
   {% for d in invite_dates %}
     <li>
@@ -31,8 +35,8 @@
               {% endfor %}
               {{ m.form.invited }}
               <a href="{% nurl m.meal.eg %}">{{ m.meal.eg.group.name }}</a>
-              <em>({{ m.meal.members }} diners, {{ m.meal.features }})</em>
-              <strong>[{{m.meal.state}}]</strong>
+              <em>&nbsp;{{ m.meal.members }} crew members{% if m.meal.features %}&nbsp;({{ m.meal.notes|escape}}){% endif %}</em>
+              <strong>[{{m.meal.get_state_display}}]</strong>
             </label>
           </li>
           <script type="text/javascript">
