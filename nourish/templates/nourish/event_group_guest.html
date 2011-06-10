@@ -1,9 +1,24 @@
 {% load nourish %} 
 
-<h3>About Us</h3>
+<h3 style="padding-top: 10px;">About Us</h3>
+<p>Website {{object.url|urlizetrunc:40}}</p>
 <p>{{ object.group.description }}</p>
 <br/>
 
+{% for eg in host_event_groups %}
+  <a href="{% nurl object.event %}invite/?guest={{object.id}}&host={{eg.id}}">Invite <em>{{object.group.name}}</em> to dinner with <em>{{ eg.group.name }}</em></a>
+  <br>
+{% endfor %}
+
+{% if host_event_groups|length != 0 %}
+  <br/>
+  <br/>
+{% endif %}
+
+<h3 style="display:inline;">Meals</h3>
+{% if is_admin %}
+  <span style="font-size: small;">[<a href="{% nurl object %}meals/">Edit or Add Meals</a>]</span>
+{% endif %}
 {% if is_admin %}
   <p>Each night your artist group is registered for dinner can be found below.<br/>
   pay close attention to the status of the meals to see if you have been invited or are in need of confirmation of your invites.
@@ -13,23 +28,11 @@
   <p>{{object.group.name}} is registered for the meals below.</p>
 {% endif %}
 
-<h3 style="display:inline;">Meals</h3>
-{% if is_admin %}
-  <span style="font-size: small;">[<a href="{% nurl object %}meals/">Edit or Add Meals</a>]</span>
-{% endif %}
-
-<br/>
-<br/>
-
-{% for eg in host_event_groups %}
-  <a href="{% nurl object.event %}invite/?guest={{object.id}}&host={{eg.id}}">Invite {{object.group.name}} to dinner with {{ eg.group.name }}</a>
-  <br>
-{% endfor %}
 <ul>
   {% for meal in meals %}
     <li>
       <span class="eventDate">{{ meal.date|date:"N j" }} <em>({{ meal.date|date:"D." }})</em></span>
-      - {{ meal.members }} Crew
+      - {{ meal.members }} Crew Member{{ meal.members|pluralize }}
       <ul>
         {% if meal.state == 'N' %}<li>Waiting for an invitation.</li>{% endif %}
         {% if meal.state == 'I' %}
@@ -51,5 +54,11 @@
         {% endif %}
       </ul>
     </li>
+    {% empty %}
+      <li><em>{{object.group.name}}</em> is not registered for any meals for <em>{{object.event.name}}</em>.
+      {% if is_admin %}
+        &nbsp;<span style="font-size: small;"><a href="{% nurl object %}meals/">Click here to add meals</a></span>
+      {% endif %} 
+      </li>
   {% endfor %}
 </ul>
