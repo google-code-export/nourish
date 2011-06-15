@@ -1,0 +1,43 @@
+{% load nourish %}
+
+{% if user.is_authenticated %}
+  <div class="nourish_sidebar">
+  {% if request.user.get_profile.notifications %}
+  <div class="pending_notif"><a href="{% nurl 'notification-list' %}">
+    You have {{ request.user.get_profile.notifications|length }} notice{% if request.user.get_profile.notifications.1 %}s{% endif %}.
+  </a></div>
+  {% endif %}
+  
+  {% if request.user.get_profile.upcoming_events %}
+  <h2>My Events</h2>
+  <ul class="event_list">
+    <ul>
+    {% for er in request.user.get_profile.upcoming_events %}
+      {% if er.event %}
+        <li><a href="{% nurl er %}">{{ er.group.name }}</a></li>
+      {% else %}
+        </ul>
+        <li><a href="{% nurl er %}">{{ er.name }}</a></li>
+        <ul class="event_group_list">
+      {% endif %}
+    {% endfor %}
+    </ul>
+  </ul>
+  
+  {% else %}
+  <h2>Public Events</h2>
+  <ul class="event_list">
+    {% for e in request.user.get_profile.public_events %}
+      <li><a href="{% nurl e %}">{{ e.name }}</a></li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  
+  </div>
+{% endif %}
+
+<div style="margin-top: 30px; text-align: center">
+  <a href="/nourish/artistschart">
+    <img src="/static/images/artistlist-image.png" title="Artist availability chart for Burning Man 2011" />
+  </a>
+</div>

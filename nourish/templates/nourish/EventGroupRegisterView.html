@@ -1,0 +1,46 @@
+{% extends "nourish/base.html" %}
+{% load nourish %}
+{% block title %}Register an Artist Group at {{event.name}}{% endblock %}
+
+{% block sidebar%}
+  <div style="text-align: center; margin: 10px; cursor: pointer">
+    <a href="/static/fta/FtA-TCG.pdf" target="_blank">
+      <img style="cursor:pointer" src="/static/images/campguidepdf1.jpg" border="0" height="110" width="200">
+    </a>
+  </div>
+{% endblock%}
+
+{% block content %}
+  {% if canvas and not user.is_authenticated %}
+    {% include "nourish/authorize_connect.html" %}
+  {% else %}
+    {% if not user.is_authenticated and not request.GET.u %}
+      {% include "nourish/please_connect.html" %}
+    {% else %}
+      <h2>Register a Theme Camp at {{event.name}}</h2>
+      <p>This page is for theme camps that would like to invite artists to dinner at {{event.name}}.</p>
+
+      <form method="post">{% csrf_token %}
+        {{ user_formset.management_form }}
+        {{ group_formset.management_form }}
+        {{ grouphost_formset.management_form }}
+        {{ features_formset.management_form }}
+
+        {% if not user.is_authenticated %} 
+          {% include "nourish/user_registration_form.html" %}
+        {% endif %}
+
+        {% if is_fb %}
+          {% include "nourish/group_select_form.html" %}
+        {% else %}
+          {% include "nourish/group_registration_form.html" %}
+        {% endif %}
+
+        {% if group_formset.0.group.field.choices or not is_fb %}
+          {% include "nourish/host_meal_form.html" %}
+          <input type="submit" value="Register" />
+        {% endif %}
+      </form>
+    {% endif %}
+  {% endif %}
+{% endblock %}

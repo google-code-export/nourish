@@ -1,0 +1,20 @@
+{% extends "nourish/base.html" %}
+{% load url from future %}
+{% load openid_tags %}
+
+{% block content %}
+
+
+<p/><p/><p>
+{% if request.facebook.graph %}
+<h2>You are still logged into Facebook!</h2>
+But, you are logged out of the FtA ORS.
+
+<br><br>
+<p><a href="https://www.facebook.com">Go to Facebook to log out</a>.</p>
+{% else %}
+<h2>Logged Out</h2>
+<p>Maybe you want to go back to the <a href="/">Home Page</a>?</p>
+{% endif %}
+
+{% endblock %}
