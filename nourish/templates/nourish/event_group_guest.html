@@ -43,8 +43,24 @@
         {% if meal.state == 'S' %}<li>Awaiting confirmation from <a href="{% nurl meal.invite.host_eg %}">{{ meal.invite.host_eg.group.name }}</a>.</li>{% endif %}
         {% if meal.state == 'C' %}
           <li>Confirmed with <a href="{% nurl meal.invite.host_eg %}">{{ meal.invite.host_eg.group.name }}</a>.</li>
-          <li>Dinner Time: {{ meal.invite.dinner_time }}.</li>
-          <li>Location: {{ meal.invite.host_eg.event_location|default:"TBD" }}.</li>
+          {% if is_admin %}
+            <li>Dinner Time: {{ meal.invite.dinner_time }}.</li>
+            <li>Location: {{ meal.invite.host_eg.event_location|default:"TBD" }}.</li>
+            <li>Contacts: <ul>
+              {% for contact in meal.invite.host_eg.group.admins %}
+                <li>
+                  {% if contact.get_profile.url %}
+                    <a href="{{ contact.get_profile.url }}">{{ contact.get_profile.fullname }}</a>
+                  {% else %}
+                    {{ contact.get_profile.fullname }}
+                  {% endif %}
+                  {% if contact.email %}
+                    &lt;<a href="mailto:{{contact.email}}">{{contact.email}}</a>&gt;
+                  {% endif %}
+                </li>
+              {% endfor %}
+            </ul></li>
+          {% endif %}
         {% endif %}
         {% if meal.features or meal.restrictions %}
           <li>
