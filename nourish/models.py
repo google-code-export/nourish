@@ -50,6 +50,19 @@ class FacebookProfileCache(models.Model):
         except:
             link = 'http://www.facebook.com/profile.php?id=' + me['id']
 
+        try:
+            user.email = me['email']
+        except:
+            pass
+
+        try:
+            user.first_name = me['first_name']
+            user.last_name = me['last_name']
+        except:
+            pass
+    
+        user.save()
+
         profile = user.get_profile()
         profile.fullname = me['name']
         profile.url = link
@@ -196,6 +209,12 @@ class Group(models.Model):
         except GroupUser.DoesNotExist:
             return False
         return True
+
+    def admins(self):
+        admins = [ ];
+        for gu in GroupUser.objects.filter(group=self, admin=True):
+            admins.append(gu.user)
+        return admins
 
 class Event(models.Model):
     name = models.CharField(max_length=100, unique=True, verbose_name='Event Name')
