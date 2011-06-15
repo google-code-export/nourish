@@ -4,9 +4,14 @@
 {% block title %}Events{% endblock %}
 
 {% block content %}
-    <h2>Events</h2>
+    <h2>Upcoming Events</h2>
+		<p>
+				Below you will find the events that Feed the Artists is currently supporting and that you can register your artist group or theme camp for.  If you would like your event to be included here, please let us know by contacting <a href="mailto:colonelangus@feedtheartists.net?subject=FtA Support my Event">Colonel Angus</a> with details about your event.
+		</p>
+		<br/>
     <ul class="small_list">
-        <li><a href="{% nurl 'register-event' %}">Register a New Event</a></li>
+				<!-- Turning off event registration for now -->
+        <!--<li><a href="{% nurl 'register-event' %}">Register a New Event</a></li>-->
         {% for event in object_list %}
             <li>{% include "nourish/event_small.html" with event=event %}</li>
     	{% endfor %}
