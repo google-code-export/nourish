@@ -22,6 +22,9 @@ rewriter_re = re.compile("\/nourish\/")
 def canvas_url_rewrite(url):
     return rewriter_re.sub('/nourish/fb/', url)
 
+def fb_url_rewrite(url):
+    return rewriter_re.sub('http://apps.facebook.com/feed-the-artists/', url)
+
 class FacebookProfileCache(models.Model):
     user = models.ForeignKey(User, unique=True)
     groups = models.TextField(blank=True)
@@ -226,6 +229,11 @@ class Event(models.Model):
 #    logo = models.FileField(upload_to='uploads/%Y-%m-%d')
     def __unicode__(self):
         return self.name
+
+    def fb_url(self):
+        u = reverse('event-detail', kwargs={'pk':self.id, 'slug': slugify(self.name)})
+        return fb_url_rewrite(u)
+        
     def get_absolute_url(self, canvas=False):
         u = reverse('event-detail', kwargs={'pk':self.id, 'slug': slugify(self.name)})
         if canvas:
