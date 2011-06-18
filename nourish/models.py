@@ -22,6 +22,9 @@ rewriter_re = re.compile("\/nourish\/")
 def canvas_url_rewrite(url):
     return rewriter_re.sub('/nourish/fb/', url)
 
+def fb_url_rewrite(url):
+    return rewriter_re.sub('http://apps.facebook.com/feed-the-artists/', url)
+
 class FacebookProfileCache(models.Model):
     user = models.ForeignKey(User, unique=True)
     groups = models.TextField(blank=True)
@@ -49,6 +52,19 @@ class FacebookProfileCache(models.Model):
             link = me['link']
         except:
             link = 'http://www.facebook.com/profile.php?id=' + me['id']
+
+        try:
+            user.email = me['email']
+        except:
+            pass
+
+        try:
+            user.first_name = me['first_name']
+            user.last_name = me['last_name']
+        except:
+            pass
+    
+        user.save()
 
         profile = user.get_profile()
         profile.fullname = me['name']
@@ -197,6 +213,12 @@ class Group(models.Model):
             return False
         return True
 
+    def admins(self):
+        admins = [ ];
+        for gu in GroupUser.objects.filter(group=self, admin=True):
+            admins.append(gu.user)
+        return admins
+
 class Event(models.Model):
     name = models.CharField(max_length=100, unique=True, verbose_name='Event Name')
     start_date = models.DateField(verbose_name='Event Begins')
@@ -207,6 +229,11 @@ class Event(models.Model):
 #    logo = models.FileField(upload_to='uploads/%Y-%m-%d')
     def __unicode__(self):
         return self.name
+
+    def fb_url(self):
+        u = reverse('event-detail', kwargs={'pk':self.id, 'slug': slugify(self.name)})
+        return fb_url_rewrite(u)
+        
     def get_absolute_url(self, canvas=False):
         u = reverse('event-detail', kwargs={'pk':self.id, 'slug': slugify(self.name)})
         if canvas:
