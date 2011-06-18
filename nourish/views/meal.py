@@ -1,11 +1,33 @@
 from django.shortcuts import render_to_response, redirect
 from django.core.exceptions import PermissionDenied
-from nourish.models import EventGroup, Meal, MealInvite
+from nourish.models import EventGroup, Meal, MealInvite, Event
 from nourish.forms.meal import EventGroupMealForm
 from django.forms.formsets import formset_factory
 from datetime import timedelta
 from fbcanvas.views import HybridCanvasView
 from django.views.generic import DetailView
+
+class EventArtistChart(HybridCanvasView, DetailView):
+    template_name='nourish/artistchart.html'
+    context_object_name = 'event'
+    model = Event
+    
+    def get_context_data(self, **kwargs):
+        context = super(EventArtistChart, self).get_context_data(**kwargs)
+        
+        meals = Meal.objects.filter(event=self.object)
+                
+        context['meals'] = meals
+
+        return context
+                
+    def get_dates(self):
+        dates = []
+        date = self.object.event.start_date
+        while date <= self.object.event.end_date:
+            dates.append(date)
+            date += timedelta(days=1)
+        return dates
 
 class EventGuestManageView(HybridCanvasView, DetailView):
     template_name = "nourish/EventGuestManageView.html"

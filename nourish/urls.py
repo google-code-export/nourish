@@ -10,7 +10,7 @@ from nourish.views.register.event import EventRegisterView
 from nourish.views.register.guest import EventGuestRegisterView
 from nourish.views.register.host import EventHostRegisterView
 from nourish.views.register.host_invite import EventHostInviteView
-from nourish.views.meal import EventGuestManageView
+from nourish.views.meal import EventGuestManageView, EventArtistChart
 from fbcanvas.views import CanvasTemplateView
 from nourish.models import Event, Group
 
@@ -26,12 +26,13 @@ urlpatterns = patterns('',
     url(r'^e/(?P<pk>\d+)-(?P<slug>[^\/]*)/$', EventDetailView.as_view(), name='event-detail'),
     url(r'^e/(?P<pk>\d+)-(?P<slug>[^\/]*)/invite/$', EventHostInviteView.as_view(), name='event-invite'),
     url(r'^e/(?P<pk>\d+)(-[^\/]*)?/edit/$', login_required(EventUpdateView.as_view())),
-    url(r'^artistschart/$', direct_to_template, {'template': 'nourish/artistchart.html'}),
 
     url(r'^e/(?P<pk>\d+)(-[^\/]*)?/register/guest/$', 
         EventGuestRegisterView.as_view()),
     url(r'^e/(?P<pk>\d+)(-[^\/]*)?/register/host/$', 
         EventHostRegisterView.as_view()),
+    url(r'^e/(?P<pk>\d+)(-[^\/]*)?/artistchart/$', 
+        EventArtistChart.as_view()),
     url(r'^eg/(?P<pk>\d+)-(?P<slug>[^/]+)/$', 
         EventGroupView.as_view(), name='event-group-detail'),
     url(r'^eg/(?P<pk>\d+)(-[^\/]*)?/edit/$', 

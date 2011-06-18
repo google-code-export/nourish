@@ -86,7 +86,7 @@ class EventUpdateView(HybridCanvasView, UpdateView):
 class EventListView(HybridCanvasView, ListView):
     template_name='nourish/EventListView.html'
     queryset=Event.objects.filter(display=True)
-
+    
 class EventGroupUpdateView(HybridCanvasView, UpdateView):
     context_object_name = 'eventgroup'
     model = EventGroup
