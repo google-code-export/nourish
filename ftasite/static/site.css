@@ -4,8 +4,23 @@ body {
 
 #site_top {
     width:1024px;
-    height: 122px;
-    margin:0 auto;
+    height: 270px;
+    margin:0 auto -147px;
+    background-image: url(/static/fta/tophead1.jpg);
+}
+
+.headerLink {
+    position: relative;
+    cursor: pointer;
+}
+
+.headerLink a {
+    display: block;
+    height: 100%;
+}
+
+.headerLink a:hover {
+    text-decoration: none;
 }
 
 #site_bottom {
@@ -18,6 +33,7 @@ body {
 #site_wrap {
     width:1024px;
     margin:0 auto;
+    background-position: 0 270px;
     background-image: url(/static/fta/testimonialbg1.jpg);
 }
 

@@ -12,6 +12,7 @@
     <title>{% block sitetitle %}{% block title %}{% endblock %} - Feed The Artists{% endblock %}</title>
     <link rel="icon" href="/static/images/favicon.ico">
 
+    {% block main-css %}{% endblock %}
     <!-- Google Font for headers -->
     <link href='http://fonts.googleapis.com/css?family=Special+Elite' rel='stylesheet' type='text/css'>
       
@@ -37,8 +38,9 @@
 
   <body>
     <div id="content_main">
-
-      <div id="site_top">
+      
+      <div id="site_wrap">
+        <div id="site_top">
         {% if not canvas %}
         <div id="site_auth">
           {% if user.is_authenticated %}
@@ -47,22 +49,15 @@
             [<a href="{% url login %}">login</a>]
           {% endif %}
         </div>
-        <img src="/static/fta/tophead1.jpg" usemap="#headermap"></img>
-        <map name="headermap">
-          <area shape="rect" coords="118,63,200,110" href="/vision" title="Our Vision">
-          <area shape="rect" coords="220,43,314,83" href="/history" title="FtA History">
-          <area shape="rect" coords="337,34,396,64" href="/fta2011" title="FtA-2011">
-          <area shape="rect" coords="431,27,493,62" href="/questionanswer" title="Question and Answer">
-          <area shape="rect" coords="513,25,637,65" href="/archives" title="Archives">
-          <area shape="rect" coords="659,39,738,78" href="/whatpeoplearesaying" title="What people are saying about FtA">
-          <area shape="rect" coords="759,54,900,114" href="/contactus" title="Contact us!!!">
-        </map>
+        <div class="headerLink" style="left: 118px; top: 63px; width: 82px; height: 0;"><a style="height:43px;" href="/vision" title="Our Vision"></a></div>
+        <div class="headerLink" style="left: 220px; top: 43px; width: 94px; height: 0;"><a style="height:40px;" href="/history" title="FtA History"></a></div>
+        <div class="headerLink" style="left: 337px; top: 34px; width: 59px; height: 0;"><a style="height:30px;" href="/fta2011" title="FtA-2011"></a></div>
+        <div class="headerLink" style="left: 431px; top: 27px; width: 62px; height: 0;"><a style="height:35px;" href="/questionanswer" title="Question and Answer"></a></div>
+        <div class="headerLink" style="left: 513px; top: 25px; width: 124px; height: 0;"><a style="height:40px;" href="/archives" title="Archives"></a></div>
+        <div class="headerLink" style="left: 659px; top: 39px; width: 79px; height: 0;"><a style="height:39px;" href="/whatpeoplearesaying" title="What people are saying about FtA"></a></div>
+        <div class="headerLink" style="left: 759px; top: 54px; width: 141px; height: 0;"><a style="height:60px;" href="/contactus" title="Contact us!!!"></a></div>
         {% endif %}
       </div>
-
-
-      
-      <div id="site_wrap">
       <div id="site_content">
         <div id="site_header">
           {% block header %}
@@ -81,6 +76,7 @@
         {% endblock %}
         {% block content %}{% endblock %}
       </div>
+      {% block mainsidebar %}
       <div id="site_sidebar">
         {% if canvas %}
             {% include "site/canvas_sidebar_header.html" %}
@@ -92,6 +88,7 @@
           {% include "site/sidebar.html" %}
         {% endblock %}
       </div>
+      {% endblock %}
       <div id="site_footer">
         <div style="height: 50px"></div>
         {% block content-footer %}{% endblock %}
