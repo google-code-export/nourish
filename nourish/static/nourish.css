@@ -15,6 +15,10 @@ table.meals th.first {
     font-weight: normal;
 }
 
+div.contentBody {
+    padding: 25px 0;
+}
+
 div.nourish_header h3 {
     margin-right: 15px;
     display: inline;
