@@ -7,7 +7,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
     dir="{% if LANGUAGE_BIDI %}rtl{% else %}ltr{% endif %}"
     xml:lang="{% firstof LANGUAGE_CODE 'en' %}"
-    lang="{% firstof LANGUAGE_CODE 'en' %}">
+    lang="{% firstof LANGUAGE_CODE 'en' %}"
+    xmlns:og="http://ogp.me/ns#"
+    xmlns:fb="http://www.facebook.com/2008/fbml"
+  >
   <head>
     <title>{% block sitetitle %}{% block title %}{% endblock %} - Feed The Artists{% endblock %}</title>
     <link rel="icon" href="/static/images/favicon.ico">
@@ -32,6 +35,16 @@
     {% block content-css %}{% endblock %}
     {% block preload_js %}{% endblock %}
     {% block extra-head %}{% endblock %}
+    {% block og %}
+      <meta property="og:title" content="{% block og_title %}Feed The Artists{% endblock %}" />
+      <meta property="og:type" content="{% block og_type %}activity{% endblock %}" />
+      <meta property="og:image" content="{% block og_image %}http://www.feedtheartists.net/static/fta/FeedTheArtistsLogo.png{% endblock %}" />
+      <meta property="og:url" content="{% block og_url %}http://www.feedtheartists.net{{ request.path }}{% endblock %}" />
+      <meta property="og:site_name" content="Feed The Artists" />
+      <meta property="og:description" content="{% block og_desc %}Feed The Artists helps organize meal gifting at Burning Man and related events.{% endblock %}" />
+      <meta property="fb:app_id" content="194618953915167" />
+    
+    {% endblock %}
 
     {% include "site/ga.html" %}
   </head>
