@@ -9,12 +9,13 @@
 {% if host_event_groups %}
   {% for eg in host_event_groups %}
     <a href="{% nurl object.event %}invite/?guest={{object.id}}&host={{eg.id}}">Invite <em>{{object.group.name}}</em> to dinner with <em>{{ eg.group.name }}</em></a>
+    <br/>
   {% endfor %}
 {% else %}
   <a href="{% nurl object.event %}register/host">Click here to register as a Theme Camp and invite <em>{{object.group.name}}</em> to dinner during <em>{{ object.event.name }}</em>!</a>
+  <br/>
 {% endif %}
 
-<br/>
 <br/>
 <br/>
 
