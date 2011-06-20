@@ -65,15 +65,15 @@
     {% for meal in meals %}
       uninvitedArtists.push({
         "id" : "{{ meal.id }}",
-        "name" : "{{ meal.eg.group.name }}",
-        "desc" : "{{ meal.eg.group.description }}",
+        "name" : "{{ meal.eg.group.name|escapejs }}",
+        "desc" : "{{ meal.eg.group.description|escapejs }}",
         "date" : new Date({{ meal.date|date:"Y, m, d" }}),
         "url" : "{% nurl meal.eg %}",
         "numPeople" : {{ meal.members }},
-        "features": "{{ meal.notes }}",
+        "features": "{{ meal.notes|escapejs }}",
         "invited" : "{{ meal.get_state_display }}",
         {% if meal.invite != null %}
-          "inviteGroup" : "{{meal.invite.host_eg.group.name}}",
+          "inviteGroup" : "{{ meal.invite.host_eg.group.name|escapejs }}",
           "inviteGroupUrl" : "{% nurl meal.invite.host_eg %}"
         {% else %}
           "inviteGroup" : "",
