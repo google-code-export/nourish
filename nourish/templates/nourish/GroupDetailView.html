@@ -2,6 +2,10 @@
 {% load nourish %}
 
 {% block title %}{{ object.name }} - Groups{% endblock %}
+{% block og_title %}{{ object.name }} - Feed The Artists{% endblock %}
+{% block og_desc %}
+  {{ object.name }} has registered with Feed The Artists to participate in meal gifting at Burning Man and/or related events.
+{% endblock %}
 
 {% block content %}
 
@@ -14,7 +18,9 @@
     [<a href="{% nurl object %}edit/">Edit Group</a>]
     {% endif %}
     <br>
-    Group website: {{object.url|urlizetrunc:40}}
+    {% if object.url %}
+      Group website: {{object.url|urlizetrunc:40}}
+    {% endif %}
     </div>
     <div style="clear: both;"></div>
     <h3 style="padding-top: 1em;">About us</h3>

@@ -48,3 +48,4 @@ class GroupUpdateView(HybridCanvasView, UpdateView):
 class GroupListView(HybridCanvasView, ListView):
     model=Group
     template_name='nourish/GroupListView.html'
+    queryset=Group.objects.filter(role__in=['A', 'T']);

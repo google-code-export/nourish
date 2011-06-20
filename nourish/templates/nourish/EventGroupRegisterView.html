@@ -1,6 +1,8 @@
 {% extends "nourish/base.html" %}
 {% load nourish %}
-{% block title %}Register an Artist Group at {{event.name}}{% endblock %}
+{% block title %}Register a Theme Camp at {{event.name}}{% endblock %}
+{% block og_title %}Register a theme camp at {{ object.name }} - Feed The Artists{% endblock %}
+{% block og_desc %}Use this page to register your theme camp at {{ object.name }}, so that you can start inviting artists to dinner.{% endblock %}
 
 {% block sidebar%}
   <div style="text-align: center; margin: 10px; cursor: pointer">
