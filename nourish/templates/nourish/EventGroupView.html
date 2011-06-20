@@ -2,6 +2,14 @@
 {% load nourish %}
 
 {% block title %}{{ object.group.name }} at {{ object.event.name }}{% endblock %}
+{% block og_title %}{{ object.group.name }} at {{ object.event.name }} - Feed The Artists{% endblock %}
+{% block og_desc %}
+  {% if object.role == 'A' %}
+    {{ object.group.name }} wants to be invited to dinner at {{ object.event.name }}.  If you're a theme camp, register to invite them!
+  {% else %}
+    {{ object.group.name }} wants to invite artist groups to dinner at {{ object.event.name }}.  If you're an artist group, register to get invited! 
+  {% endif %}
+{% endblock %}
 
 {% block content %}
 
