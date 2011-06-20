@@ -1,0 +1,54 @@
+{% extends "nourish/base.html" %}
+
+{% load facebook_tags %}
+{% load nourish %}
+
+{% block title %}{{ object.name }} - Events{% endblock %}
+
+{% block content-logo %}
+  {% if object.image_url %}
+    <a target="_parent" href="{{ object.url }}"><img width=100 src="{{object.image_url}}?type=normal" border=0></a>
+  {% endif %}
+{% endblock %}
+
+{% block content-title %}
+    <h2 style="display: inline;">{{ object.name }}</h2>
+    {% if is_admin %}
+      [<a href="{% nurl object %}edit/">Edit Event</a>]
+    {% endif %}
+    <br>
+    {{ object.start_date }} thru {{ object.end_date }}<br>
+    
+    <br>
+    <span class="site_ext_link">Event website: {{object.url|urlizetrunc:40}}</span>
+{% endblock %}
+
+{% block content-body %}
+  <div style="clear: both;"></div>
+  <div style="float: left;">
+    <a href="{% nurl object %}register/guest">
+      <img width=250 src="/static/fta/home-artists.jpg" alt="Register New Artist Group" border=0>
+    </a>
+  </div>
+
+  <div style="float: left;">
+    <a href="{% nurl object %}register/host">
+      <img width=250 src="/static/fta/burningman2.jpg" alt="Register New Theme Camp" border=0>
+    </a>
+  </div>
+  <div style="clear: both;"></div>
+  
+  <div style="margin-top: 30px; text-align: center">
+    <a href="{% nurl object %}artistchart/">
+      <img src="/static/images/checkOutArtistChart.jpg" title="Artist availability chart for " />
+    </a>
+  </div>
+  
+  <h4>Spread the word!</h4>
+  <ul>
+  {% include "nourish/fb/event_share_link.html" with event=object %}
+  <li>{% include "nourish/fb/event_guest_siteinvite_link.html" with event=object %}</li>
+  <li>{% include "nourish/fb/event_host_siteinvite_link.html" with event=object %}</li>
+  </ul>
+  {% facebook_js %}
+{% endblock %}
