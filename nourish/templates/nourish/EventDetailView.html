@@ -4,6 +4,8 @@
 {% load nourish %}
 
 {% block title %}{{ object.name }} - Events{% endblock %}
+{% block og_title %}{{ object.name }} - Feed The Artists{% endblock %}
+{% block og_desc %}Feed The Artists is helping to coordinate meal gifting at {{ object.name }}.  Sign up to give or receive meals at the event!{% endblock %}
 
 {% block content-logo %}
   {% if object.image_url %}

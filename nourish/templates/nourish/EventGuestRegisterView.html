@@ -1,6 +1,8 @@
 {% extends "nourish/base.html" %}
 {% load nourish %}
 {% block title %}Register an Artist Group at {{object.name}}{% endblock %}
+{% block og_title %}Register an artist group at {{ object.name }} - Feed The Artists{% endblock %}
+{% block og_desc %}Use this page to register your artist group to be invited to dinners at {{ object.name }}.{% endblock %}
 {% block content %}
   {% if canvas and not user.is_authenticated %}
     {% include "nourish/authorize_connect.html" %}
