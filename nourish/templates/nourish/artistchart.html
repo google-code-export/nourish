@@ -1,11 +1,13 @@
 {% extends "nourish/base.html" %}
 
+{% load facebook_tags %}
 {% load nourish %}
+
 {% block sitetitle %}Artist Availability Chart{% endblock %}
 
 {% block main-css %}
   {{ block.super }}
-  <link rel="stylesheet" type="text/css" href="/static/ext-all.css">
+  <link rel="stylesheet" type="text/css" href="/static/resources/css/ext-all-gray.css">
 {% endblock %}
 
 {% block content-css %}
@@ -24,7 +26,9 @@
 
 {% block preload_js %}
   {{ block.super }}
-  <script type="text/javascript" src="/static/ext-all.js"></script>
+  <script type="text/javascript" src="/static/js/ext-all.js"></script>
+  <script type="text/javascript" src="/static/js/artistGrid.js"></script>
+  
   <script type="text/javascript">
     var uninvitedArtists = [ ];
   </script>
@@ -37,17 +41,25 @@
   </div>
   
   <div style="float:left; padding: 15px 0 0 20px; width: 500px">
-    <h2>Artists at {{ object.name}}</h2>
+    <h2>Artists at {{ object.name }}</h2>
+    
     <br/>
   
     <p>
       Below you will find all the registered artist for each day at {{ object.name }}.  If you would like to
-      invite an artist that is not invited yet, just click on their name and from there you can
+      invite an artist dinner that has yet to be invited, just click on their name and from there you can
       invite them to dinner.
+    </p>
+    <br/>
+    <p>
+      <a href="{% nurl event %}" style="float: right">
+        <img src="/static/images/leftArrow.png" style="vertical-align:middle"></img>
+        &nbsp;Go back to event page
+      </a>
     </p>
   </div>
   
-  <div style="clear: both; padding-bottom: 30px"></div>
+  <div style="clear: both; padding-bottom: 10px"></div>
   
   <script type="text/javascript">
     {% for meal in meals %}
@@ -59,107 +71,29 @@
         "url" : "{% nurl meal.eg %}",
         "numPeople" : {{ meal.members }},
         "features": "{{ meal.notes }}",
-        "invited" : "{{ meal.get_state_display }}"
+        "invited" : "{{ meal.get_state_display }}",
+        {% if meal.invite != null %}
+          "inviteGroup" : "{{meal.invite.host_eg.group.name}}",
+          "inviteGroupUrl" : "{% nurl meal.invite.host_eg %}"
+        {% else %}
+          "inviteGroup" : "",
+          "inviteGroupUrl" : ""
+        {% endif %}
       });
     {% endfor %}
   </script>
 
-  <script type="text/javascript">
-      Ext.onReady(function() {
-      // wrapped in closure to prevent global vars.
-      Ext.define('Artist', {
-          extend: 'Ext.data.Model',
-          fields: ['name', 'desc', 'date', 'url', 'numPeople']
-      });
+  <div id="artistGrid" style="padding: 15px 0 50px 0">
+  </div>
   
-      var Restaurants = Ext.create('Ext.data.Store', {
-          storeId: 'artists',
-          model: 'Artist',
-          sorters: ['name','numPeople'],
-          groupField: 'date',
-          data: uninvitedArtists
-      });
-      
-      var groupingFeature = Ext.create('Ext.grid.feature.Grouping',{
-          groupHeaderTpl: '{name:date("l M d")} ({rows.length} Artist Group{[values.rows.length > 1 ? "s" : ""]})'
-      });
-      
-      var inviteArtists = function(selModel) {
-        var artists = "";
-        var selections = selModel.getSelection()
-        for (var i = 0; i < selections.length; i++) {
-          console.log(selections[i].data.name);
-        }
-        
-      }
-              
-      var sm = Ext.create('Ext.selection.CheckboxModel', {
-        checkOnly: true,
-        listeners: {
-          'select': {
-              element: 'el',
-              fn: function(selModel, record, index){
-                console.log('click ' + record);
-              }
-          }
-        }
-      });
-      
-      var grid = Ext.create('Ext.grid.Panel', {
-          renderTo: 'artistGrid',
-          frame: true,
-          border: false,
-          minHeight: 50,
-          store: Restaurants,
-          selModel: sm,
-          width: 760,
-          autoHeight: true,
-          viewConfig: {
-            emptyText: "There are no Artists currently registered for {{ object.name}}. Spread the word",
-            minHeight: 50
-          },
-          features: [groupingFeature],
-          columns: [{
-              text: 'Name',
-              flex: 1,
-              menuDisabled: true,
-              dataIndex: 'name',
-              xtype: 'templatecolumn',
-              tpl: '<a href="{url}" target="_blank"><span title="{name}">{name:ellipsis(25)}</span></a>',
-          },{
-              text: 'Description',
-              flex: 1,
-              menuDisabled: true,
-              xtype: 'templatecolumn',
-              tpl: '<span title="{desc}">{desc:ellipsis(25)}</span>',
-              dataIndex: 'desc'
-          },{
-              text: 'Members',
-              flex: 0,
-              width: 58,
-              menuDisabled: true,
-              dataIndex: 'numPeople'
-          },{
-              text: 'Features',
-              flex: 1,
-              menuDisabled: true,
-              dataIndex: 'features',
-              xtype: 'templatecolumn',
-              tpl: '<span title="{features}">{features:ellipsis(25)}</span>',
-          },{
-              text: 'Invitation Status',
-              flex: 1,
-              menuDisabled: true,
-              dataIndex: 'invited'
-          },{
-              text: 'Date',
-              dataIndex: 'date',
-              hidden: true
-          }]
-      });
-  });
-
-  </script>
-  <div id="artistGrid" style="padding: 15px 0 100px 0"></div>
+  <div style="padding: 0 0 50px 70px">
+    <h2>Spread the word!</h2>
+    <ul>
+    {% include "nourish/fb/event_share_link.html" with event=object %}
+    <li>{% include "nourish/fb/event_guest_siteinvite_link.html" with event=object %}</li>
+    <li>{% include "nourish/fb/event_host_siteinvite_link.html" with event=object %}</li>
+    </ul>
+  </div>
+  {% facebook_js %}
 {% endblock %}
 
