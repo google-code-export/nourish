@@ -1,8 +1,8 @@
 {% load nourish %} 
 
 <h3 style="padding-top: 10px;">About Us</h3>
-{% if object.url %}
-  <p>Website {{object.url|urlizetrunc:40}}</p>
+{% if object.group.url %}
+  <p><b>Our Website</b>: {{object.group.url|urlizetrunc:40}}</p>
 {% endif %}
 <p>{{ object.group.description }}</p>
 
