@@ -18,7 +18,9 @@
     [<a href="{% nurl object %}edit/">Edit Group</a>]
     {% endif %}
     <br>
-    Group website: {{object.url|urlizetrunc:40}}
+    {% if object.url %}
+      Group website: {{object.url|urlizetrunc:40}}
+    {% endif %}
     </div>
     <div style="clear: both;"></div>
     <h3 style="padding-top: 1em;">About us</h3>
