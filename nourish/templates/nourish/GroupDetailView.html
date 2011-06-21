@@ -19,7 +19,7 @@
     {% endif %}
     <br>
     {% if object.url %}
-      Group website: {{object.url|urlizetrunc:40}}
+      Group website: <a href="{{object.url}}">{{object.url|urlizetrunc:40}}</a>
     {% endif %}
     </div>
     <div style="clear: both;"></div>
