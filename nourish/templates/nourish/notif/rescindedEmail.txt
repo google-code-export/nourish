@@ -1,0 +1,1 @@
+One or more of {{ object.eg.group.name }}'s confirmed dinner invitations at {{ object.host_eg.event.name }} have been cancelled.

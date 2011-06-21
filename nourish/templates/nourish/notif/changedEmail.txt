@@ -1,0 +1,1 @@
+{{ object.guest_eg.group.name }} has updated details about their confirmed dinners with {{ object.host_eg.group.name }} at {{ object.host_eg.event.name }}!
