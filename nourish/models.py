@@ -337,8 +337,10 @@ class EventGroup(models.Model):
         for gu in GroupUser.objects.filter(group=recipient.group,admin=True):
             if gu.user.get_profile().provider == 'F':
                 Notification.send_fb(gu.user, msg, data)
+            else:
+                msg = render_to_string("nourish/notif/%sEmail.txt" % action, { 'object' : objects[0] })
+                gu.user.email_user('[FtA] You have an important message from Feed the Artists!', msg, 'feed.the.artists.2011@gmail.com')
             
-
     # host group sends invitations to guest groups
     def send_invites(self, meals):
         invites_by_eg = { }
@@ -685,7 +687,6 @@ class Notification(object):
             'data' : json.dumps(data),
             'access_token' : Notification.get_fb_token(),
         })).read()
-
 
 # from http://stackoverflow.com/questions/452969/does-python-have-an-equivalent-to-java-class-forname
 def get_class( kls ):
