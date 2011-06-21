@@ -1,0 +1,10 @@
+{% extends "nourish/notif/base.html" %}
+{% load nourish %}
+
+{% block icons %}
+  <img src="http://graph.facebook.com/{{invite.from.id}}/picture" width=50 border=0>
+{% endblock %}
+
+{% block message %}
+  FtA wants you to do something, but this request [{{ invite.id }}] is broken :(
+{% endblock %}
