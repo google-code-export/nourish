@@ -48,10 +48,11 @@ class EventGuestRegisterView(EventGroupRegisterView):
         for m in meal_data:
             date = d.next()
             if 'members' in m:
-                meal = eg.meal(date,'D')
-                meal.members = m['members']
-                meal.features = ''.join(m['features'])
-                meal.notes = m['notes']
-                meal.save()
+                if m['members'] > 0:
+                    meal = eg.meal(date,'D')
+                    meal.members = m['members']
+                    meal.features = ''.join(m['features'])
+                    meal.notes = m['notes']
+                    meal.save()
 
         return eg
