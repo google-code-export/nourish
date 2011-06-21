@@ -1,11 +1,5 @@
 {% load nourish %} 
 
-<h3 style="padding-top: 10px;">About Us</h3>
-{% if object.group.url %}
-  <p><b>Our Website</b>: <a href="{{object.group.url}}">{{object.group.url|urlizetrunc:40}}</a></p>
-{% endif %}
-<p>{{ object.group.description }}</p>
-
 <br/>
 
 {% if host_event_groups %}
