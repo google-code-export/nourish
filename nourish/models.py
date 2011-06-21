@@ -270,6 +270,12 @@ class Event(models.Model):
             )
         return u
 
+    def host_groups(self):
+        return EventGroup.objects.filter(event=self, role='T')
+
+    def guest_groups(self):
+        return EventGroup.objects.filter(event=self, role='A')
+
 class EventUser(models.Model):
     event = models.ForeignKey(Event,editable=False)
     user = models.ForeignKey(User,editable=False)
