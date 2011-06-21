@@ -204,3 +204,13 @@ td.notes input {
 .eventDate {
     color: #600;
 }
+
+/*ul.inline_list {
+    list-style: none;
+}
+*/
+
+ul.inline_list li {
+    display: inline;
+}
+

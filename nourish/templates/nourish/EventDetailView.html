@@ -52,5 +52,21 @@
   <li>{% include "nourish/fb/event_guest_siteinvite_link.html" with event=object %}</li>
   <li>{% include "nourish/fb/event_host_siteinvite_link.html" with event=object %}</li>
   </ul>
+
+  <h4>Registered Artist Groups</h4>
+  <ul class="inline_list">
+    {% for eg in object.guest_groups %}
+      <li><a href="{% nurl eg %}">{{ eg.group.name }}</a> |</li>
+    {% endfor %}
+    <li><a href="{% nurl object %}register/guest">Register</a></li>
+  </ul>
+
+  <h4>Registered Theme Camps</h4>
+  <ul class="inline_list">
+    {% for eg in object.host_groups %}
+      <li><a href="{% nurl eg %}">{{ eg.group.name }}</a> |</li>
+    {% endfor %}
+    <li><a href="{% nurl object %}register/host">Register</a></li>
+  </ul>
   {% facebook_js %}
 {% endblock %}
