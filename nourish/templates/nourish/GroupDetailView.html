@@ -1,0 +1,34 @@
+{% extends "nourish/base.html" %}
+{% load nourish %}
+
+{% block title %}{{ object.name }} - Groups{% endblock %}
+{% block og_title %}{{ object.name }} - Feed The Artists{% endblock %}
+{% block og_desc %}
+  {{ object.name }} has registered with Feed The Artists to participate in meal gifting at Burning Man and/or related events.
+{% endblock %}
+
+{% block content %}
+
+    {% if object.image_url %}
+        <div style="float: left; margin-right: 5px;"><a href="{{ object.url }}"><img width=100 src="{{object.image_url}}?type=normal" border=0></a></div>
+    {% endif %}
+    <div style="float: left; width: 440px;">
+    <h2 style="display: inline;">{{ object.name }}</h2>
+    {% if is_admin %}
+    [<a href="{% nurl object %}edit/">Edit Group</a>]
+    {% endif %}
+    <br>
+    {% if object.url %}
+      Group website: <a href="{{object.url}}">{{object.url|urlizetrunc:40}}</a>
+    {% endif %}
+    </div>
+    <div style="clear: both;"></div>
+    <h3 style="padding-top: 1em;">About us</h3>
+    <p>{{ object.description }}</p>
+    <h3>Events we are attending</h3>
+    <ul class="small_list">
+    {% for eg in eventgroup_list %}
+        <li>{% include "nourish/eg_event_small.html" with eg=eg %}</li>
+    {% endfor %}
+    </ul>
+{% endblock %}
