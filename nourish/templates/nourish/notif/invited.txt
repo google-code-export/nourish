@@ -1,0 +1,1 @@
+{{ object.host_eg.group.name }} has invited {{ object.guest_eg.group.name }} to dinner at {{ object.host_eg.event.name }}!

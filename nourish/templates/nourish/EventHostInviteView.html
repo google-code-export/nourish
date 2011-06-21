@@ -1,0 +1,59 @@
+{% extends "nourish/base.html" %}
+
+{% load facebook_tags %}
+{% load nourish %}
+
+{% block title %}{{ object.name }} - Events{% endblock %}
+
+{% block content-logo %}
+  {% if object.image_url %}
+    {% if host_eg %}
+      <a target="_parent" href="{% nurl host_eg %}"><img width=100 src="{{host_eg.group.image_url}}?type=normal" border=0></a>
+    {% endif %}
+    <a target="_parent" href="{{ object.url }}"><img width=100 src="{{object.image_url}}?type=normal" border=0></a>
+  {% endif %}
+{% endblock %}
+
+{% block content-title %}
+  {% if host_eg %}
+    <h2 style="display: inline;">{{ host_eg.group.name }}</h2><br>
+    at
+  {% endif %}
+  <h2 style="display: inline;">{{ object.name }}</h2><br>
+  {{ object.start_date }} thru {{ object.end_date }}<br>
+{% endblock %}
+
+{% block content-body %}
+  <h1>Manage Invitations</h1>
+
+  <form method="post">
+    {{ user_formset.management_form }}
+    {{ group_formset.management_form }}
+    {{ grouphost_formset.management_form }}
+    {{ features_formset.management_form }}
+
+    {% if not user.is_authenticated and not request.GET.u %}
+      {% include "nourish/please_connect.html" %}
+    {% else %}
+      {% if not user.is_authenticated %} 
+        {% include "nourish/user_registration_form.html" %}
+      {% endif %}
+
+      {% if not host_eg %}
+        {% if is_fb %}
+          {% include "nourish/group_select_form.html" %}
+        {% else %}
+          {% include "nourish/group_registration_form.html" %}
+        {% endif %}
+
+        {% if group_formset.0.group.field.choices or not is_fb %}
+          {% include "nourish/host_meal_form.html" %}
+        {% endif %}
+      {% endif %}
+      {% include "nourish/host_invites_form.html" %}
+      <br>
+      <input type="submit" value="Send Invites">
+    </form>
+  {% endif %}
+
+{% endblock %}
