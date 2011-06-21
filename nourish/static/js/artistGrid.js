@@ -60,13 +60,13 @@ Ext.application({
           menuDisabled: true,
           dataIndex: 'name',
           xtype: 'templatecolumn',
-          tpl: '<a href="{url}" target="_blank"><span title="{name}">{name:ellipsis(25)}</span></a>',
+          tpl: '<a href="{url}" target="_blank"><span title="{name}">{name:ellipsis(35)}</span></a>',
       },{
           text: 'Description',
           flex: 1,
           menuDisabled: true,
           xtype: 'templatecolumn',
-          tpl: '<span title="{desc}">{desc:ellipsis(25)}</span>',
+          tpl: '<span title="{desc}">{desc:ellipsis(40)}</span>',
           dataIndex: 'desc'
       },{
           text: 'Members',
@@ -80,7 +80,7 @@ Ext.application({
           menuDisabled: true,
           dataIndex: 'features',
           xtype: 'templatecolumn',
-          tpl: '<span title="{features}">{features:ellipsis(25)}</span>',
+          tpl: '<span title="{features}">{features:ellipsis(40)}</span>',
       },{
           text: 'Invitation Status',
           flex: 1,
