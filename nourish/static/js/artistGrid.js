@@ -4,7 +4,7 @@ Ext.application({
   // wrapped in closure to prevent global vars.
   Ext.define('Artist', {
       extend: 'Ext.data.Model',
-      fields: ['name', 'desc', 'date', 'url', 'numPeople', 'invited']
+      fields: ['name', 'desc', 'date', 'url', 'numPeople', 'invited', 'inviteGroup']
   });
 
   var ArtistStore = Ext.create('Ext.data.Store', {
@@ -60,10 +60,11 @@ Ext.application({
           menuDisabled: true,
           dataIndex: 'name',
           xtype: 'templatecolumn',
-          tpl: '<a href="{url}" target="_blank"><span title="{name}">{name:ellipsis(35)}</span></a>',
+          tpl: '<a href="{url}" target="_blank"><span title="{name}">{name:ellipsis(35)}</span></a>'
       },{
           text: 'Description',
           flex: 1,
+          hidden: true,
           menuDisabled: true,
           xtype: 'templatecolumn',
           tpl: '<span title="{desc}">{desc:ellipsis(40)}</span>',
@@ -75,17 +76,19 @@ Ext.application({
           menuDisabled: true,
           dataIndex: 'numPeople'
       },{
-          text: 'Features',
+          text: 'Dietary Restrictions',
           flex: 1,
           menuDisabled: true,
           dataIndex: 'features',
           xtype: 'templatecolumn',
-          tpl: '<span title="{features}">{features:ellipsis(40)}</span>',
+          tpl: '<span title="{features}">{features:ellipsis(40)}</span>'
       },{
           text: 'Invitation Status',
           flex: 1,
           menuDisabled: true,
-          dataIndex: 'invited'
+          dataIndex: 'invited',
+          xtype: 'templatecolumn',
+          tpl: '{invited} {inviteGroup}'
       },{
           text: 'Date',
           dataIndex: 'date',

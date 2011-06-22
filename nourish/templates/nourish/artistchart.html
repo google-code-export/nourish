@@ -53,7 +53,7 @@
     <br/>
     <p>
       <a href="{% nurl event %}" style="float: right">
-        <img src="/static/images/leftArrow.png" style="vertical-align:middle"></img>
+        <img src="/static/images/leftArrow.png" style="vertical-align:middle"/>
         &nbsp;Go back to event page
       </a>
     </p>
@@ -72,12 +72,10 @@
         "numPeople" : {{ meal.members }},
         "features": "{{ meal.notes|escapejs }}",
         "invited" : "{{ meal.get_state_display }}",
-        {% if meal.invite != null %}
-          "inviteGroup" : "{{ meal.invite.host_eg.group.name|escapejs }}",
-          "inviteGroupUrl" : "{% nurl meal.invite.host_eg %}"
+        {% if meal.invites %}
+          "inviteGroup" : " by {% for invite in meal.invites %}<a href='{% nurl invite.host_eg %}'>{{ invite.host_eg.group.name|escapejs }}</a> {% endfor %}"
         {% else %}
           "inviteGroup" : "",
-          "inviteGroupUrl" : ""
         {% endif %}
       });
     {% endfor %}
