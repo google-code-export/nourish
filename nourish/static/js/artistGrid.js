@@ -47,7 +47,7 @@ Ext.application({
       minHeight: 50,
       store: ArtistStore,
       //selModel: sm,
-      width: 760,
+      width: 775,
       autoHeight: true,
       viewConfig: {
         emptyText: "There are no Artists currently registered for {{ object.name}}. Spread the word!",
@@ -56,20 +56,20 @@ Ext.application({
       features: [groupingFeature],
       columns: [{
           text: 'Name',
-          flex: 1,
+          flex: 2,
           menuDisabled: true,
           dataIndex: 'name',
           xtype: 'templatecolumn',
-          tpl: '<a href="{url}" target="_blank"><span title="{name}">{name:ellipsis(35)}</span></a>'
+          tpl: '<a href="{url}" target="_blank"><span title="{name}">{name:ellipsis(40)}</span></a>'
       },{
-          text: 'Description',
-          flex: 1,
-          hidden: true,
-          menuDisabled: true,
-          xtype: 'templatecolumn',
-          tpl: '<span title="{desc}">{desc:ellipsis(40)}</span>',
-          dataIndex: 'desc'
-      },{
+//          text: 'Description',
+//          flex: 1,
+//          hidden: true,
+//          menuDisabled: true,
+//          xtype: 'templatecolumn',
+//          tpl: '<span title="{desc}">{desc:ellipsis(40)}</span>',
+//          dataIndex: 'desc'
+//      },{
           text: 'Members',
           flex: 0,
           width: 58,
@@ -77,7 +77,7 @@ Ext.application({
           dataIndex: 'numPeople'
       },{
           text: 'Dietary Restrictions',
-          flex: 1,
+          flex: 2,
           menuDisabled: true,
           dataIndex: 'features',
           xtype: 'templatecolumn',
