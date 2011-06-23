@@ -71,12 +71,12 @@
         "url" : "{% nurl meal.eg %}",
         "numPeople" : {{ meal.members }},
         "features": "{{ meal.notes|escapejs }}",
-        "invited" : "{{ meal.get_state_display }}",
         {% if meal.invites %}
-          "inviteGroup" : " by {% for invite in meal.invites %}<a href='{% nurl invite.host_eg %}'>{{ invite.host_eg.group.name|escapejs }}</a> {% endfor %}"
+          "inviteGroup" : " by {% for invite in meal.invites %}<a href='{% nurl invite.host_eg %}'>{{ invite.host_eg.group.name|escapejs }}</a> {% endfor %}",
         {% else %}
           "inviteGroup" : "",
         {% endif %}
+        "invited" : "{{ meal.get_state_display }}"
       });
     {% endfor %}
   </script>
