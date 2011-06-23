@@ -1,0 +1,68 @@
+{% extends "nourish/base.html" %}
+{% load nourish %}
+
+{% block title %}{{ object.group.name }} at {{ object.event.name }}{% endblock %}
+{% block og_title %}{{ object.group.name }} at {{ object.event.name }} - Feed The Artists{% endblock %}
+{% block og_desc %}
+  {% if object.role == 'A' %}
+    {{ object.group.name }} wants to be invited to dinner at {{ object.event.name }}.  If you're a theme camp, register to invite them!
+  {% else %}
+    {{ object.group.name }} wants to invite artist groups to dinner at {{ object.event.name }}.  If you're an artist group, register to get invited! 
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+
+  {% if object.role == 'A' %}
+  <h1>Artist Group</h1>
+  {% endif %}
+
+  {% if object.role == 'T' %}
+  <h1>Theme Camp</h1>
+  {% endif %}
+  
+  {% if object.group.image_url %}
+    <div style="float: left; margin-right: 5px;">
+      <a href="{% nurl object.group %}"><img width=100 src="{{object.group.image_url}}?type=normal" border=0></a>
+    </div>
+  {% endif %}
+  {% if object.event.image_url %}
+    <div style="float: left; margin-right: 5px;">
+      <a href="{% nurl object.event %}"><img width=100 src="{{object.event.image_url}}?type=normal" border=0></a>
+    </div>
+  {% endif %}
+
+  <div style="float: left; width: 340px;">
+    <h3 style="display: inline;">
+      <a href="{% nurl object.group %}">{{ object.group.name }}</a>
+    </h3>
+    {% if is_group_admin %}
+      [<a href="{% nurl object.group %}edit/">Edit Group</a>]
+    {% endif %}
+    <br>
+
+    <h4 style="display: inline;">at <a href="{% nurl object.event %}">{{object.event.name}}</a></h4>
+    {% if is_event_admin %}
+      [<a href="{% nurl object.event %}edit/">Edit Event</a>]
+    {% endif %}
+    <br>
+    {{ object.event.start_date }} thru {{ object.event.end_date }}<br>
+  </div>
+
+  <div style="clear: both;"></div>
+
+  <h3 style="padding-top: 10px;">About Us</h3>
+  {% if object.group.url %}
+    <p><b>Our Website</b>: <a href="{{object.group.url}}">{{object.group.url|urlizetrunc:40}}</a></p>
+  {% endif %}
+  <p>{{ object.group.description }}</p>
+
+  {% if object.role == 'A' %}
+    {% include "nourish/event_group_guest.html" %}
+  {% endif %}
+
+  {% if object.role == 'T' %}
+    {% include "nourish/event_group_host.html" %}
+  {% endif %}
+
+{% endblock %}

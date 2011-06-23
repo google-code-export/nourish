@@ -1,0 +1,82 @@
+{% load nourish %} 
+
+<br/>
+
+{% if host_event_groups %}
+  {% for eg in host_event_groups %}
+    <a href="{% nurl object.event %}invite/?guest={{object.id}}&host={{eg.id}}">Invite <em>{{object.group.name}}</em> to dinner with <em>{{ eg.group.name }}</em></a>
+    <br/>
+  {% endfor %}
+{% else %}
+  {% if not is_group_admin %}
+  <a href="{% nurl object.event %}register/host">Click here to register as a Theme Camp and invite <em>{{object.group.name}}</em> to dinner during <em>{{ object.event.name }}</em>!</a>
+  <br/>
+  {% endif %}
+{% endif %}
+
+<br/>
+<br/>
+
+<h3 style="display:inline;">Meals</h3>
+{% if is_admin %}
+  <span style="font-size: small;">[<a href="{% nurl object %}meals/">Edit or Add Meals</a>]</span>
+{% endif %}
+{% if is_admin %}
+  <p>Each night your artist group is registered for dinner can be found below.<br/>
+  pay close attention to the status of the meals to see if you have been invited or are in need of confirmation of your invites.
+  <br/>Click the 'Edit or Add Meals' button to make changes.
+  </p>
+{% else %}
+  <p>{{object.group.name}} is registered for the meals below.</p>
+{% endif %}
+
+<ul>
+  {% for meal in meals %}
+    <li>
+      <span class="eventDate">{{ meal.date|date:"N j" }} <em>({{ meal.date|date:"D." }})</em></span>
+      - {{ meal.members }} Crew Member{{ meal.members|pluralize }}
+      <ul>
+        {% if meal.state == 'N' %}<li>Waiting for an invitation.</li>{% endif %}
+        {% if meal.state == 'I' %}
+          {% for invite in meal.invites %}
+            <li>Invited by <a href="{% nurl invite.host_eg %}">{{ invite.host_eg.group.name }}</a> <em>({{invite.dinner_time}} @ {{invite.host_eg.event_location|default:"TBD"}})</em>.</li>
+          {% endfor %}
+        {% endif %}
+        {% if meal.state == 'S' %}<li>Awaiting confirmation from <a href="{% nurl meal.invite.host_eg %}">{{ meal.invite.host_eg.group.name }}</a>.</li>{% endif %}
+        {% if meal.state == 'C' %}
+          <li>Confirmed with <a href="{% nurl meal.invite.host_eg %}">{{ meal.invite.host_eg.group.name }}</a>.</li>
+          {% if is_admin %}
+            <li>Dinner Time: {{ meal.invite.dinner_time }}.</li>
+            <li>Location: {{ meal.invite.host_eg.event_location|default:"TBD" }}.</li>
+            <li>Contacts: <ul>
+              {% for contact in meal.invite.host_eg.group.admins %}
+                <li>
+                  {% if contact.get_profile.url %}
+                    <a href="{{ contact.get_profile.url }}">{{ contact.get_profile.fullname }}</a>
+                  {% else %}
+                    {{ contact.get_profile.fullname }}
+                  {% endif %}
+                  {% if contact.email %}
+                    &lt;<a href="mailto:{{contact.email}}">{{contact.email}}</a>&gt;
+                  {% endif %}
+                </li>
+              {% endfor %}
+            </ul></li>
+          {% endif %}
+        {% endif %}
+        {% if meal.features or meal.restrictions %}
+          <li>
+            {% if meal.features %}<strong>Dietary Restrictions</strong>; {% endif %}
+            {{ meal.notes }}
+          </li>
+        {% endif %}
+      </ul>
+    </li>
+    {% empty %}
+      <li><em>{{object.group.name}}</em> is not registered for any meals for <em>{{object.event.name}}</em>.
+      {% if is_admin %}
+        &nbsp;<span style="font-size: small;"><a href="{% nurl object %}meals/">Click here to add meals</a></span>
+      {% endif %} 
+      </li>
+  {% endfor %}
+</ul>

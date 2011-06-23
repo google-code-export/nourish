@@ -1,0 +1,97 @@
+{% extends "nourish/base.html" %}
+
+{% load facebook_tags %}
+{% load nourish %}
+
+{% block sitetitle %}Artist Availability Chart{% endblock %}
+
+{% block main-css %}
+  {{ block.super }}
+  <link rel="stylesheet" type="text/css" href="/static/resources/css/ext-all-gray.css">
+{% endblock %}
+
+{% block content-css %}
+  {{ block.super }}
+  <style>
+    #site_content {
+      width:900px;
+      margin-left: 140px;
+      float: none;
+    }
+  </style>
+{% endblock %}
+
+<!-- Remove the sidebar from the screen -->
+{% block mainsidebar %}{% endblock %}
+
+{% block preload_js %}
+  {{ block.super }}
+  <script type="text/javascript" src="/static/js/ext-all.js"></script>
+  <script type="text/javascript" src="/static/js/artistGrid.js"></script>
+  
+  <script type="text/javascript">
+    var uninvitedArtists = [ ];
+  </script>
+{% endblock %}
+{% block content %}
+  <div style="float:left">
+  <a href="/">
+    <img border="0" src="/static/fta/FeedTheArtistsLogo.png">
+  </a>
+  </div>
+  
+  <div style="float:left; padding: 15px 0 0 20px; width: 500px">
+    <h2>Artists at {{ object.name }}</h2>
+    
+    <br/>
+  
+    <p>
+      Below you will find all the registered artist for each day at {{ object.name }}.  If you would like to
+      invite an artist dinner that has yet to be invited, just click on their name and from there you can
+      invite them to dinner.
+    </p>
+    <br/>
+    <p>
+      <a href="{% nurl event %}" style="float: right">
+        <img src="/static/images/leftArrow.png" style="vertical-align:middle"/>
+        &nbsp;Go back to event page
+      </a>
+    </p>
+  </div>
+  
+  <div style="clear: both; padding-bottom: 10px"></div>
+  
+  <script type="text/javascript">
+    {% for meal in meals %}
+      uninvitedArtists.push({
+        "id" : "{{ meal.id }}",
+        "name" : "{{ meal.eg.group.name|escapejs }}",
+        "desc" : "{{ meal.eg.group.description|escapejs }}",
+        "date" : new Date("{{ meal.date.isoformat }}"),
+        "url" : "{% nurl meal.eg %}",
+        "numPeople" : {{ meal.members }},
+        "features": "{{ meal.notes|escapejs }}",
+        {% if meal.invites %}
+          "inviteGroup" : " by {% for invite in meal.invites %}<a href='{% nurl invite.host_eg %}'>{{ invite.host_eg.group.name|escapejs }}</a> {% endfor %}",
+        {% else %}
+          "inviteGroup" : "",
+        {% endif %}
+        "invited" : "{{ meal.get_state_display }}"
+      });
+    {% endfor %}
+  </script>
+
+  <div id="artistGrid" style="padding: 15px 0 50px 0">
+  </div>
+  
+  <div style="padding: 0 0 50px 70px">
+    <h2>Spread the word!</h2>
+    <ul>
+    {% include "nourish/fb/event_share_link.html" with event=object %}
+    <li>{% include "nourish/fb/event_guest_siteinvite_link.html" with event=object %}</li>
+    <li>{% include "nourish/fb/event_host_siteinvite_link.html" with event=object %}</li>
+    </ul>
+  </div>
+  {% facebook_js %}
+{% endblock %}
+

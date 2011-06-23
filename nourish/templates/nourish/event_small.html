@@ -1,0 +1,17 @@
+{% load nourish %}
+<a class="small_link" href="{% nurl event %}">
+<div class="small_link" style="">
+<div style="float:left; padding-right: 5px;">
+{% if event.image_url %}
+        <img width=50 src="{{event.image_url}}?type=small" border=0>
+{% else %}
+        <img width=50 src="/static/images/logo1.gif" border=0>
+{% endif %}
+</div>
+<div style="float:left; width: 200px;">
+{{event.name}}<br>
+{{event.start_date|date:"N j"}} - {{event.end_date|date:"N j"}}
+</div>
+<div style="clear:both;"></div>
+</div>
+</a>

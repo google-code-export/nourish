@@ -1,0 +1,22 @@
+{% extends "nourish/notif/base.html" %}
+{% load nourish %}
+
+{% block icons %}
+  <img src="{{notification.objects.0.host_eg.group.image_url}}" width=50 border=0>
+  <img src="{{notification.objects.0.guest_eg.group.image_url}}" width=50 border=0>
+{% endblock %}
+
+{% block message %}
+  {{ notification.objects.0.host_eg.group.name }} invited {{ notification.objects.0.guest_eg.group.name }} to dinner at {{ notification.objects.0.host_eg.event.name }}!
+  <ul>
+    <li>Dinner Time: {{ notification.objects.0.host_eg.dinner_time }}</li>
+    {% for o in notification.objects %}
+      <li>Date: {{ o.date }}</li>
+    {% endfor %}
+  </ul>
+{% endblock %}
+
+{% block actions %}
+  <a href"{% nurl notification.objects.0.guest_eg %}meals/" style="display: inline;">Manage All Meals</a>
+  <input type=submit name="take_action" value="Accept These Invitation(s)">
+{% endblock %}
