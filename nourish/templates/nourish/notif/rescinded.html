@@ -2,12 +2,12 @@
 {% load nourish %}
 
 {% block icons %}
-  <img src="{{notification.objects.0.eg.group.image_url}}" width=50 border=0>
-  <img src="{{notification.objects.0.eg.event.image_url}}" width=50 border=0>
+  <img src="{{notification.objects.0.host_eg.group.image_url}}" width=50 border=0>
+  <img src="{{notification.objects.0.guest_eg.event.image_url}}" width=50 border=0>
 {% endblock %}
 
 {% block message %}
-  One or more of {{ notification.objects.0.eg.group.name }}'s confirmed invitations to dinner at {{ notification.objects.0.eg.event.name }} were cancelled.
+  One or more of {{ notification.objects.0.host_eg.group.name }}'s confirmed invitations to dinner at {{ notification.objects.0.guest_eg.event.name }} were cancelled.
   <ul>
     {% for o in notification.objects %}
       <li>Date: {{ o.date }}</li>
@@ -16,5 +16,5 @@
 {% endblock %}
 
 {% block actions %}
-  <a href"{% nurl notification.objects.0.eg %}meals/" style="display: inline;">Manage All Meals</a>
+  <a href="{% nurl notification.objects.0.eg %}meals/" style="display: inline;">Manage All Meals</a>
 {% endblock %}
