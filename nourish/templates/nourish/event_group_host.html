@@ -20,12 +20,21 @@ Features: {{ object.features|default:"None" }}<br>
   <span style="font-size: small;">[<a href="{% nurl object.event %}invite/?host={{ object.id }}">Invite More Artists to Dinner</a>]</span>
 {% endif %}
 <br><br>
-<table class="meals">
-  <tr><th class="first"></th><th>Invitations</th></tr>
+<table class="mealTable">
+  <colgroup width="130px"></colgroup>
+  <colgroup width="400px"></colgroup>
+  <thead>
+    <tr>
+      <th class="head"></th>
+      <th>Invitations</th>
+    </tr>
+  </thead>
+
+  <tbody>
   {% for date in dates %}
     {% if 1 %}
-      <tr class="meal">
-        <th class="first">{{date}}</th>
+      <tr>
+        <td><span class="eventDate">{{ date|date:"N j" }} <em>({{ date|date:"D." }})</em></span></td>
         <td>
           <ul style="margin: 2px; padding: 0; list-style: none;">
             {% for invite in invites_sent %}
@@ -53,4 +62,9 @@ Features: {{ object.features|default:"None" }}<br>
       </tr>
     {% endif %}
   {% endfor %}
+ </tbody>
 </table>
+<br/>
+<br/>
+<br/>
+
