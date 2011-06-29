@@ -4,7 +4,12 @@
 
 {% if host_event_groups %}
   {% for eg in host_event_groups %}
-    <a href="{% nurl object.event %}invite/?guest={{object.id}}&host={{eg.id}}">Invite <em>{{object.group.name}}</em> to dinner with <em>{{ eg.group.name }}</em></a>
+    <a href="{% nurl object.event %}invite/?guest={{object.id}}&host={{eg.id}}">
+      <img style="vertical-align: middle" src="/static/images/heart.png"/>
+      <span>
+        Invite <em>{{object.group.name}}</em> to dinner with <em>{{ eg.group.name }}</em>
+      </span>
+    </a>
     <br/>
   {% endfor %}
 {% else %}
