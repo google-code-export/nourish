@@ -45,13 +45,6 @@
       <img src="/static/images/checkOutArtistChart.jpg" title="Artist availability chart for " />
     </a>
   </div>
-  
-  <h4>Spread the word!</h4>
-  <ul>
-  {% include "nourish/fb/event_share_link.html" with event=object %}
-  <li>{% include "nourish/fb/event_guest_siteinvite_link.html" with event=object %}</li>
-  <li>{% include "nourish/fb/event_host_siteinvite_link.html" with event=object %}</li>
-  </ul>
 
   <h4>Registered Artist Groups</h4>
   <ul class="inline_list">
@@ -68,5 +61,13 @@
     {% endfor %}
     <li><a href="{% nurl object %}register/host">Register</a></li>
   </ul>
+
+  <h4>Spread the word!</h4>
+  <ul>
+  {% include "nourish/fb/event_share_link.html" with event=object %}
+  <li>{% include "nourish/fb/event_guest_siteinvite_link.html" with event=object %}</li>
+  <li>{% include "nourish/fb/event_host_siteinvite_link.html" with event=object %}</li>
+  </ul>
+
   {% facebook_js %}
 {% endblock %}
