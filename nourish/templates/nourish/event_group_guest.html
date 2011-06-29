@@ -5,7 +5,7 @@
 {% if host_event_groups %}
   {% for eg in host_event_groups %}
     <a href="{% nurl object.event %}invite/?guest={{object.id}}&host={{eg.id}}">
-      <img style="vertical-align: middle" src="/static/images/heart.png"/>
+      <img title="Click here to invite!" style="vertical-align: middle" src="/static/images/heart.png"/>
       <span title="Click here to invite!">
         Invite <em>{{object.group.name}}</em> to dinner with <em>{{ eg.group.name }}</em>
       </span>
@@ -35,24 +35,53 @@
   <p>{{object.group.name}} is registered for the meals below.</p>
 {% endif %}
 
-<ul>
+<table class="mealTable">
+  <colgroup width="160px"></colgroup>
+  <colgroup width="30px"></colgroup>
+  <colgroup width="200px"></colgroup>
+  <colgroup width="300px"></colgroup>
+  <thead>
+  <tr>
+    <th class="hed">
+      Date
+    </th>
+    <th class="hed">
+      Crew
+    </th>
+    <th class="hed">
+      Invitation Status
+    </th>
+    <th class="hed">
+      Dietary Restritions
+    </th>
+  </tr>
+  </thead>
+
+  <tbody>
   {% for meal in meals %}
-    <li>
-      <span class="eventDate">{{ meal.date|date:"N j" }} <em>({{ meal.date|date:"D." }})</em></span>
-      - {{ meal.members }} Crew Member{{ meal.members|pluralize }}
-      <ul>
-        {% if meal.state == 'N' %}<li>Waiting for an invitation.</li>{% endif %}
+
+    <tr>
+      <td>
+        <span class="eventDate">{{ meal.date|date:"N j" }} <em>({{ meal.date|date:"D." }})</em></span>
+      </td>
+      <td>
+        {{ meal.members }}
+      </td>
+      <td>
+        {% if meal.state == 'N' %}Waiting for an invitation{% endif %}
         {% if meal.state == 'I' %}
           {% for invite in meal.invites %}
-            <li>Invited by <a href="{% nurl invite.host_eg %}">{{ invite.host_eg.group.name }}</a> <em>({{invite.dinner_time}} @ {{invite.host_eg.event_location|default:"TBD"}})</em>.</li>
+                <span>Invited by <a href="{% nurl invite.host_eg %}">{{ invite.host_eg.group.name }}</a>
+                  {% if is_admin %}<em>({{invite.dinner_time}} @ {{invite.host_eg.event_location|default:"TBD"}})</em> {% endif %}</span>
           {% endfor %}
         {% endif %}
-        {% if meal.state == 'S' %}<li>Awaiting confirmation from <a href="{% nurl meal.invite.host_eg %}">{{ meal.invite.host_eg.group.name }}</a>.</li>{% endif %}
+        {% if meal.state == 'S' %}Awaiting confirmation from <a href="{% nurl meal.invite.host_eg %}">{{ meal.invite.host_eg.group.name }}</a>{% endif %}
         {% if meal.state == 'C' %}
-          <li>Confirmed with <a href="{% nurl meal.invite.host_eg %}">{{ meal.invite.host_eg.group.name }}</a>.</li>
+          Confirmed with <a href="{% nurl meal.invite.host_eg %}">{{ meal.invite.host_eg.group.name }}</a>
           {% if is_admin %}
-            <li>Dinner Time: {{ meal.invite.dinner_time }}.</li>
-            <li>Location: {{ meal.invite.host_eg.event_location|default:"TBD" }}.</li>
+            <ul>
+            <li>Dinner Time: {{ meal.invite.dinner_time }}</li>
+            <li>Location: {{ meal.invite.host_eg.event_location|default:"TBD" }}</li>
             <li>Contacts: <ul>
               {% for contact in meal.invite.host_eg.group.admins %}
                 <li>
@@ -66,22 +95,29 @@
                   {% endif %}
                 </li>
               {% endfor %}
-            </ul></li>
+            </ul>
+            </li>
+            </ul>
           {% endif %}
         {% endif %}
-        {% if meal.features or meal.restrictions %}
-          <li>
-            {% if meal.features %}<strong>Dietary Restrictions</strong>; {% endif %}
-            {{ meal.notes }}
-          </li>
-        {% endif %}
-      </ul>
-    </li>
+        <td>
+          {{ meal.notes }}
+        </td>
+    </tr>
     {% empty %}
-      <li><em>{{object.group.name}}</em> is not registered for any meals for <em>{{object.event.name}}</em>.
-      {% if is_admin %}
-        &nbsp;<span style="font-size: small;"><a href="{% nurl object %}meals/">Click here to add meals</a></span>
-      {% endif %} 
-      </li>
+      <tr>
+        <td colspan="4">
+          <em>{{object.group.name}}</em> is not registered for any meals for <em>{{object.event.name}}</em>.
+          {% if is_admin %}
+            &nbsp;<span style="font-size: small;"><a href="{% nurl object %}meals/">Click here to add meals</a></span>
+          {% endif %}
+        </td>
+      </tr>
   {% endfor %}
-</ul>
+  </tbody>
+</table>
+
+<br/>
+<br/>
+<br/>
+<br/>
