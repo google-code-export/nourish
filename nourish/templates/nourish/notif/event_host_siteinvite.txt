@@ -1,0 +1,1 @@
+You should register your theme camp at {{object.name}}, so you can invite artists to dinner!
