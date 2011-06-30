@@ -1,0 +1,40 @@
+{% extends "nourish/notif/baseEmail.html" %}
+{% load nourish %}
+{% block message %}
+Hey {{ object.guest_eg.group.name }}
+
+Congratulations, you've been invited to dinner!!!
+
+Theme Camp Details
+Name: {{ object.host_eg.group.name }}
+Website: {{ object.host_eg.group.url }}
+Theme Camp Contact{{ object.host_eg.group.admins|pluralize }}:
+{% for contact in object.host_eg.group.admins %}
+    {{ contact.get_profile.fullname }} - {{contact.email}} - {{ contact.phone }}
+
+{% endfor %}
+
+Camp Location : {{ object.host_eg.group.event_location|default:"TBD"}}
+
+Dinner Details
+Date :  {{ object.date|date:"N j" }} ({{ object.date|date:"D." }})
+# of People Expected : {{ object.meal.members}}
+Expected Dinner Time :  {{ object.dinner_time }}
+
+
+To finalize the Reservation, please click the following link to confirm your acceptance of this dinner invitation:
+http://www.feedtheartists.net{% nurl 'notification-list' %}
+
+
+We are so excited that you are taking part in this year's FtA program. You're going to be dining with some of the finest people on the playa, so take advantage of it.  Get to know them;  find out why they do what they do on the playa; tell them all about your art project (maybe even offer them a private tour); break bread with new friends; get a little crazy, build community; and most importantly.............Have Fun!
+
+Remember, FtA is not just about feeding artists.  It's about nourishing the bodies, minds, and souls of all the programs participants, and by extension, the entire Burning Man community.
+
+Please make sure you are in contact with your host prior to arriving on the playa and that you have discussed specifics such as any dietary restrictions that you have, what you may need to bring (ie, plates, cups, dinnerware, whips, etc), and when and how you will first meet in person on the playa to confirm all arrangements.
+
+We will be on the playa starting on Tuesday, 23rd.  Please come check in at our camp when you get there, so we can make sure that everything is still a go for your dinner, and we can help if you’ve run into any problems. We can't wait to meet you!
+
+Also, let us know if you’re interested in storing food in our refrigerated trailer on-playa by participating in our Playa Reefer Program or if you have any art or items you can contribute to our online art auction.
+
+Have a GREAT dinner, and please take lots of pictures and come by and let us know how everything went, afterward.
+{% endblock %}

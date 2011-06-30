@@ -338,8 +338,10 @@ class EventGroup(models.Model):
             if gu.user.get_profile().provider == 'F':
                 Notification.send_fb(gu.user, msg, data)
             else:
-                msg = render_to_string("nourish/notif/%sEmail.txt" % action, { 'object' : objects[0] })
-                gu.user.email_user('[FtA] You have an important message from Feed the Artists!', msg, 'feed.the.artists.2011@gmail.com')
+
+                msg = render_to_string("nourish/notif/%sEmailBody.html" % action, { 'object' : objects[0] })
+                subject = render_to_string("nourish/notif/%sEmailSubject.html" % action, { 'object' : objects[0] })
+                gu.user.email_user(subject, msg, 'feed.the.artists.2011@gmail.com')
             
     # host group sends invitations to guest groups
     def send_invites(self, meals):
