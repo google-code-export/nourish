@@ -342,13 +342,17 @@ class EventGroup(models.Model):
 
         for gu in GroupUser.objects.filter(group=recipient.group,admin=True):
             if gu.user.get_profile().provider == 'F':
-                Notification.send_fb(gu.user, msg, data)
+                try:
+                    Notification.send_fb(gu.user, msg, data)
+                except:
+                    sys.stderr.write("[ERROR] Cannot send FB notification")
             else:
-
-                msg = render_to_string("nourish/notif/%sEmailBody.html" % action, { 'object' : objects[0] })
-                subject = render_to_string("nourish/notif/%sEmailSubject.html" % action, { 'object' : objects[0] })
-                gu.user.email_user(subject, msg, 'feed.the.artists.2011@gmail.com')
-            
+                try:
+                    msg = render_to_string("nourish/notif/%sEmailBody.html" % action, { 'object' : objects[0] })
+                    subject = render_to_string("nourish/notif/%sEmailSubject.html" % action, { 'object' : objects[0] })
+                    gu.user.email_user(subject, msg, 'feed.the.artists.2011@gmail.com')
+                except:
+                    sys.stderr.write("[ERROR] Cannot send email message\n")
     # host group sends invitations to guest groups
     def send_invites(self, meals):
         invites_by_eg = { }
@@ -398,17 +402,17 @@ class EventGroup(models.Model):
         for eg, invites in invites_by_eg.iteritems():
             self.send_notification(eg, 'host_changed', invites)
 
-    # guest group chooses invitations
+    # guest group chooses (AND CONFIRMS) invitations
     def choose_invites(self, invites):
         invites_by_eg = { }
         for invite in invites:
             if invite.host_eg not in invites_by_eg:
                 invites_by_eg[invite.host_eg] = []
             invites_by_eg[invite.host_eg].append(invite)
-            invite.meal.choose(invite)
+            invite.confirm()
         # notify hosts
         for eg, invites in invites_by_eg.iteritems():
-            self.send_notification(eg, 'chosen', invites)
+            self.send_notification(eg, 'confirmed', invites)
 
     # guest group unchoose invitations
     def unchoose_meals(self, meals):

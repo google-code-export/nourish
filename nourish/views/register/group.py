@@ -34,8 +34,11 @@ class EventGroupRegisterView(FBRegisterView, HybridCanvasView, DetailView):
 
         dest = self.save_changes(formsets)
 
-        return redirect(dest.get_confirmation_url(hasattr(request, 'fbcanvas') and request.fbcanvas))
-
+        if (dest.showConfirm):
+            return redirect(dest.get_confirmation_url(hasattr(request, 'fbcanvas') and request.fbcanvas))
+        else:
+            return redirect(dest.get_absolute_url(hasattr(request, 'fbcanvas') and request.fbcanvas))
+      
     def default_role(self):
         return 'U'
 
@@ -124,6 +127,8 @@ class EventGroupRegisterView(FBRegisterView, HybridCanvasView, DetailView):
         eg = self.object.group(group)
         eg.role = self.default_role()
         eg.save()
+
+        eg.showConfirm = True
 
         return eg
 

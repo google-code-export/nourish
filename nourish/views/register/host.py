@@ -62,4 +62,6 @@ class EventHostRegisterView(EventGroupRegisterView):
             eg.notes = grouphost_data['notes']
         eg.save()
 
+        eg.showConfirm = True;
+
         return eg
