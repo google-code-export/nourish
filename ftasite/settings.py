@@ -7,7 +7,7 @@ sys.path.append(os.path.join(LOCALPATH, 'allbuttonspressed'))
 
 TEMPLATE_DEBUG = DEBUG
 
-ADMINS = ()
+ADMINS = (('Ray Marceau', 'marceau.ray@gmail.com'))
 
 MANAGERS = ADMINS
 
@@ -114,7 +114,10 @@ INSTALLED_APPS = (
     'mediagenerator',
     'fbcanvas',
 #    'permission_backend_nonrel',
-    'dbindexer'
+    'dbindexer',
+#    'sentry',
+#    'sentry.client',
+
 )
 
 AUTH_PROFILE_MODULE = 'nourish.UserProfile'

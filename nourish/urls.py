@@ -2,6 +2,8 @@ from django.conf.urls.defaults import patterns, url
 from django.contrib.auth.decorators import login_required
 from django.views.generic.simple import direct_to_template
 
+from django.views.generic import DetailView
+
 from nourish.views.group import GroupDetailView, GroupUpdateView, GroupListView
 from nourish.views.event import EventDetailView, EventGroupView, EventUpdateView, EventListView, EventGroupUpdateView
 from nourish.views.notification import NotificationListView 
@@ -12,7 +14,7 @@ from nourish.views.register.host import EventHostRegisterView
 from nourish.views.register.host_invite import EventHostInviteView
 from nourish.views.meal import EventGuestManageView, EventArtistChart
 from fbcanvas.views import CanvasTemplateView
-from nourish.models import Event, Group
+from nourish.models import Event, Group, EventGroup
 
 urlpatterns = patterns('',
     url('^logged-in/$', 'nourish.views.homepage_chooser', name='homepage-chooser'),
@@ -35,6 +37,13 @@ urlpatterns = patterns('',
         EventArtistChart.as_view()),
     url(r'^eg/(?P<pk>\d+)-(?P<slug>[^/]+)/$', 
         EventGroupView.as_view(), name='event-group-detail'),
+
+    url(r'^eg/(?P<pk>\d+)-(?P<slug>[^/]+)/confirmation/$',
+        DetailView.as_view(
+          model=EventGroup,
+          template_name='nourish/event_group_confirmation.html'),
+        name='event-group-confirmation'),
+
     url(r'^eg/(?P<pk>\d+)(-[^\/]*)?/edit/$', 
         EventGroupUpdateView.as_view(), name='event-group-edit'),
     url(r'^eg/(?P<pk>\d+)(-[^\/]*)?/meals/$', 
