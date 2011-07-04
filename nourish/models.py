@@ -196,7 +196,7 @@ class Group(models.Model):
         if canvas:
             return canvas_url_rewrite(u)
         return u
-    
+
     def user(self, user):
         try:
             gu = GroupUser.objects.get(user=user, group=self)
@@ -312,7 +312,13 @@ class EventGroup(models.Model):
         if canvas:
             return canvas_url_rewrite(u)
         return u
-    
+
+    def get_confirmation_url(self, canvas=False):
+        u = reverse('event-group-confirmation', kwargs={'pk':self.id, 'slug': '%s-at-%s' % (slugify(self.group.name), slugify(self.event.name))})
+        if canvas:
+            return canvas_url_rewrite(u)
+        return u;
+
     def meal(self,date,meal):
         try:
             m = Meal.objects.get(eg=self, date=date, meal=meal)
