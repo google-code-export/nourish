@@ -149,6 +149,8 @@ class EventHostInviteView(EventHostRegisterView):
         host_eg.send_invites(to_invite)
         host_eg.change_invites(to_change)
 
+        host_eg.showConfirm = False
+        
         return host_eg
 
     def get_egs(self):

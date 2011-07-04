@@ -55,4 +55,6 @@ class EventGuestRegisterView(EventGroupRegisterView):
                     meal.notes = m['notes']
                     meal.save()
 
+        eg.showConfirm = True
+        
         return eg
