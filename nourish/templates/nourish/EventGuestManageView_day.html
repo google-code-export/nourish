@@ -1,7 +1,9 @@
+{% load nourish %}
+
 <tr class="meal">
-  <th rowspan=3 class="first regdate">
+  <td rowspan=3 class="first regdate">
     {{ f.form.meal_id }} {{ f.date|date:"N j" }} <br/><em>({{ f.date|date:"D." }})</em>
-  </th>
+  </td>
     <td colspan=3>
     {{ f.form.non_field_errors }}
     </td>
@@ -17,7 +19,7 @@
 <tr> <td colspan=3>
         {{ f.form.invite.errors }}
     {% if f.meal.state == 'C' %}
-      <em>Confirmed with {{ f.meal.invite.host_eg.group.name }}</em>
+      <em>Confirmed with <a href="{% nurl f.meal.invite.host_eg %}">{{ f.meal.invite.host_eg.group.name }} </a></em>
     {% else %}
       {% if f.form.fields.invite.choices %}
         {{ f.form.invite.errors }}
