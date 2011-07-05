@@ -55,5 +55,9 @@
         {% endfor %}
       </ul>
     </li>
+  {% empty %}
+    <li style="font-weight: bold">
+      No dates available to invite artist to dinner.  They may have already been invited for all the nights they registered for.  <a href="{% nurl object %}artistchart/">Try another artist!</a>
+    </li>
   {% endfor %}
 </ul>

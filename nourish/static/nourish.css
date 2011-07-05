@@ -183,6 +183,7 @@ div.nourish_sidebar h2 {
 
 td.regdate {
     width: 115px;
+    font-weight: bold;
     vertical-align: middle;
 }
 td.diners input {

@@ -65,4 +65,30 @@
     {% include "nourish/event_group_host.html" %}
   {% endif %}
 
+  <br/>
+  <br/>
+  <br/>
+  <br/>
+  <br/>
+
 {% endblock %}
+
+{% block sidebar %}
+  {{ block.super }}
+
+  <div style="margin-top: 30px; text-align: center">
+    <a href="{% nurl object.event %}artistchart/">
+      <img src="/static/images/artistlist-image.png" title="Artist availability chart for " />
+    </a>
+  </div>
+
+  {% if object.role == 'T' %}
+  <div style="text-align: center; margin: 10px; cursor: pointer">
+    <a href="/static/fta/FtA-TCG.pdf" target="_blank">
+      <img style="cursor:pointer" src="/static/images/campguidepdf1.jpg" border="0" height="110" width="200">
+    </a>
+  </div>
+  {% endif %}
+
+
+{% endblock%}
