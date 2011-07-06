@@ -30,10 +30,10 @@ class FBRegisterView(object):
         groups = graph.request("me/groups", { "fields" : "owner,name" })
         events = graph.request("me/events", { "fields" : "owner,name" })
         accounts = graph.get_object("me/accounts")
-        sys.stderr.write("me " + pformat(me) + "\n")
-        sys.stderr.write("groups " + pformat(groups) + "\n")
-        sys.stderr.write("events " + pformat(events) + "\n")
-        sys.stderr.write("accounts " + pformat(accounts) + "\n")
+#        sys.stderr.write("me " + pformat(me) + "\n")
+#        sys.stderr.write("groups " + pformat(groups) + "\n")
+#        sys.stderr.write("events " + pformat(events) + "\n")
+#        sys.stderr.write("accounts " + pformat(accounts) + "\n")
         choices = []
         if self.can_select_group(me['name'], event, user):
             choices.append((me['id'], me['name'] + " (Me)"))
@@ -57,7 +57,7 @@ class FBRegisterView(object):
     
     def can_select_group(self, name, event, user):
         try:
-            sys.stderr.write("\n===look for name %s at event %s user %s\n" % (name, event.id, user))
+#            sys.stderr.write("\n===look for name %s at event %s user %s\n" % (name, event.id, user))
             g = Group.objects.get(name=name)
             sys.stderr.write("\n==got group\n")
             if not g.is_admin(user):

@@ -36,7 +36,7 @@ class EventHostInviteView(EventHostRegisterView):
         (host_eg, guest_eg) = self.get_egs()
         (dates, day_initial, meal_initial) = self.get_meals(host_eg, guest_eg, 'manage' in self.request.GET)
         dates = self.get_meal_dates(dates, formsets['day_formset'], formsets['meal_formset'])
-        sys.stderr.write("SETTING DATES\n\n" + pformat(dates) + "\n")
+#        sys.stderr.write("SETTING DATES\n\n" + pformat(dates) + "\n")
 
         # XXX - at least this gets it into the context...
         formsets['invite_dates'] = dates
@@ -140,7 +140,7 @@ class EventHostInviteView(EventHostRegisterView):
                         to_rescind.append(meal.invite)
                         continue
                 if str(meal.invite.dinner_time) != str(dinner_time):
-                    sys.stderr.write("[%s] != [%s]\n" % (meal.invite.dinner_time, dinner_time) )
+#                    sys.stderr.write("[%s] != [%s]\n" % (meal.invite.dinner_time, dinner_time) )
                     meal.invite.dinner_time = dinner_time
                     to_change.append(meal.invite)
 
@@ -198,7 +198,7 @@ class EventHostInviteView(EventHostRegisterView):
         for meal in meals:
             if meal.state == 'S' or meal.state == 'C':
                 if not meal.invite:
-                    sys.stderr.write("no invite :(\n")
+#                    sys.stderr.write("no invite :(\n")
                     continue
             if meal.state == 'N':
                 if manage:
@@ -211,7 +211,7 @@ class EventHostInviteView(EventHostRegisterView):
                     except MealInvite.DoesNotExist:
                         invite = None
                 if not invite or invite.host_eg != eg:
-                    sys.stderr.write("not mine\n")
+#                    sys.stderr.write("not mine\n")
                     continue
             if meal.date not in d:
                 d[meal.date] = []
