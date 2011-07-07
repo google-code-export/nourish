@@ -7,7 +7,7 @@ sys.path.append(os.path.join(LOCALPATH, 'allbuttonspressed'))
 
 TEMPLATE_DEBUG = DEBUG
 
-ADMINS = (('Ray Marceau', 'marceau.ray@gmail.com'))
+ADMINS = (('Ray Marceau', 'marceau.ray@gmail.com'), ('Ray', 'razor2n4@gmail.com'))
 
 MANAGERS = ADMINS
 
@@ -41,6 +41,8 @@ EMAIL_HOST_USER = 'feed.the.artists.2011@gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_SUBJECT_PREFIX = "[FtA]"
 EMAIL_PORT = 587
+
+SERVER_EMAIL = 'feed.the.artists.2011@gmail.com'
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -140,12 +142,21 @@ LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'handlers': {
+        'console':{
+            'level':'DEBUG',
+            'class':'logging.StreamHandler',
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler',
+        }
+
     },
     'loggers': {
         'django.request': {
-            'handlers': [],
+            'handlers': ['console', 'mail_admins'],
             'level': 'ERROR',
-            'propagate': True,
+            'propagate': False,
         },
     }
 }
