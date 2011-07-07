@@ -38,11 +38,21 @@ class FBRegisterView(object):
         if self.can_select_group(me['name'], event, user):
             choices.append((me['id'], me['name'] + " (Me)"))
         for group in groups['data']:
+            if 'id' not in group:
+                continue
+            if 'name' not in group:
+                continue
             if 'owner' not in group or group['owner']['id'] != me['id']:
                 continue
             if self.can_select_group(group['name'], event, user):
                 choices.append((group['id'], group['name'] + " (Group)"))
         for e in events['data']:
+            if 'id' not in e:
+                continue
+            if 'name' not in e:
+                continue
+            if 'end_time' not in e:
+                continue
             if 'owner' not in e or e['owner']['id'] != me['id']:
                 continue
             if iso8601.parse_date(e['end_time']).replace(tzinfo=None) < datetime.datetime.utcnow():

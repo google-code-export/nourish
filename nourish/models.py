@@ -75,15 +75,17 @@ class FacebookProfileCache(models.Model):
         fbgroups = facebook.graph.get_object('me/groups')
         groups = []
         for group in fbgroups['data']:
-            groups.append((group['id'], group['name']))
+            if 'name' in group:
+                groups.append((group['id'], group['name']))
 
         fbevents = facebook.graph.get_object('me/events')
         events = []
         now = datetime.datetime.now()
         for event in fbevents['data']:
-            end = datetime.datetime.strptime(event['end_time'],"%Y-%m-%dT%H:%M:%S")
-            if end > now:
-                events.append((event['id'], event['name']))
+            if 'name' in event:
+                end = datetime.datetime.strptime(event['end_time'],"%Y-%m-%dT%H:%M:%S")
+                if end > now:
+                    events.append((event['id'], event['name']))
 
         self.groups = json.dumps(groups)
         self.events = json.dumps(events)
