@@ -66,7 +66,6 @@
       uninvitedArtists.push({
         "id" : "{{ meal.id }}",
         "name" : "{{ meal.eg.group.name|escapejs }}",
-        "desc" : "{{ meal.eg.group.description|escapejs }}",
         "date" : new Date("{{ meal.date.isoformat }}"),
         "url" : "{% nurl meal.eg %}",
         "numPeople" : {{ meal.members }},

@@ -12,7 +12,7 @@ from nourish.views.register.event import EventRegisterView
 from nourish.views.register.guest import EventGuestRegisterView
 from nourish.views.register.host import EventHostRegisterView
 from nourish.views.register.host_invite import EventHostInviteView
-from nourish.views.meal import EventGuestManageView, EventArtistChart
+from nourish.views.meal import EventGuestManageView, EventArtistChart, EventReports
 from fbcanvas.views import CanvasTemplateView
 from nourish.models import Event, Group, EventGroup
 
@@ -35,6 +35,8 @@ urlpatterns = patterns('',
         EventHostRegisterView.as_view()),
     url(r'^e/(?P<pk>\d+)(-[^\/]*)?/artistchart/$', 
         EventArtistChart.as_view()),
+    url(r'^e/(?P<pk>\d+)(-[^\/]*)?/reports/$',
+        EventReports.as_view()),
     url(r'^eg/(?P<pk>\d+)-(?P<slug>[^/]+)/$', 
         EventGroupView.as_view(), name='event-group-detail'),
 

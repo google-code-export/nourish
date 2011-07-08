@@ -1,11 +1,14 @@
 from django.shortcuts import render_to_response, redirect
 from django.core.exceptions import PermissionDenied
-from nourish.models import EventGroup, Meal, MealInvite, Event
+from nourish.models import EventGroup, Meal, MealInvite, Event, EventUser
 from nourish.forms.meal import EventGroupMealForm
 from django.forms.formsets import formset_factory
 from datetime import timedelta
 from fbcanvas.views import HybridCanvasView
 from django.views.generic import DetailView
+
+from django.contrib.auth.decorators import user_passes_test
+from django.utils.decorators import method_decorator
 
 class EventArtistChart(HybridCanvasView, DetailView):
     template_name='nourish/artistchart.html'
@@ -14,9 +17,9 @@ class EventArtistChart(HybridCanvasView, DetailView):
     
     def get_context_data(self, **kwargs):
         context = super(EventArtistChart, self).get_context_data(**kwargs)
-        
+
         meals = Meal.objects.filter(event=self.object)
-                
+
         context['meals'] = meals
 
         return context
@@ -28,6 +31,32 @@ class EventArtistChart(HybridCanvasView, DetailView):
             dates.append(date)
             date += timedelta(days=1)
         return dates
+
+class EventReports(HybridCanvasView, DetailView):
+    template_name='nourish/reports.html'
+    context_object_name = 'event'
+    model = Event
+
+    @method_decorator(user_passes_test(lambda u: u.is_staff))
+    def dispatch(self, *args, **kwargs):
+        return super(EventReports, self).dispatch(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(EventReports, self).get_context_data(**kwargs)
+
+        context['host_list'] = []
+        context['guest_list'] = []
+        context['eventuser_list'] = EventUser.objects.filter(event=self.object,admin=True)
+        for eg in EventGroup.objects.filter(event=self.object):
+            if eg.group.role == 'T':
+                context['host_list'].append(eg)
+            if eg.group.role == 'A':
+                context['guest_list'].append(eg)
+
+        meals = Meal.objects.filter(event=self.object)
+        context['meals'] = meals
+
+        return context
 
 class EventGuestManageView(HybridCanvasView, DetailView):
     template_name = "nourish/EventGuestManageView.html"
