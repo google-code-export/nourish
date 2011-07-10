@@ -186,7 +186,7 @@ class EventHostInviteView(EventHostRegisterView):
         context['meal_formset'] = meal_formset
         context['host_eg'] = host_eg
         context['guest_eg'] = guest_eg
-
+        context['manage'] = 'manage' in self.request.GET
         return context
 
     def get_meals(self, eg, guest_eg=None, manage=False):
@@ -212,7 +212,8 @@ class EventHostInviteView(EventHostRegisterView):
                         invite = None
                 if not invite or invite.host_eg != eg:
 #                    sys.stderr.write("not mine\n")
-                    continue
+                    if manage:
+                        continue
             if meal.date not in d:
                 d[meal.date] = []
             d[meal.date].append(meal)
