@@ -59,6 +59,9 @@
               {% else %}
                 <input type="checkbox" disabled="disabled">
               {% endif %}
+              {% if not manage and m.meal.state != 'N' %}
+                 <strike>
+              {% endif %}
               <a href="{% nurl m.meal.eg %}">{{ m.meal.eg.group.name }}</a>
               <em>&nbsp;({{ m.meal.members }} diners)</em>
               {% if m.meal.features %}
@@ -68,7 +71,7 @@
                 <strong>[{{m.meal.get_state_display}}]</strong>
               {% else %}
                 {% if m.meal.state != 'N' %}
-                  <em><strong>(Already Invited)</strong></em>
+                  </strike><em><strong>(Already Invited)</strong></em>
                 {% endif %}
               {% endif %}
             </label>
