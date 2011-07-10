@@ -1,0 +1,19 @@
+<div style="border: 1px solid red; float: left; margin: 10px; padding: 10px; background-color: #fdd;">
+<h2>Authorize Feed The Artists</h2>
+
+<p>In order to proceed, we need you to connect your Facebook profile to the Feed The Artists Application.</p>
+
+
+{% load facebook_tags %}
+<form class="connect-button" name="login" method="post" action="{% if logged_in %}{% url facebook_connect %}{% else %}{% url facebook_login %}{% endif %}">
+Updates: <input name=perms type=radio value="" checked>Facebook Only</input>
+<input name=perms type=radio value="email">Email and Facebook</input>
+<br>
+Integrate my: <input name=perms type=checkbox value="user_groups" checked>Groups</input>
+<input name=perms type=checkbox value="user_events" checked>Events</input>
+<br>
+{% facebook_button 1 %}
+</form>
+
+{% facebook_js %}
+</div>

@@ -1,0 +1,51 @@
+{% extends "nourish/base.html" %}
+{% load nourish %}
+
+{% block title %}{{ object.group.name }} at {{ object.event.name }}{% endblock %}
+{% block og_title %}{{ object.group.name }} at {{ object.event.name }} - Feed The Artists{% endblock %}
+{% block og_desc %}
+  {% if object.role == 'A' %}
+    {{ object.group.name }} wants to be invited to dinner at {{ object.event.name }}.  If you're a theme camp, register to invite them!
+  {% else %}
+    {{ object.group.name }} wants to invite artist groups to dinner at {{ object.event.name }}.  If you're an artist group, register to get invited!
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+
+  <h2>Thank you <em>{{ object.group.name }}</em></h2>
+  <h3>for registering as
+  {% if object.role == 'A' %}
+  an Artist Group
+  {% endif %}
+
+  {% if object.role == 'T' %}
+  a Theme Camp
+  {% endif %}
+  at <em>{{ object.event.name }}</em>
+  </h3>
+
+  <br />
+
+  {% if object.role == 'A' %}
+  <p>Now that your registered, theme camps can see you on the <a href="{% nurl object.event %}artistchart/">Artist Availability Chart</a> for your event.</p>
+  <p>From here on, you wait for a theme camp to invite your artist group for dinner.  Once invited you need to make sure to confirm it by logging back into the feed the artist website and clicking the 'confirm invite' button.</p>
+  <p>If something about your meal registration changes (like number of crew members or dietary restrictions), you can make changes on your groups event page <a href="{% nurl object %}">here</a></p>
+  {% endif %}
+
+  {% if object.role == 'T' %}
+  <p>Now that your registered, go to the <a href="{% nurl object.event %}artistchart/">Artist Availability Chart</a> to invite an artist to dinner!</p>
+  <p>Once the Artist Group confirms your invite, then it is your responsibility to coordinate with the Artist group about the details of the dinner.</p>
+  <p>If you need to make changes about you theme camp (like event address or description), you can do so on your groups event page <a href="{% nurl object %}">here</a></p>
+  {% endif %}
+  
+  <div style="margin-top: 30px; text-align: center">
+    <a href="{% nurl object.event %}artistchart/">
+      <img src="/static/images/checkOutArtistChart.jpg" title="Artist availability chart for " />
+    </a>
+  </div>
+
+  <br/>
+  <br/>
+  <br/>
+{% endblock %}
