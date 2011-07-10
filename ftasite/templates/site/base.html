@@ -49,7 +49,13 @@
     {% include "site/ga.html" %}
   </head>
 
-  <body>
+  {% if canvas %}
+    <body onLoad="FB.Canvas.setSize();">
+      <div id="fb-root"></div>
+      <script src="http://connect.facebook.net/en_US/all.js"></script>
+  {% else %}
+    <body>
+  {% endif %}
     <div id="content_main">
       
       <div id="site_wrap">

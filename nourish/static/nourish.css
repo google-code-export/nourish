@@ -15,6 +15,14 @@ table.meals th.first {
     font-weight: normal;
 }
 
+label.meal_list {
+    font-weight: normal;
+}
+
+label.meal_list a {
+    font-weight: bold;
+}
+
 div.contentBody {
     padding: 25px 0;
 }
