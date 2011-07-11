@@ -50,6 +50,13 @@ Ext.application({
       width: 775,
       autoHeight: true,
       viewConfig: {
+        getRowClass: function(record, rowIndex, rowParams, store){
+          if(record.get("invited").match("New") == null) {
+            return "alreadyInvited"
+          }
+          
+          return "";
+        },
         emptyText: "There are no Artists currently registered for {{ object.name}}. Spread the word!",
         minHeight: 50
       },
@@ -57,6 +64,7 @@ Ext.application({
       columns: [{
           text: 'Name',
           flex: 2,
+          tdCls: 'artistNameColumn',
           menuDisabled: true,
           dataIndex: 'name',
           xtype: 'templatecolumn',

@@ -252,3 +252,11 @@ table.mealTable th.hed {
     font-size: 12px;
     font-weight: bold;
 }
+
+.alreadyInvited {
+    color: gray;
+}
+
+.alreadyInvited .artistNameColumn a {
+    color: gray !important;
+}
