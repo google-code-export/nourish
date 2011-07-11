@@ -31,6 +31,7 @@
   
   <script type="text/javascript">
     var uninvitedArtists = [ ];
+    var registeredThemeCamps = [];
   </script>
 {% endblock %}
 {% block content %}
@@ -46,9 +47,11 @@
     <br/>
   
     <p>
-      Below you will find all the registered artist for each day at {{ object.name }}.  If you would like to
+      Below you will find all the registered artists for each day at {{ object.name }}.  If you would like to
       invite an artist dinner that has yet to be invited, just click on their name and from there you can
       invite them to dinner.
+
+      <b>Artists in gray have already been invited.</b>
     </p>
     <br/>
     <p>
@@ -78,6 +81,16 @@
         "invited" : "{{ meal.get_state_display }}"
       });
     {% endfor %}
+
+    var registeredThemeCamps = [];
+
+    {% for eg in host_event_groups %}
+      registeredThemeCamps.push({
+        id: {{ eg.id }},
+        name: '{{ eg.group.name|escapejs }}'
+      });
+    {% endfor %}
+
   </script>
 
   <div id="artistGrid" style="padding: 15px 0 50px 0">
