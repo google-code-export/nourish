@@ -126,18 +126,21 @@ class EventHostInviteView(EventHostRegisterView):
                     continue
                 elif (meal.state == 'I'):
                     if 'invited' not in mdata or not mdata['invited']:
-                        to_rescind.append(MealInvite.objects.get(host_eg=host_eg,meal=meal))
+                        if 'manage' in self.request.GET:
+                            to_rescind.append(MealInvite.objects.get(host_eg=host_eg,meal=meal))
                     continue
                 elif (meal.state == 'S'):
                     if 'invited' in mdata and mdata['invited']:
                         to_confirm.append(meal.invite)
                         continue
                     else:
-                        to_rescind.append(meal.invite)
+                        if 'manage' in self.request.GET:
+                            to_rescind.append(meal.invite)
                         continue
                 elif (meal.state == 'C'):
                     if 'invited' not in mdata or not mdata['invited']:
-                        to_rescind.append(meal.invite)
+                        if 'manage' in self.request.GET:
+                            to_rescind.append(meal.invite)
                         continue
                 if str(meal.invite.dinner_time) != str(dinner_time):
 #                    sys.stderr.write("[%s] != [%s]\n" % (meal.invite.dinner_time, dinner_time) )
