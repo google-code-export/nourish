@@ -79,12 +79,11 @@
           <script type="text/javascript">
             uninvitedArtists.push({
               "id" : "{{ m.meal.id }}",
-              "name" : "{{ m.meal.eg.group.name }}",
-              "desc" : "{{ m.meal.eg.group.description }}",
+              "name" : "{{ m.meal.eg.group.name|escapejs }}",
               "date" : new Date({{ m.meal.date|date:"Y, m, d" }}),
               "url" : "{{ m.meal.eg.group.url }}",
               "numPeople" : {{ m.meal.members }},
-              "features": "{{ m.meal.features }}",
+              "features": "{{ m.meal.features|escapejs }}",
               "invite_input" : document.getElementById("id_{{ m.form.invited.html_name }}"),
               "date_input" : document.getElementById("id_{{ d.form.dinner_time.html_name }}")
             });
