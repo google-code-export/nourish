@@ -37,7 +37,7 @@ class EventGroupHostForm(ModelForm):
 
 class EventInviteDayForm(forms.Form):
     date = forms.CharField(widget=forms.HiddenInput)
-    dinner_time = forms.TimeField(required=False)
+    dinner_time = forms.CharField(required=False)
 
 class EventInviteMealForm(forms.Form):
     meal_id = forms.CharField(widget=forms.HiddenInput)
