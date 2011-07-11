@@ -7,7 +7,7 @@ sys.path.append(os.path.join(LOCALPATH, 'allbuttonspressed'))
 
 TEMPLATE_DEBUG = DEBUG
 
-ADMINS = (('Ray Marceau', 'marceau.ray@gmail.com'), ('Ray', 'razor2n4@gmail.com'))
+ADMINS = (('Ray', 'razor2n4@gmail.com'))
 
 MANAGERS = ADMINS
 
