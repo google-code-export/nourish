@@ -65,12 +65,19 @@ Ext.application({
         emptyText: "There are no Artists currently registered for this event.",
         minHeight: 50
       },
+      features: [{
+          ftype: 'summary'
+      }],
       columns: [{
           text: 'Name',
           flex: 1,
           menuDisabled: true,
           dataIndex: 'name',
           xtype: 'templatecolumn',
+          summaryType: 'count',
+          summaryRenderer: function(value, summaryData, dataIndex) {
+              return Ext.String.format('{0} Artist{1}', value, value !== 1 ? 's' : '');
+          },
           tpl: '<a href="{url}"><span title="{name}">{name:ellipsis(45)}</span></a>'
       },{
           text: 'Contact',
@@ -100,6 +107,9 @@ Ext.application({
       store: RegisteredHostsStore,
       //selModel: sm,
       width: 775,
+      features: [{
+          ftype: 'summary'
+      }],
       autoHeight: true,
       dockedItems: [{
         xtype: 'toolbar',
@@ -119,6 +129,10 @@ Ext.application({
           menuDisabled: true,
           dataIndex: 'name',
           xtype: 'templatecolumn',
+          summaryType: 'count',
+          summaryRenderer: function(value, summaryData, dataIndex) {
+              return Ext.String.format('{0} Theme Camp{1}', value, value !== 1 ? 's' : '');
+          },
           tpl: '<a href="{url}"><span title="{name}">{name:ellipsis(45)}</span></a>'
       },{
           text: 'Contact',
