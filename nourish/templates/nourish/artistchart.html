@@ -2,6 +2,7 @@
 
 {% load facebook_tags %}
 {% load nourish %}
+{% load media %}
 
 {% block sitetitle %}Artist Availability Chart{% endblock %}
 
@@ -27,8 +28,9 @@
 {% block preload_js %}
   {{ block.super }}
   <script type="text/javascript" src="/static/js/ext-all.js"></script>
-  <script type="text/javascript" src="/static/js/artistGrid.js?v=2"></script>
-  
+
+  {% include_media 'artistGrid.js' %}
+
   <script type="text/javascript">
     var uninvitedArtists = [ ];
     var registeredThemeCamps = [];

@@ -86,6 +86,7 @@ NON_REDIRECTED_PATHS = ('/admin/',)
 
 ROOT_URLCONF = 'ftasite.urls'
 
+
 TEMPLATE_DIRS = (
 #    os.path.join(LOCALPATH, os.path.join('allbuttonspressed', 'templates')),
     os.path.join(LOCALPATH, 'templates'),
@@ -187,6 +188,24 @@ MEDIA_BUNDLES = (
     ('main.css',
         'design.sass',
         'rest.css',
+    ),
+    ('artistGrid.js',
+        'js/artistGrid.js',
+    ),
+    ('reports.js',
+        'js/reports.js',
+    ),
+    ('nourish.css',
+        'nourish.css',
+    ),
+    ('base.css',
+        'base.css',
+    ),
+    ('site.css',
+        'site.css',
+    ),
+    ('canvas.css',
+        'canvas.css',
     ),
 )
 

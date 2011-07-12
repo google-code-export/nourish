@@ -1,8 +1,10 @@
 {% extends "site/base.html" %}
 
+{% load media %}
+
 {% block sitetitle %}{% block title %}{% endblock %} - FtA ORS{% endblock %}
 {% block content-css %}
-  <link rel="stylesheet" type="text/css" href="/static/nourish.css">
+  {% include_media 'nourish.css' %}
 {% endblock %}
 
 {% block content-header %}
