@@ -260,3 +260,12 @@ table.mealTable th.hed {
 .alreadyInvited .artistNameColumn a {
     color: gray !important;
 }
+
+.heart {
+}
+
+.inviteText {
+    font-size: 120%;
+    padding: 30px 0 0 10px;
+
+}

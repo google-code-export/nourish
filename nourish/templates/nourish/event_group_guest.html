@@ -2,25 +2,38 @@
 
 <br/>
 
+<script type="text/javascript"
+        src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+
+<script type="text/javascript" src="/static/js/jquery/jquery-ui-min.js"></script>
+
 {% if host_event_groups %}
   {% for eg in host_event_groups %}
     <a href="{% nurl object.event %}invite/?guest={{object.id}}&host={{eg.id}}">
-      <img title="Click here to invite!" style="vertical-align: middle" src="/static/images/heart.png"/>
-      <span title="Click here to invite!">
-        Invite <em>{{object.group.name}}</em> to dinner with <em>{{ eg.group.name }}</em>
-      </span>
+      <img align="left" class="heart" title="Click here to invite me!" src="/static/images/heart.png"/>
+      <div class="inviteText" title="Click here to invite me!">
+        &nbsp;Invite <em>{{object.group.name}}</em> to dinner with <em>{{ eg.group.name }}</em>
+      </div>
     </a>
-    <br/>
+    <div style="clear: both; padding-top: 8px">&nbsp;</div>
   {% endfor %}
 {% else %}
   {% if not is_group_admin %}
   <a href="{% nurl object.event %}invite">
-    <img title="Click here to invite!" style="vertical-align: middle" src="/static/images/heart.png"/>
-    <span title="Click here to Invite me!">Click here to register as a Theme Camp and invite <em>{{object.group.name}}</em> to dinner during <em>{{ object.event.name }}</em>!</span>
+    <img align="left" class="heart" title="Click here to invite!" src="/static/images/heart.png"/>
+    <div class="inviteText" title="Click here to Invite me!">
+      &nbsp;Click here to register as a Theme Camp and invite <em>{{object.group.name}}</em> to dinner during <em>{{ object.event.name }}</em>!
+    </div>
     </a>
   <br/>
   {% endif %}
 {% endif %}
+
+<script type="text/javascript">
+  $(document).ready(function() {
+    $(".heart").delay(2000).effect('bounce', {}, 500);
+  });
+</script>
 
 <br/>
 <br/>
