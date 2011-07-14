@@ -1,16 +1,15 @@
 {% load nourish %}
 
 {% if group_formset.0.group.field.choices %}
-  <h3>Pick a group</h3>
-  <p>We have found the following items in your Facebook profile that might be your group.  If your group isn't in the list below, keep reading...</p>
+  <h3>Choose your group</h3>
+  <p>If your <b>group</b> shows up below, select it.<br/><a href="?nofb">Otherwise, if you dont have a facebook page for your group click here!</a></p>
   <table class="regform">
     {{ group_formset.0.non_field_errors }}
     {% include "nourish/group_form_snippet.html" with form=group_formset.0 %}
   </table>
   <p>We are only showing groups for which you're an admin.  If your group is not here, contact your Facebook group admin to grant you admin rights.</p>
   <p>Or if you're group doesnt have any facebook presense, <a href="{% nurl 'fb-newgroup-options' %}">Create a new facebook page.</a></p>
-  <p>You can also <a href="?nofb">Continue without creating a Facebook page for your group</a></p>
-  
+
 {% else %}
   {% include "nourish/fb_newgroup_options.html" with type="theme camp" %}
   <ul>
