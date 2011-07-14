@@ -261,6 +261,14 @@ table.mealTable th.hed {
     color: gray !important;
 }
 
+.alreadyInvitedListItem {
+    color: gray;
+}
+
+.alreadyInvitedListItem a {
+    color: gray !important;
+}
+
 .heart {
 }
 

@@ -34,14 +34,14 @@
   {% endif %}
 
   {% if object.role == 'T' %}
-  <p>Now that your registered, go to the <a href="{% nurl object.event %}artistchart/">Artist Availability Chart</a> to invite an artist to dinner!</p>
-  <p>Once the Artist Group confirms your invite, then it is your responsibility to coordinate with the Artist group about the details of the dinner.</p>
-  <p>If you need to make changes about you theme camp (like event address or description), you can do so on your groups event page <a href="{% nurl object %}">here</a></p>
+  <p>Now that your registered, go to the <a href="{% nurl object.event %}invite/?host={{ object.group.id }}">Artist Invitation Page</a> to invite artists to dinner!</p>
+  <p>Once the Artist Group confirms your invite, then it is up to you and the Artist group to coordinate the finer details of the dinner.</p>
+  <p>If you need to make changes to your theme camp (like event address or description), you can do so on your groups event page <a href="{% nurl object %}">here</a></p>
   {% endif %}
   
   <div style="margin-top: 30px; text-align: center">
     <a href="{% nurl object.event %}artistchart/">
-      <img src="/static/images/checkOutArtistChart.jpg" title="Artist availability chart for " />
+      <img src="/static/images/checkOutArtistChart.jpg" title="Artist availability chart for {{ object.event.name }}" />
     </a>
   </div>
 
