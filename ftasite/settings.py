@@ -35,12 +35,15 @@ GLOBAL_MEDIA_DIRS = STATICFILES_DIRS
 GENERATED_MEDIA_DIR = os.path.join(LOCALPATH, '_generated_media')
 GENERATED_MEDIA_NAMES_FILE = os.path.join(LOCALPATH, '_generated_media_names.py')
 
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_PASSWORD = "newuser_22"
+#EMAIL_HOST = 'smtp.gmail.com'
+#EMAIL_HOST_PASSWORD = "newuser_22"
 EMAIL_HOST_USER = 'feed.the.artists.2011@gmail.com'
+EMAIL_HOST = 'smtp.com'
+EMAIL_HOST_PASSWORD = "Newuser_2233"
+#EMAIL_HOST_USER = "razor2n4@gmail.com"
 EMAIL_USE_TLS = True
 EMAIL_SUBJECT_PREFIX = "[FtA]"
-EMAIL_PORT = 587
+EMAIL_PORT = 25
 
 SERVER_EMAIL = 'feed.the.artists.2011@gmail.com'
 
