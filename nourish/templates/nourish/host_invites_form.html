@@ -11,13 +11,12 @@
     {% endif %}
   {% endfor %}
 
-<script type="text/javascript">
-  var uninvitedArtists = [ ];
-</script>
 {{ meal_formset.management_form }}
 {{ day_formset.management_form }}
-<p>Invite artist groups to dinner by clicking the checkbox next to the artist group name on the day that you are having the dinner.</p>
-<p><strong>Scroll all the way to the bottom and click the "Send Invites" link when finished.</strong></p>
+{% if not manage %}
+  <p>Invite artist groups to dinner by clicking the checkbox next to the artist group name on the day that you are having the dinner.</p>
+  <p><strong>Scroll all the way to the bottom and click the "Send Invites" link when finished.</strong></p>
+{% endif %}
 <p>
   Jump To 
   {% for d in invite_dates %}
@@ -76,18 +75,6 @@
               {% endif %}
             </label>
           </li>
-          <script type="text/javascript">
-            uninvitedArtists.push({
-              "id" : "{{ m.meal.id }}",
-              "name" : "{{ m.meal.eg.group.name|escapejs }}",
-              "date" : new Date({{ m.meal.date|date:"Y, m, d" }}),
-              "url" : "{{ m.meal.eg.group.url }}",
-              "numPeople" : {{ m.meal.members }},
-              "features": "{{ m.meal.features|escapejs }}",
-              "invite_input" : document.getElementById("id_{{ m.form.invited.html_name }}"),
-              "date_input" : document.getElementById("id_{{ d.form.dinner_time.html_name }}")
-            });
-          </script>
         {% endfor %}
       </ul>
     </li>

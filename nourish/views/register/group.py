@@ -48,7 +48,8 @@ class EventGroupRegisterView(FBRegisterView, HybridCanvasView, DetailView):
         if self.is_fb():
             GroupFormset = formset_factory(GroupFBForm, extra=0)
             group_formset = GroupFormset(prefix='group', initial=[{ 'role' : self.default_role() }])
-            group_formset[0].fields['group'].choices = self.get_group_choices(self.request.facebook.graph, self.object, self.request.user)
+            if 'host_eg' not in kwargs or not kwargs['host_eg']:
+                group_formset[0].fields['group'].choices = self.get_group_choices(self.request.facebook.graph, self.object, self.request.user)
         else:
             GroupFormset = formset_factory(GroupForm, extra=0)
             group_formset = GroupFormset(prefix='group', initial=[{ 'role' : self.default_role() }])

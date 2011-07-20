@@ -160,7 +160,14 @@ class EventHostInviteView(EventHostRegisterView):
         host_eg = None
         if 'host' in self.request.GET:
             host_eg = EventGroup.objects.get(id=self.request.GET['host'])
-
+        else:
+            if self.request.user.is_authenticated():
+                my_groups = self.request.user.get_profile().admin_groups()
+                group_events = list(EventGroup.objects.filter(group__in=my_groups, event=self.object, role='T')) 
+                if len(group_events) > 1:
+                    raise Exception("you have multiple groups at this event")
+                if len(group_events) > 0:
+                    host_eg = group_events[0]
         guest_eg = None
         if 'guest' in self.request.GET:
             guest_eg = EventGroup.objects.get(id=self.request.GET['guest'])
@@ -171,9 +178,11 @@ class EventHostInviteView(EventHostRegisterView):
         return 'T'
 
     def get_context_data(self, **kwargs):
-        context = super(EventHostInviteView, self).get_context_data(**kwargs)
-
         (host_eg, guest_eg) = self.get_egs()
+
+        kwargs['host_eg'] = host_eg
+
+        context = super(EventHostInviteView, self).get_context_data(**kwargs)
 
         (dates, day_initial, meal_initial) = self.get_meals(host_eg, guest_eg, 'manage' in self.request.GET)
 

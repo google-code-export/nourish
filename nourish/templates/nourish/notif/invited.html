@@ -9,9 +9,8 @@
 {% block message %}
   {{ notification.objects.0.host_eg.group.name }} invited {{ notification.objects.0.guest_eg.group.name }} to dinner at {{ notification.objects.0.host_eg.event.name }}!
   <ul>
-    <li>Dinner Time: {{ notification.objects.0.host_eg.dinner_time }}</li>
     {% for o in notification.objects %}
-      <li>Date: {{ o.date }}</li>
+      <li>Date: {{ o.date }} (Time: {{ o.dinner_time }})</li>
     {% endfor %}
   </ul>
 {% endblock %}
