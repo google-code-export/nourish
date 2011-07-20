@@ -24,17 +24,21 @@
 {% endblock %}
 
 {% block content-body %}
-  <h1>Manage Invitations</h1>
-
-  <form method="post">
-    {{ user_formset.management_form }}
-    {{ group_formset.management_form }}
-    {{ grouphost_formset.management_form }}
-    {{ features_formset.management_form }}
+  {% if manage %}
+    <h1>Manage Invitations</h1>
+  {% else %}
+    <h1>Invite Artists to Dinner</h1>
+  {% endif %}
 
     {% if not user.is_authenticated and not request.GET.u %}
       {% include "nourish/please_connect.html" %}
     {% else %}
+      <form method="post">
+      {{ user_formset.management_form }}
+      {{ group_formset.management_form }}
+      {{ grouphost_formset.management_form }}
+      {{ features_formset.management_form }}
+
       {% if not user.is_authenticated %} 
         {% include "nourish/user_registration_form.html" %}
       {% endif %}
@@ -53,7 +57,7 @@
       {% include "nourish/host_invites_form.html" %}
       <br>
       <input type="submit" value="Send Invites">
-    </form>
+      </form>
   {% endif %}
 
 {% endblock %}
