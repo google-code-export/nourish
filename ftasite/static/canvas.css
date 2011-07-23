@@ -1,0 +1,14 @@
+#site_wrap {
+    width:750px;
+}
+
+#site_content {
+    width:550px;
+    float: right;
+}
+
+#site_sidebar {
+    float:left;
+    width:160px;
+    padding: 5px;
+}

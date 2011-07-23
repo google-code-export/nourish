@@ -1,0 +1,4 @@
+{% extends "nourish/notif/baseEmail.html" %}
+{% block message %}
+{{ object.host_eg.group.name }} has confirmed {{ object.guest_eg.group.name }}'s dinner invitation(s) at {{ object.host_eg.event.name }}!
+{% endblock %}

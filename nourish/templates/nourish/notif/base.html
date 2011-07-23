@@ -1,0 +1,19 @@
+{% load nourish %}
+<div>
+  <div>
+    <div style="float: left; width: 115px;">
+      {% block icons %}{% endblock %}
+    </div>
+    <div style="float: left; width: 415px;">
+      {% block message %}{% endblock %}
+    </div>
+    <div style="clear: both; text-align: right;">
+        {% block preactions %}{% endblock %}
+        <form method="POST" style="display: inline;">
+          {% block actions %}{% endblock %}
+          <input type=hidden name="notification" value="{{notification.id}}">
+          <input type=submit name="delete" value="Delete Notice">
+        </form>
+    </div>
+  </div>
+</div>

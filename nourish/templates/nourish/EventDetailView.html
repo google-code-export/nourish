@@ -1,0 +1,79 @@
+{% extends "nourish/base.html" %}
+
+{% load facebook_tags %}
+{% load nourish %}
+
+{% block title %}{{ object.name }} - Events{% endblock %}
+{% block og_title %}{{ object.name }} - Feed The Artists{% endblock %}
+{% block og_desc %}Feed The Artists is helping to coordinate meal gifting at {{ object.name }}.  Sign up to give or receive meals at the event!{% endblock %}
+
+{% block content-logo %}
+  {% if object.image_url %}
+    <a target="_parent" href="{{ object.url }}"><img width=100 src="{{object.image_url}}?type=normal" border=0></a>
+  {% endif %}
+{% endblock %}
+
+{% block content-title %}
+    <h2 style="display: inline;">{{ object.name }}</h2>
+    {% if is_admin %}
+      [<a href="{% nurl object %}edit/">Edit Event</a>]
+    {% endif %}
+    <br>
+    {{ object.start_date }} thru {{ object.end_date }}<br>
+    
+    <br>
+    <span class="site_ext_link">Event website: {{object.url|urlizetrunc:40}}</span>
+{% endblock %}
+
+{% block content-body %}
+  <div style="clear: both;"></div>
+  <div style="float: left;">
+    <a href="{% nurl object %}register/guest">
+      <img width=250 src="/static/fta/home-artists.jpg" alt="Register New Artist Group" border=0>
+    </a>
+  </div>
+
+  <div style="float: left;">
+    <a href="{% nurl object %}register/host">
+      <img width=250 src="/static/fta/burningman2.jpg" alt="Register New Theme Camp" border=0>
+    </a>
+  </div>
+  <div style="clear: both;"></div>
+  
+  <div style="margin-top: 30px; text-align: center">
+    <a href="{% nurl object %}artistchart/">
+      <img src="/static/images/checkOutArtistChart.jpg" title="Artist availability chart for " />
+    </a>
+  </div>
+
+  {% if request.user.is_staff %}
+    <a href="{% nurl object %}reports/"><h3>Admin Reports</h3></a>
+    <br/>
+    <br/>
+  {% endif %}
+
+  <h4>Registered Artist Groups</h4>
+  <ul class="inline_list">
+    {% for eg in object.guest_groups %}
+      <li><a href="{% nurl eg %}">{{ eg.group.name }}</a> |</li>
+    {% endfor %}
+    <li><a href="{% nurl object %}register/guest">Register</a></li>
+  </ul>
+
+  <h4>Registered Theme Camps</h4>
+  <ul class="inline_list">
+    {% for eg in object.host_groups %}
+      <li><a href="{% nurl eg %}">{{ eg.group.name }}</a> |</li>
+    {% endfor %}
+    <li><a href="{% nurl object %}register/host">Register</a></li>
+  </ul>
+
+  <h4>Spread the word!</h4>
+  <ul>
+  {% include "nourish/fb/event_share_link.html" with event=object %}
+  <li>{% include "nourish/fb/event_guest_siteinvite_link.html" with event=object %}</li>
+  <li>{% include "nourish/fb/event_host_siteinvite_link.html" with event=object %}</li>
+  </ul>
+
+  {% facebook_js %}
+{% endblock %}

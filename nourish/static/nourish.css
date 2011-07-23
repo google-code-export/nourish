@@ -1,0 +1,279 @@
+table.meals {
+    border-collapse: collapse;
+}
+tr.meal td, tr.meal th {
+    border-top: 1px solid black;
+}
+table.meals tr th.first {
+    border-right: 1px solid black;
+}
+table.meals th, table.meals td {
+    text-align: left;
+    padding-left: 0.5em;
+}
+table.meals th.first {
+    font-weight: normal;
+}
+
+label.meal_list {
+    font-weight: normal;
+}
+
+label.meal_list a {
+    font-weight: bold;
+}
+
+div.contentBody {
+    padding: 25px 0;
+}
+
+div.nourish_header h3 {
+    margin-right: 15px;
+    display: inline;
+}
+
+div.nourish_header ul {
+    margin:0;
+    padding:0;
+    list-style:none;
+    display: inline;
+}
+
+div.nourish_header ul li {
+    display:inline;
+    margin:0;
+    padding:0;
+    padding-right: 10px;
+}
+
+div.nourish_header {
+    margin-bottom: 5px;
+    border-bottom: 1px solid black;
+}
+
+tr.regerror {
+    background-color: #fcc;
+}
+ul.errorlist {
+    padding: 0;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    list-style:none;
+}
+ul.errorlist li {
+    padding: 0;
+    color: red;
+}
+td.features ul {
+    margin:0;
+    padding:0;
+    list-style:none;
+}
+td.features li {
+    margin:0;
+    padding:0;
+    display: inline;
+}
+td.features {
+    text-align: center;
+}
+ul#event_details {
+    margin-top: 0;
+    list-style: none;
+}
+
+.regform th {
+    color: #600;
+}
+
+.artist-meal-info th {
+    text-align: center;
+    vertical-align: bottom;
+}
+
+.artist-meal-info td {
+    vertical-align: middle;
+    text-align: center;
+}
+
+.regform ul {
+    list-style: none;
+    padding: 0;
+}
+
+.regdate {
+    color: #600;
+}
+div.small_link {
+    width: 255px;
+    padding: 5px;
+    border: 1px solid #fbb;
+    margin: 2px;
+}
+a.small_link:hover div {
+    background-color: #fbb;
+}
+ul.small_list {
+    padding: 0;
+}
+ul.small_list li {
+    list-style: none;
+}
+
+ul.radioselect {
+    padding: 0;
+}
+
+ul.radioselect li {
+    list-style: none;
+}
+
+div.scroll_select {
+    margin-left: 50px;
+    margin-right: 50px;
+    border: 1px solid black;
+    height: 150px;
+    overflow: auto;
+}
+
+div.pending_notif {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border: 1px solid red;
+    background-color: #fdd;
+    text-align: center;
+}
+
+span ul.errorlist {
+    background: #fbb;
+    border: 1px solid red;
+    padding: 3px;
+    margin: 3px;
+    display: inline;
+}
+
+span ul.errorlist li {
+    color: black;
+    display: inline;
+}
+
+ul.fb_connect_options li {
+    list-style: none;
+}
+
+ul.fb_connect_options input {
+    margin-right: 10px;
+}
+
+div.nourish_sidebar {
+    padding: 5px;
+    margin: 60px 10px 10px 10px;
+    border: 1px solid #aaa;
+    background-color: #f0f0f0;
+}
+
+div.nourish_sidebar ul {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+div.nourish_sidebar h2 {
+    padding: 0px;
+    margin: 0px;
+    margin-left: 5px;
+    margin-right: 5px;
+    padding-bottom: 3px;
+    margin-bottom: 3px;
+    line-height: 20px;
+    text-align: center;
+    border-bottom: 1px solid gray;
+}
+
+td.regdate {
+    width: 115px;
+    font-weight: bold;
+    vertical-align: middle;
+}
+td.diners input {
+    width: 27px;
+}
+
+td.notes input {
+    width: 300px;
+}
+
+.description {
+    color: #808080;
+}
+
+.eventDates {
+    color: #808080;
+}
+
+.eventDate {
+    color: #600;
+}
+
+/*ul.inline_list {
+    list-style: none;
+}
+*/
+
+ul.inline_list li {
+    display: inline;
+}
+
+table.mealTable {
+    text-align: center;
+    font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+    font-weight: normal;
+    font-size: 11px;
+    color: #fff;
+    background-color: #666;
+    border: 0px;
+    border-collapse: collapse;
+    border-spacing: 0px;
+}
+
+table.mealTable td {
+    background-color: #CCC;
+    color: #000;
+    padding: 4px;
+    text-align: left;
+    border: 1px #fff solid;
+}
+
+table.mealTable th.hed {
+    background-color: #666;
+    color: #fff;
+    padding: 4px;
+    text-align: left;
+    border-bottom: 2px #fff solid;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.alreadyInvited {
+    color: gray;
+}
+
+.alreadyInvited .artistNameColumn a {
+    color: gray !important;
+}
+
+.alreadyInvitedListItem {
+    color: gray;
+}
+
+.alreadyInvitedListItem a {
+    color: gray !important;
+}
+
+.heart {
+}
+
+.inviteText {
+    font-size: 120%;
+    padding: 30px 0 0 10px;
+
+}

@@ -1,0 +1,16 @@
+{% extends "nourish/notif/base.html" %}
+{% load nourish %}
+
+{% block icons %}
+  <img src="http://graph.facebook.com/{{notification.from.id}}/picture" width=50 border=0>
+  <a href="{% nurl notification.objects.0 %}"><img src="{{ notification.objects.0.image_url }}" width="50" border=0></a>
+{% endblock %}
+
+{% block message %}
+  {{ notification.from.name }} wants you to <a href="{% nurl notification.objects.0 %}register/guest">register your group</a> with Feed The Artists at {{ notification.objects.0.name }}. 
+{% endblock %}
+
+{% block actions %}
+  <input type=submit name="take_action" value="Register My Art Group">
+  <input type=submit name="take_action" value="Register My Theme Camp">
+{% endblock %}

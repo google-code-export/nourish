@@ -1,0 +1,32 @@
+{% extends "site/base.html" %}
+
+{% load media %}
+
+{% block sitetitle %}{% block title %}{% endblock %} - FtA ORS{% endblock %}
+{% block content-css %}
+  {% include_media 'nourish.css' %}
+{% endblock %}
+
+{% block content-header %}
+  {% include "nourish/header.html" %}
+{% endblock %}
+
+{% block sidebar %}
+{% endblock %}
+
+{% block content-sidebar %}
+  {% include "nourish/sidebar.html" %}
+{% endblock %}
+
+{% block content %}
+  <div style="float: left; margin-right: 5px;">
+    {% block content-logo %}{% endblock %}
+  </div>
+  <div style="float: left; width: 500px;">
+    {% block content-title %}{% endblock %}
+  </div>
+  <div style="clear: both;"></div>
+  <div class="contentBody">
+    {% block content-body %}{% endblock %}
+  </div>
+{% endblock %}
