@@ -37,7 +37,11 @@ class ObjectLink(template.Node):
         self.var = var
 
     def render(self, context):
-        u = self.var.resolve(context).get_absolute_url()
+        v = self.var.resolve(context)
+        if isinstance(v, str):
+            u = '[unknown]'
+        else:
+            u = v.get_absolute_url()
         if 'canvas' in context and context['canvas']:
             p = re.compile("\/nourish\/")
             return p.sub('/nourish/fb/', u)
