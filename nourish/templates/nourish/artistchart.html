@@ -45,9 +45,10 @@
   
   <div style="float:left; padding: 15px 0 0 20px; width: 500px">
     <h2>Artists at {{ object.name }}</h2>
-    
-    <br/>
-  
+    {{ object.start_date }} thru {{ object.end_date }}
+    <br />
+    <br />
+
     <p>
       Below you will find all the registered artists for each day at {{ object.name }}.  If you would like to
       invite an artist dinner that has yet to be invited, just click on their name and from there you can
@@ -71,7 +72,7 @@
       uninvitedArtists.push({
         "id" : "{{ meal.id }}",
         "name" : "{{ meal.eg.group.name|escapejs }}",
-        "date" : new Date("{{ meal.date|date:'c'}}"),
+        "date" : new Date("{{ meal.date }}"),
         "url" : "{% nurl meal.eg %}",
         "numPeople" : {{ meal.members }},
         "features": "{{ meal.notes|escapejs }}",
