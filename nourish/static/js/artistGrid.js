@@ -4,19 +4,20 @@ Ext.application({
   // wrapped in closure to prevent global vars.
   Ext.define('Artist', {
       extend: 'Ext.data.Model',
-      fields: ['name', 'desc', 'date', 'url', 'numPeople', 'invited', 'inviteGroup']
+      fields: ['name', 'desc', 'date', 'dateFormat',
+        'url', 'numPeople', 'invited', 'inviteGroup']
   });
 
   var ArtistStore = Ext.create('Ext.data.Store', {
       storeId: 'artists',
       model: 'Artist',
-      sorters: ['name','numPeople'],
-      groupField: 'date',
+      sorters: [{property: 'numPeople', direction: 'DESC'}, 'name'],
+      groupField: 'dateFormat',
       data: uninvitedArtists
   });
   
   var groupingFeature = Ext.create('Ext.grid.feature.Grouping',{
-      groupHeaderTpl: '{name:date("l M d")} ({rows.length} Artist Group{[values.rows.length > 1 ? "s" : ""]})'
+      groupHeaderTpl: '{name} ({rows.length} Artist Group{[values.rows.length > 1 ? "s" : ""]})'
   });
   
   //var inviteArtists = function(selModel) {
@@ -97,10 +98,6 @@ Ext.application({
           dataIndex: 'invited',
           xtype: 'templatecolumn',
           tpl: '{invited} {inviteGroup}'
-      },{
-          text: 'Date',
-          dataIndex: 'date',
-          hidden: true
       }]
   });
 }});
