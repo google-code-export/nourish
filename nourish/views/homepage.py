@@ -1,5 +1,5 @@
 from django.shortcuts import redirect
-from nourish.models import EventUser, GroupUser, Group, EventGroup, UserProfile, Event
+from nourish.models import EventUser, GroupUser, Group, EventGroup, UserProfile, Event, MealInvite
 from django.core.urlresolvers import reverse
 from django.views.generic import TemplateView
 from fbcanvas.views import HybridCanvasView
@@ -38,7 +38,10 @@ class HomePageView(HybridCanvasView, TemplateView):
                 context['groups'].append(gm.group)
 
             context['egs'] = list(EventGroup.objects.filter(group__in=context['groups']))
-    
+
+            context['host_invites'] = list(MealInvite.objects.filter(host_eg__in=context['egs']))
+            context['guest_invites'] = list(MealInvite.objects.filter(guest_eg__in=context['egs']))
+
             for eu in EventUser.objects.filter(user=self.request.user):
                 context['events'].append(eu.event)
 

@@ -12,7 +12,7 @@ from nourish.views.register.event import EventRegisterView
 from nourish.views.register.guest import EventGuestRegisterView
 from nourish.views.register.host import EventHostRegisterView
 from nourish.views.register.host_invite import EventHostInviteView
-from nourish.views.meal import EventGuestManageView, EventArtistChart, EventReports
+from nourish.views.meal import EventGuestManageView, EventArtistChart, EventReports, ConfirmInviteView
 from fbcanvas.views import CanvasTemplateView
 from nourish.models import Event, Group, EventGroup
 
@@ -20,6 +20,7 @@ urlpatterns = patterns('',
     url('^logged-in/$', 'nourish.views.homepage_chooser', name='homepage-chooser'),
     url('^register/event/$', EventRegisterView.as_view(), name='register-event'),
     url('^home/$', login_required(HomePageView.as_view()), name='homepage'),
+    url('^confirm_invite/$', ConfirmInviteView.as_view(), name='confirm-invite'),
     url('^$',      RootPageView.as_view(), name='rootpage'),
 
     url(r'^_notif/$', login_required(NotificationListView.as_view()), name='notification-list'),

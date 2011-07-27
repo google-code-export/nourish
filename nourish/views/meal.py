@@ -5,10 +5,11 @@ from nourish.forms.meal import EventGroupMealForm
 from django.forms.formsets import formset_factory
 from datetime import timedelta
 from fbcanvas.views import HybridCanvasView
-from django.views.generic import DetailView
+from django.views.generic import DetailView, TemplateView
 
 from django.contrib.auth.decorators import user_passes_test
 from django.utils.decorators import method_decorator
+from django.core.exceptions import PermissionDenied
 
 class EventArtistChart(HybridCanvasView, DetailView):
     template_name='nourish/artistchart.html'
@@ -208,3 +209,29 @@ class EventGuestManageView(HybridCanvasView, DetailView):
         self.object.add_meals(to_add)
 
         return redirect(self.object.get_absolute_url(hasattr(request, 'fbcanvas') and request.fbcanvas))
+
+class ConfirmInviteView(HybridCanvasView, TemplateView):
+    context_object_name = 'siteinvite'
+    template_name='nourish/NotificationListView.html'
+
+    def post(self, request, *args, **kwargs):
+        next_url = '/nourish/home'
+        if 'next' in request.POST:
+            next_url = request.POST['next']
+
+        if 'invite_id' not in request.POST:
+            raise Exception("no invite specified")
+
+        invite = MealInvite.objects.get(id=request.POST['invite_id'])
+
+        if invite.guest_eg.group.is_admin(request.user):
+            invite.guest_eg.choose_invites([ invite ])
+        elif invite.host_eg.group.is_admin(request.user):
+            invite.host_eg.confirm_invites([ invite ])
+        else:
+            raise PermissionDenied
+
+        return redirect(next_url)
+
+    def get(self, request, *args, **kwargs):
+        raise Exception("this page is post-only")
