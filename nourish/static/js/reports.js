@@ -21,6 +21,10 @@ Ext.application({
       getEmails(RegisteredHostsStore);
   }
 
+  var getUnconfirmedEmails = function() {
+      getEmails(UnconfirmedGuestsStore);
+  }
+
   var getEmails = function(store) {
     var emails = "";
     store.each(function(record) {
@@ -132,6 +136,61 @@ Ext.application({
           summaryType: 'count',
           summaryRenderer: function(value, summaryData, dataIndex) {
               return Ext.String.format('{0} Theme Camp{1}', value, value !== 1 ? 's' : '');
+          },
+          tpl: '<a href="{url}"><span title="{name}">{name:ellipsis(45)}</span></a>'
+      },{
+          text: 'Contact',
+          flex: 2,
+          menuDisabled: true,
+          dataIndex: 'adminString'
+      }]
+  });
+
+  Ext.define('UnconfirmedGuests', {
+      extend: 'Ext.data.Model',
+      fields: ['id', 'name', 'url', 'admins', 'adminString']
+  });
+
+  var UnconfirmedGuestsStore = Ext.create('Ext.data.Store', {
+      model: 'UnconfirmedGuests',
+      sorters: ['name'],
+      data: unconfirmedGuests
+  });
+    
+  var hostGrid = Ext.create('Ext.grid.Panel', {
+      renderTo: 'unconfirmedGuests',
+      frame: true,
+      border: false,
+      minHeight: 50,
+      title: 'Artists Groups with Unconfirmed Invitations',
+      store: UnconfirmedGuestsStore,
+      //selModel: sm,
+      width: 775,
+      features: [{
+          ftype: 'summary'
+      }],
+      autoHeight: true,
+      dockedItems: [{
+        xtype: 'toolbar',
+        items: [{
+            text:'Get emails',
+            tooltip:'retrieves a comma separated list of the emails for each group',
+            handler: getUnconfirmedEmails
+        }]
+      }],
+      viewConfig: {
+        emptyText: "There are no artists groups with unconfirmed invitations.",
+        minHeight: 50
+      },
+      columns: [{
+          text: 'Name',
+          flex: 1,
+          menuDisabled: true,
+          dataIndex: 'name',
+          xtype: 'templatecolumn',
+          summaryType: 'count',
+          summaryRenderer: function(value, summaryData, dataIndex) {
+              return Ext.String.format('{0} Artist Group{1}', value, value !== 1 ? 's' : '');
           },
           tpl: '<a href="{url}"><span title="{name}">{name:ellipsis(45)}</span></a>'
       },{
