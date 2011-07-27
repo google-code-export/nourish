@@ -1,11 +1,36 @@
+<br/>
+
 {% load nourish %}
+<script type="text/javascript"
+        src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+
+<script type="text/javascript" src="/static/js/jquery/jquery-ui-min.js"></script>
+
+{% if is_group_admin %}
+<a href="{% nurl object.event %}invite/?host={{ object.id }}">
+  <img align="left" class="heart" title="Click here to invite!" src="/static/images/heart.png"/>
+  <div class="inviteText" title="Click here to invite Artists to dinner!">
+    &nbsp;Click here to invite Artists to dinner!
+  </div>
+</a>
+<br/>
+<br/>
+<br/>
+<script type="text/javascript">
+  $(document).ready(function() {
+    $(".heart").delay(2000).effect('bounce', {}, 700);
+  });
+</script>
+
+{% endif %}
 
 <br>
 <h3 style="display: inline;">About our Meals</h3>
 {% if is_group_admin %}
-  <span style="font-size: small;">[<a href="{% nurl object %}edit/">Edit Details</a>]</span>
+  <span style="font-size: small;">[<a href="{% nurl object %}edit/">Edit Meal Details</a>]</span>
 {% endif %}
-<br><br>
+<br>
+
 Location at event: {{ object.playa_address|default:"TBD" }}<br>
 Features: {{ object.features|default:"None" }}<br>
 {% if object.notes %}
@@ -67,4 +92,3 @@ Features: {{ object.features|default:"None" }}<br>
 <br/>
 <br/>
 <br/>
-
