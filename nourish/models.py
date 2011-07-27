@@ -15,6 +15,7 @@ from socialregistration.models import FacebookProfile
 from urlparse import parse_qs
 import urllib2
 import urllib
+import itertools
 from facebook import GraphAPI
 
 rewriter_re = re.compile("\/nourish\/")
@@ -278,6 +279,14 @@ class Event(models.Model):
     def guest_groups(self):
         return EventGroup.objects.filter(event=self, role='A')
 
+    def recent_host_groups(self, count=5):
+        g = self.host_groups()
+        return itertools.islice(g, len(g) - (count + 1), len(g) -1)
+
+    def recent_guest_groups(self, count=5):
+        g = self.guest_groups()
+        return itertools.islice(g, len(g) - (count + 1), len(g) -1)
+
 class EventUser(models.Model):
     event = models.ForeignKey(Event,editable=False)
     user = models.ForeignKey(User,editable=False)
@@ -320,6 +329,24 @@ class EventGroup(models.Model):
         if canvas:
             return canvas_url_rewrite(u)
         return u;
+
+    def meals(self):
+        return Meal.objects.filter(eg=self)
+
+    def crew_size(self):
+        min_crew = 0;
+        max_crew = 0;
+
+        for meal in self.meals():
+            if (meal.members < min_crew) or (min_crew == 0):
+                min_crew = meal.members
+            if meal.members > max_crew:
+                max_crew = meal.members
+
+        if min_crew == max_crew:
+            return min_crew
+
+        return "%d - %d" % (min_crew, max_crew)
 
     def meal(self,date,meal):
         try:
@@ -464,6 +491,10 @@ class EventGroup(models.Model):
         # notify hosts of any selected or confirmed invitations associated with changed meal
         for eg, invites in invites_by_eg.iteritems():
             self.send_notification(eg, 'changed', invites)
+
+    def invites(self):
+        g = MealInvite.objects.filter(host_eg=self)
+        return g
 
 class MealInvite(models.Model):
     STATE_CHOICES = (
