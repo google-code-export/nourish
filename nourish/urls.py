@@ -26,6 +26,11 @@ urlpatterns = patterns('',
     url(r'^events/$', EventListView.as_view(), name='event-list'),
 
     url(r'^e/(?P<pk>\d+)-(?P<slug>[^\/]*)/$', EventDetailView.as_view(), name='event-detail'),
+    url(r'^e/(?P<pk>\d+)-(?P<slug>[^\/]*)/groups/$', 
+        DetailView.as_view(
+          model=Event,
+          template_name='nourish/event_groups.html'),
+        name='event-groups'),
     url(r'^e/(?P<pk>\d+)-(?P<slug>[^\/]*)/invite/$', EventHostInviteView.as_view(), name='event-invite'),
     url(r'^e/(?P<pk>\d+)(-[^\/]*)?/edit/$', login_required(EventUpdateView.as_view())),
 

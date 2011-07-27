@@ -52,21 +52,23 @@
     <br/>
   {% endif %}
 
-  <h4>Registered Artist Groups</h4>
+  <h4>Recently Registered Artist Groups</h4>
   <ul class="inline_list">
-    {% for eg in event.guest_groups %}
+    {% for eg in event.recent_guest_groups %}
       <li><a href="{% nurl eg %}">{{ eg.group.name }}</a> |</li>
     {% endfor %}
     <li><a href="{% nurl event %}register/guest">Register</a></li>
   </ul>
+  <p><a href="{% nurl event %}groups/#guest">View all {{ event.guest_groups.count }} registered artists groups</a></p>
 
-  <h4>Registered Theme Camps</h4>
+  <h4>Recently Registered Theme Camps</h4>
   <ul class="inline_list">
-    {% for eg in event.host_groups %}
+    {% for eg in event.recent_host_groups %}
       <li><a href="{% nurl eg %}">{{ eg.group.name }}</a> |</li>
     {% endfor %}
     <li><a href="{% nurl event %}register/host">Register</a></li>
   </ul>
+  <p><a href="{% nurl event %}groups/#host">View all {{ event.host_groups.count }} registered artists groups</a></p>
 
   <h4>Spread the word!</h4>
   <ul>
