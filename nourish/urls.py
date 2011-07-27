@@ -22,7 +22,7 @@ urlpatterns = patterns('',
     url('^home/$', login_required(HomePageView.as_view()), name='homepage'),
     url('^$',      RootPageView.as_view(), name='rootpage'),
 
-    url(r'^_notif/$', NotificationListView.as_view(), name='notification-list'),
+    url(r'^_notif/$', login_required(NotificationListView.as_view()), name='notification-list'),
     url(r'^events/$', EventListView.as_view(), name='event-list'),
 
     url(r'^e/(?P<pk>\d+)-(?P<slug>[^\/]*)/$', EventDetailView.as_view(), name='event-detail'),
