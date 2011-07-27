@@ -36,6 +36,17 @@ table.summary tr.bottomborder {
     border-bottom: 1px solid black;
 }
 
+ul.invitelist li {
+    padding: 4px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+ul.invitelist li.unconfirmed {
+    background-color: #FBB;
+    border: 1px solid red;
+}
+
 
 
 label.meal_list {

@@ -1,7 +1,36 @@
 {% extends 'nourish/base.html' %}
+{% load nourish %}
 {% block title %}Home{% endblock %}
 
 {% block content %}
+
+{% if guest_invites %}
+  <div style="float: left;">
+  <h2>My Invitations</h2>
+  <ul class="invitelist">
+    {% for invite in guest_invites %}
+    <li class="{% if invite.state != 'C' %}unconfirmed{% endif %}">
+      <a href="{% nurl invite.host_eg %}">{{ invite.host_eg.group.name }}</a> invited <a href="{% nurl invite.guest_eg %}">{{ invite.guest_eg.group.name }}</a> to dinner on {{ invite.meal.date }}.
+      <br/>
+      <strong>Time:</strong> <em>{{ invite.dinner_time }}</em>
+      <strong>Location:</strong> <em>{{ invite.host_eg.playa_address|default:"TBD" }}</em>
+      {% if invite.state == 'C' %}
+        <em>(Confirmed)</em>
+      {% else %}
+        <form method="post" action="/nourish/confirm_invite/">
+          <input type="hidden" name="invite_id" value="{{ invite.id }}">
+          <input type="hidden" name="next" value="{{ request.path }}">
+          <strong>You need to confirm this invitation!</strong>
+          <input type=submit value="Confirm Invitation">
+        </form>
+      {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+  </div>
+{% endif %}
+
+<div style="clear: both;"></div>
 
 <div style="float: left;">
 <h2>Upcoming Events</h2>
