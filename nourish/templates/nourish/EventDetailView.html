@@ -45,7 +45,7 @@
 <h2>About FtA @ {{ event.name }}</h2>
 <p><a href="/">Feed The Artists</a> is helping to coordinate meal gifting at <a href="{{ event.url }}">{{ event.name }}</a>.  
 The short story is this: <strong><em>Artists register to get invited to dinner, and then theme camps invite them to dinner.</em></strong>  To learn more about FtA, check out our <a href="/vision">Vision Statement</a>.
-<p>There are currently <strong><a href="{% nurl event %}groups/#guest">{{ event.guest_groups.count }} artists groups</a></strong> registered, hoping to be invited to a total of <a href="{% nurl event %}artistchart/">{{ event.summary.1.tot_meals }} meals</a> over the course of the event.  
+<p>There are currently <strong><a href="{% nurl event %}groups/#guest">{{ event.guest_groups.count }} artists groups</a></strong> registered, hoping to be invited to a total of <a href="{% nurl event %}artistchart/">{{ event.summary.1.tot_meals }} dinners</a> over the course of the event.  
 So far, <strong><a href="{% nurl event %}groups/#host">{{ event.host_groups.count }} theme camps</a></strong> have invited them to <strong>{{ event.summary.1.inv_meals}} dinners</strong>, resulting in <strong><a href="{% nurl event %}summary/">{{ event.summary.1.inv_crew}} gifted meals</a></strong>.
 
   
