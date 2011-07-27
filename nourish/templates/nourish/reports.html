@@ -80,6 +80,30 @@
       });
     {% endfor %}
 
+    var unconfirmedGuests = [ ];
+    var ugAdmins = [];
+    var ugAdminString = [];
+
+    {% for eg, count in unconfirmed_guests.items %}
+      ugAdmins[{{ eg.group.id }}] = [];
+      ugAdminString[{{ eg.group.id }}] = "";
+      {% for admin in eg.group.admins %}
+        ugAdmins[{{ eg.group.id }}].push({
+          "name": "{{ admin.get_profile.fullname|escapejs }}",
+          "email": "{{ admin.email }}"
+        });
+        ugAdminString[{{ eg.group.id }}] += "{{ admin.get_profile.fullname|escapejs|default:" " }} &lt;{{ admin.email }}&gt;"
+      {% endfor %}
+
+      unconfirmedGuests.push({
+        "id" : "{{ eg.group.id }}",
+        "name" : "{{ eg.group.name|escapejs }} ({{count}} unconfirmed)",
+        "url" : "{% nurl eg %}",
+        "admins" : ugAdmins[{{ eg.group.id }}],
+        "adminString" : ugAdminString[{{ eg.group.id }}]
+      });
+    {% endfor %}
+
   </script>
 {% endblock %}
 {% block content %}
@@ -107,6 +131,9 @@
   </div>
 
   <div id="registeredHosts" style="padding: 15px 0 50px 0">
+  </div>
+
+  <div id="unconfirmedGuests" style="padding: 15px 0 50px 0">
   </div>
 
   <div id="noMealArtists" style="padding: 15px 0 50px 0">

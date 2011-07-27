@@ -53,6 +53,14 @@ class EventReports(HybridCanvasView, DetailView):
             if eg.group.role == 'A':
                 context['guest_list'].append(eg)
 
+        unconfirmed_guests = {}
+
+        for invite in MealInvite.objects.filter(event=self.object):
+            if invite.state != 'C':
+                unconfirmed_guests[invite.guest_eg] = 1
+
+        context['unconfirmed_guests'] = unconfirmed_guests
+
         meals = Meal.objects.filter(event=self.object)
         context['meals'] = meals
 
