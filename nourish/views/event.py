@@ -70,17 +70,17 @@ class EventSummaryView(HybridCanvasView, DetailView):
             dates[meal.date]['tot_crew'] += meal.members
             if meal.state == 'N':
                 dates[meal.date]['new_meals'] += 1
-                dates[meal.date]['new_crew'] += 1
+                dates[meal.date]['new_crew'] += meal.members
                 totals['new_meals'] += 1
                 totals['new_crew'] += meal.members
             elif meal.state == 'I':
                 dates[meal.date]['inv_meals'] += 1
-                dates[meal.date]['inv_crew'] += 1
+                dates[meal.date]['inv_crew'] += meal.members
                 totals['inv_meals'] += 1
                 totals['inv_crew'] += meal.members
             elif meal.state == 'C':
                 dates[meal.date]['con_meals'] += 1
-                dates[meal.date]['con_crew'] += 1
+                dates[meal.date]['con_crew'] += meal.members
                 totals['con_meals'] += 1
                 totals['con_crew'] += meal.members
 
