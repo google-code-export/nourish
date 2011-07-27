@@ -222,6 +222,11 @@ class Group(models.Model):
             admins.append(gu.user)
         return admins
 
+    def short_name(self):
+        if len(self.name) > 35:
+            return self.name[0:35] + '...'
+        return self.name
+
 class Event(models.Model):
     name = models.CharField(max_length=100, unique=True, verbose_name='Event Name')
     start_date = models.DateField(verbose_name='Event Begins')

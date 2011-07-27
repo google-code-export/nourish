@@ -15,10 +15,10 @@
     <tr><th>Artist Group</th><th>Meals</th><th>Invites</th><th>Crew Size</th></tr>
     {% for eg in event.guest_groups %}
       <tr>
-        <td><a href="{% nurl eg %}">{{ eg.group.name }}</a></td>
+        <td><a href="{% nurl eg %}">{{ eg.group.short_name }}</a></td>
         <td>{{ eg.meals.count|default:"" }}</td>
         <td>{{ eg.invites.count|default:"" }}</td>
-        <td>{{ eg.crew_size }}</td>
+        <td>{{ eg.crew_size|default:"" }}</td>
       </tr>
     {% endfor %}
   </table>
@@ -29,7 +29,7 @@
     <tr><th>Theme Camp</th><th>Invitations Sent</th></tr>
     {% for eg in event.host_groups %}
       <tr>
-        <td><a href="{% nurl eg %}">{{ eg.group.name }}</a></td>
+        <td><a href="{% nurl eg %}">{{ eg.group.short_name }}</a></td>
         <td>{{ eg.invites.count|default:"" }}</td>
       </tr>
     {% endfor %}
