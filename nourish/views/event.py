@@ -64,6 +64,8 @@ class EventGroupsView(HybridCanvasView, DetailView):
                 guests[meal.eg]['inv'] += 1
                 guest_totals['inv'] += 1
             elif meal.state == 'C':
+                guests[meal.eg]['inv'] += 1
+                guest_totals['inv'] += 1
                 guests[meal.eg]['con'] += 1
                 guest_totals['con'] += 1
 
