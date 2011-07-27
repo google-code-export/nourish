@@ -6,6 +6,18 @@
 {% block title %}Summary - {{ event.name }} - Events{% endblock %}
 
 {% block content-body %}
+  <h3>Summary</h3>
+  <br>
+  <ul>
+      <li><a href="{% nurl event %}groups/#guest">Registered Artists Groups</a>: {{ event.guest_groups.count }}</li>
+      <li><a href="{% nurl event %}groups/#host">Registered Theme Camps</a>: {{ event.host_groups.count }}</li>
+      <li>Meals Requested: {{ mealtotals.tot_meals }} <em>({{mealtotals.tot_crew}} diners)</em></li>
+      <li>Invitations Sent: {{ mealtotals.inv_meals }} <em>({{mealtotals.inv_crew}} diners)</em></li>
+      <li>Invitations Confirmed: {{ mealtotals.con_meals }} <em>({{mealtotals.con_crew}} diners)</em></li>
+      <li>Invite Rate: {{ invite_rate }}%</li>
+      <li>Confirm Rate: {{ confirm_rate }}%</li>
+  </ul>
+
   <h3>Summary by Day</h3>
   <table class="summary">
     <tr>
