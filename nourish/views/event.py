@@ -33,12 +33,73 @@ class EventDetailView(HybridCanvasView, DetailView):
                 context['guest_list'].append(eg)
         return context
 
+class EventGroupsView(HybridCanvasView, DetailView):
+    context_object_name = 'event'
+    model = Event
+    template_name='nourish/EventGroupsView.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(EventGroupsView, self).get_context_data(**kwargs)
+
+        guests = { }
+        guest_totals = {
+           'tot' : 0,
+           'inv' : 0,
+           'con' : 0,
+           'crew' : 0,
+        }
+
+        for meal in Meal.objects.filter(event=self.object):
+            if meal.eg not in guests:
+                guests[meal.eg] = {
+                    'eg' : meal.eg,
+                    'tot' : 0,
+                    'inv' : 0,
+                    'con' : 0,
+                }
+            guest_totals['crew'] += meal.members
+            guests[meal.eg]['tot'] += 1
+            guest_totals['tot'] += 1
+            if meal.state == 'I':
+                guests[meal.eg]['inv'] += 1
+                guest_totals['inv'] += 1
+            elif meal.state == 'C':
+                guests[meal.eg]['con'] += 1
+                guest_totals['con'] += 1
+
+        hosts = { }
+        host_totals = {
+            'inv' : 0,
+            'con' : 0,
+        }
+
+        for invite in MealInvite.objects.filter(event=self.object):
+            if invite.host_eg not in hosts:
+                hosts[invite.host_eg] = {
+                   'eg' : invite.host_eg,
+                   'inv' : 0,
+                   'con' : 0,
+                }
+            hosts[invite.host_eg]['inv'] += 1
+            host_totals['inv'] += 1
+            if invite.state == 'C':
+                hosts[invite.host_eg]['con'] += 1
+                host_totals['con'] += 1
+
+        context['hosts'] = hosts.values()
+        context['host_totals'] = host_totals
+        context['guests'] = guests.values()
+        context['guest_totals'] = guest_totals
+
+        return context
+
 class EventSummaryView(HybridCanvasView, DetailView):
     context_object_name = 'event'
     model = Event
     template_name='nourish/EventSummaryView.html'
 
     def get_context_data(self, **kwargs):
+        context = super(EventSummaryView, self).get_context_data(**kwargs)
         dates = { }
         totals = { 
             'tot_meals' : 0,
@@ -50,7 +111,6 @@ class EventSummaryView(HybridCanvasView, DetailView):
             'inv_crew'  : 0,
             'con_crew'  : 0,
         }
-        context = super(EventSummaryView, self).get_context_data(**kwargs)
         for meal in Meal.objects.filter(event=self.object):
             if meal.date not in dates:
                 dates[meal.date] = { 

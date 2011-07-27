@@ -223,8 +223,8 @@ class Group(models.Model):
         return admins
 
     def short_name(self):
-        if len(self.name) > 35:
-            return self.name[0:35] + '...'
+        if len(self.name) > 30:
+            return self.name[0:29] + '...'
         return self.name
 
 class Event(models.Model):
