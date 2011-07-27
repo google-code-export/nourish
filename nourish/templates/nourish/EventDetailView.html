@@ -5,7 +5,7 @@
 
 {% block title %}{{ event.name }} - Events{% endblock %}
 {% block og_title %}{{ event.name }} - Feed The Artists{% endblock %}
-{% block og_desc %}{{ event.host_groups.count }} artist groups have registered for {{ event.summary.1.tot_meals }} dinner invitations at {{ event.name }}.  Register with Feed The Artists to give or receive meals at the event!{% endblock %}
+{% block og_desc %}{{ event.guest_groups.count }} artist groups have registered for {{ event.summary.1.tot_meals }} dinner invitations at {{ event.name }}.  {{ event.host_groups.count }} theme camps have invited them to {{ event.summary.1.inv_meals}} dinners so far.  Register with Feed The Artists to give or receive meals at the event!{% endblock %}
 
 {% block content-logo %}
   {% if event.image_url %}
