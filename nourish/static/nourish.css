@@ -14,6 +14,29 @@ table.meals th, table.meals td {
 table.meals th.first {
     font-weight: normal;
 }
+table.summary {
+    border-collapse: collapse;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+table.summary th, table.summary td {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+table.summary tr.total td {
+    font-weight: bold;
+}
+table.summary td.leftborder, table.summary th.leftborder {
+    border-left: 1px solid black;
+}
+table.summary tr.topborder {
+    border-top: 1px solid black;
+}
+table.summary tr.bottomborder {
+    border-bottom: 1px solid black;
+}
+
+
 
 label.meal_list {
     font-weight: normal;

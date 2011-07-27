@@ -7,42 +7,34 @@
 
 {% block content-body %}
   <h3>Summary by Day</h3>
-  <table border=1>
+  <table class="summary">
     <tr>
       <th rowspan=2>Date</th>
-      <th colspan=2>Total</th>
-      <th colspan=2>New</th>
-      <th colspan=2>Invited</th>
-      <th colspan=2>Confirmed</th>
+      <th class="leftborder" colspan=3>Meals</th>
+      <th class="leftborder" colspan=3>Diners</th>
     </tr>
-    <tr>
-      <th>Meals</th><th>Diners</th>
-      <th>Meals</th><th>Diners</th>
-      <th>Meals</th><th>Diners</th>
-      <th>Meals</th><th>Diners</th>
+    <tr class="bottomborder">
+      <td class="leftborder">Total</td><td>Invited</td><td>Confirmed</td>
+      <td class="leftborder">Total</td><td>Invited</td><td>Confirmed</td>
     </tr>
     {% for d in mealdates %}
       <tr>
         <td>{{ d.date }}</td>
-        <td>{{ d.tot_meals }}</td>
-        <td>{{ d.tot_crew }}</td>
-        <td>{{ d.new_meals }}</td>
-        <td>{{ d.new_crew }}</td>
+        <td class="leftborder">{{ d.tot_meals }}</td>
         <td>{{ d.inv_meals }}</td>
-        <td>{{ d.inv_crew }}</td>
         <td>{{ d.con_meals }}</td>
+        <td class="leftborder">{{ d.tot_crew }}</td>
+        <td>{{ d.inv_crew }}</td>
         <td>{{ d.con_crew }}</td>
       </tr>
     {% endfor %}
-    <tr>
+    <tr class="total topborder">
       <th>Total</th>
-      <td>{{ mealtotals.tot_meals }}</td>
-      <td>{{ mealtotals.tot_crew }}</td>
-      <td>{{ mealtotals.new_meals }}</td>
-      <td>{{ mealtotals.new_crew }}</td>
+      <td class="leftborder">{{ mealtotals.tot_meals }}</td>
       <td>{{ mealtotals.inv_meals }}</td>
-      <td>{{ mealtotals.inv_crew }}</td>
       <td>{{ mealtotals.con_meals }}</td>
+      <td class="leftborder">{{ mealtotals.tot_crew }}</td>
+      <td>{{ mealtotals.inv_crew }}</td>
       <td>{{ mealtotals.con_crew }}</td>
     </tr>
   </table>
