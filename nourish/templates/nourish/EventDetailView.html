@@ -36,7 +36,7 @@
   </div>
 
   <div style="float: left;">
-    <a href="{% nurl event %}register/host">
+    <a href="{% nurl event %}invite/">
       <img width=250 src="/static/fta/burningman2.jpg" alt="Register New Theme Camp" border=0>
     </a>
   </div>
@@ -77,7 +77,7 @@ So far, <strong><a href="{% nurl event %}groups/#host">{{ event.host_groups.coun
     {% for eg in event.recent_host_groups %}
       <li><a href="{% nurl eg %}">{{ eg.group.name }}</a> |</li>
     {% endfor %}
-    <li><a href="{% nurl event %}register/host">Register</a></li>
+    <li><a href="{% nurl event %}invite/">Register</a></li>
   </ul>
   <p><a href="{% nurl event %}groups/#host">View all {{ event.host_groups.count }} registered theme camps</a></p>
 
