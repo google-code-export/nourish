@@ -51,7 +51,7 @@ So far, <strong><a href="{% nurl event %}groups/#host">{{ event.host_groups.coun
   
   <h2>Who's already registered</h2>
   <p>Check out the <a href="{% nurl event %}artistchart/">Artists' Availability Chart</a> for a day-by-day overview of who wants to come to dinner, and who has invited them.</p>
-  <div style="margin-top: 30px; text-align: center">
+  <div style="margin-top: 10px; text-align: center">
     <a href="{% nurl event %}artistchart/">
       <img src="/static/images/checkOutArtistChart.jpg" title="Artist availability chart for " />
     </a>
@@ -62,24 +62,6 @@ So far, <strong><a href="{% nurl event %}groups/#host">{{ event.host_groups.coun
     <br/>
     <br/>
   {% endif %}
-
-  <h4>Recently Registered Artist Groups</h4>
-  <ul class="inline_list">
-    {% for eg in event.recent_guest_groups %}
-      <li><a href="{% nurl eg %}">{{ eg.group.name }}</a> |</li>
-    {% endfor %}
-    <li><a href="{% nurl event %}register/guest">Register</a></li>
-  </ul>
-  <p><a href="{% nurl event %}groups/#guest">View all {{ event.guest_groups.count }} registered artists groups</a></p>
-
-  <h4>Recently Registered Theme Camps</h4>
-  <ul class="inline_list">
-    {% for eg in event.recent_host_groups %}
-      <li><a href="{% nurl eg %}">{{ eg.group.name }}</a> |</li>
-    {% endfor %}
-    <li><a href="{% nurl event %}invite/">Register</a></li>
-  </ul>
-  <p><a href="{% nurl event %}groups/#host">View all {{ event.host_groups.count }} registered theme camps</a></p>
 
   <h2>Spread the word!</h2>
   <ul>
