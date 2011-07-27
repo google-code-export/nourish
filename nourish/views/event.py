@@ -148,7 +148,6 @@ class EventSummaryView(HybridCanvasView, DetailView):
 
         date_list = [] 
 
-        sys.stderr.write(pprint.pformat(dates))
         i = dates.keys()
         i.sort()
         for j in i:
