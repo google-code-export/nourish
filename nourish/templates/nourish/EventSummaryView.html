@@ -19,7 +19,7 @@
     </tr>
     {% for d in mealdates %}
       <tr>
-        <td>{{ d.date }}</td>
+        <td>{{ d.date|date:"N j" }} <em>({{ d.date|date:"D." }})</em></td>
         <td class="leftborder">{{ d.tot_meals }}</td>
         <td>{{ d.inv_meals }}</td>
         <td>{{ d.con_meals }}</td>
