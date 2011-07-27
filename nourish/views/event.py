@@ -33,6 +33,70 @@ class EventDetailView(HybridCanvasView, DetailView):
                 context['guest_list'].append(eg)
         return context
 
+class EventSummaryView(HybridCanvasView, DetailView):
+    context_object_name = 'event'
+    model = Event
+    template_name='nourish/EventSummaryView.html'
+
+    def get_context_data(self, **kwargs):
+        dates = { }
+        totals = { 
+            'tot_meals' : 0,
+            'new_meals' : 0,
+            'inv_meals' : 0,
+            'con_meals' : 0,
+            'tot_crew'  : 0,
+            'new_crew'  : 0,
+            'inv_crew'  : 0,
+            'con_crew'  : 0,
+        }
+        context = super(EventSummaryView, self).get_context_data(**kwargs)
+        for meal in Meal.objects.filter(event=self.object):
+            if meal.date not in dates:
+                dates[meal.date] = { 
+                    'date' : meal.date,
+                    'tot_meals' : 0,
+                    'new_meals' : 0,
+                    'inv_meals' : 0,
+                    'con_meals' : 0,
+                    'tot_crew'  : 0,
+                    'new_crew'  : 0,
+                    'inv_crew'  : 0,
+                    'con_crew'  : 0,
+                }
+            totals['tot_meals'] += 1
+            totals['tot_crew'] += meal.members
+            dates[meal.date]['tot_meals'] += 1
+            dates[meal.date]['tot_crew'] += meal.members
+            if meal.state == 'N':
+                dates[meal.date]['new_meals'] += 1
+                dates[meal.date]['new_crew'] += 1
+                totals['new_meals'] += 1
+                totals['new_crew'] += meal.members
+            elif meal.state == 'I':
+                dates[meal.date]['inv_meals'] += 1
+                dates[meal.date]['inv_crew'] += 1
+                totals['inv_meals'] += 1
+                totals['inv_crew'] += meal.members
+            elif meal.state == 'C':
+                dates[meal.date]['con_meals'] += 1
+                dates[meal.date]['con_crew'] += 1
+                totals['con_meals'] += 1
+                totals['con_crew'] += meal.members
+
+        date_list = [] 
+
+        sys.stderr.write(pprint.pformat(dates))
+        i = dates.keys()
+        i.sort()
+        for j in i:
+            date_list.append(dates[j])
+
+        context['mealdates'] = date_list
+        context['mealtotals'] = totals
+
+        return context
+
 class EventGroupView(HybridCanvasView, DetailView):
     context_object_name = 'event_group'
     model = EventGroup
