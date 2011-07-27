@@ -14,6 +14,7 @@ import json
 import sys
 from pprint import pformat
 import pprint
+import string
 
 class EventDetailView(HybridCanvasView, DetailView):
     context_object_name = 'event'
@@ -88,9 +89,9 @@ class EventGroupsView(HybridCanvasView, DetailView):
                 hosts[invite.host_eg]['con'] += 1
                 host_totals['con'] += 1
 
-        context['hosts'] = hosts.values()
+        context['hosts'] = sorted(hosts.values(), key=lambda a:string.lower(a['eg'].group.name))
         context['host_totals'] = host_totals
-        context['guests'] = guests.values()
+        context['guests'] = sorted(guests.values(), key=lambda a:string.lower(a['eg'].group.name))
         context['guest_totals'] = guest_totals
 
         return context
