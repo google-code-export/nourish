@@ -1,0 +1,59 @@
+{% extends "nourish/EventDetailView.html" %}
+
+{% load facebook_tags %}
+{% load nourish %}
+
+{% block title %}Summary - {{ event.name }} - Events{% endblock %}
+
+{% block content-body %}
+  <h3>Summary by Day</h3>
+  <table border=1>
+    <tr>
+      <th rowspan=2>Date</th>
+      <th colspan=2>Total</th>
+      <th colspan=2>New</th>
+      <th colspan=2>Invited</th>
+      <th colspan=2>Confirmed</th>
+    </tr>
+    <tr>
+      <th>Meals</th><th>Diners</th>
+      <th>Meals</th><th>Diners</th>
+      <th>Meals</th><th>Diners</th>
+      <th>Meals</th><th>Diners</th>
+    </tr>
+    {% for d in mealdates %}
+      <tr>
+        <td>{{ d.date }}</td>
+        <td>{{ d.tot_meals }}</td>
+        <td>{{ d.tot_crew }}</td>
+        <td>{{ d.new_meals }}</td>
+        <td>{{ d.new_crew }}</td>
+        <td>{{ d.inv_meals }}</td>
+        <td>{{ d.inv_crew }}</td>
+        <td>{{ d.con_meals }}</td>
+        <td>{{ d.con_crew }}</td>
+      </tr>
+    {% endfor %}
+    <tr>
+      <th>Total</th>
+      <td>{{ mealtotals.tot_meals }}</td>
+      <td>{{ mealtotals.tot_crew }}</td>
+      <td>{{ mealtotals.new_meals }}</td>
+      <td>{{ mealtotals.new_crew }}</td>
+      <td>{{ mealtotals.inv_meals }}</td>
+      <td>{{ mealtotals.inv_crew }}</td>
+      <td>{{ mealtotals.con_meals }}</td>
+      <td>{{ mealtotals.con_crew }}</td>
+    </tr>
+  </table>
+   
+
+  <h4>Spread the word!</h4>
+  <ul>
+  {% include "nourish/fb/event_share_link.html" with event=event %}
+  <li>{% include "nourish/fb/event_guest_siteinvite_link.html" with event=event %}</li>
+  <li>{% include "nourish/fb/event_host_siteinvite_link.html" with event=event %}</li>
+  </ul>
+
+  {% facebook_js %}
+{% endblock %}
