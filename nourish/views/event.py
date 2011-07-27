@@ -156,6 +156,12 @@ class EventSummaryView(HybridCanvasView, DetailView):
 
         context['mealdates'] = date_list
         context['mealtotals'] = totals
+        context['invite_rate'] = 0
+        context['confirm_rate'] = 0
+        if totals['tot_meals']:
+            context['invite_rate'] = 100 * totals['inv_meals'] / totals['tot_meals']
+        if totals['inv_meals']:
+            context['confirm_rate'] = 100 * totals['con_meals'] / totals['inv_meals']
 
         return context
 
