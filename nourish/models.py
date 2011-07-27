@@ -493,7 +493,10 @@ class EventGroup(models.Model):
             self.send_notification(eg, 'changed', invites)
 
     def invites(self):
-        g = MealInvite.objects.filter(host_eg=self)
+        if self.role == 'T':
+            return MealInvite.objects.filter(host_eg=self)
+        if self.role == 'A':
+            return MealInvite.objects.filter(guest_eg=self)
         return g
 
 class MealInvite(models.Model):
