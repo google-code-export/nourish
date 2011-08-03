@@ -1,4 +1,7 @@
 {% extends "nourish/notif/baseEmail.html" %}
+
+{% load nourish %}
+
 {% block message %}
 One or more of {{ object.host_eg.group.name }}'s confirmed dinner invitations at {{ object.host_eg.event.name }} have been cancelled.
 {% endblock %}
