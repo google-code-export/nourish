@@ -1,0 +1,17 @@
+{% extends "nourish/notif/base.html" %}
+{% load nourish %}
+
+{% block icons %}
+  <img src="http://graph.facebook.com/{{notification.sender.id}}/picture" width=50 border=0>
+  <a href="{% nurl notification.objects.0 %}"><img src="{{ notification.objects.0.image_url }}" width="50" border=0></a>
+{% endblock %}
+
+{% block message %}
+{{ notification.sender.name }} thinks you should register your art project at {{notification.objects.0.name}}, so you can get invited to dinner!
+{% endblock %}
+
+{% block preactions %}
+  <form style="display: inline;" method=get action="{% nurl notification.objects.0 %}register/guest/">
+    <input type=submit name="redirect" value="Register My Art Project">
+  </form>
+{% endblock %}

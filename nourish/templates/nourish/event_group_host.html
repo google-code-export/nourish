@@ -1,0 +1,94 @@
+<br/>
+
+{% load nourish %}
+<script type="text/javascript"
+        src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+
+<script type="text/javascript" src="/static/js/jquery/jquery-ui-min.js"></script>
+
+{% if is_group_admin %}
+<a href="{% nurl object.event %}invite/?host={{ object.id }}">
+  <img align="left" class="heart" title="Click here to invite!" src="/static/images/heart.png"/>
+  <div class="inviteText" title="Click here to invite Artists to dinner!">
+    &nbsp;Click here to invite Artists to dinner!
+  </div>
+</a>
+<br/>
+<br/>
+<br/>
+<script type="text/javascript">
+  $(document).ready(function() {
+    $(".heart").delay(2000).effect('bounce', {}, 700);
+  });
+</script>
+
+{% endif %}
+
+<br>
+<h3 style="display: inline;">About our Meals</h3>
+{% if is_group_admin %}
+  <span style="font-size: small;">[<a href="{% nurl object %}edit/">Edit Meal Details</a>]</span>
+{% endif %}
+<br>
+
+Location at event: {{ object.playa_address|default:"TBD" }}<br>
+Features: {{ object.features|default:"None" }}<br>
+{% if object.notes %}
+  Notes: {{ object.notes }}<br>
+{% endif %}
+<br>
+{% if is_group_admin %}
+{% endif %}
+<h3 style="display: inline;">Invitations</h3>
+{% if is_group_admin %}
+  <span style="font-size: small;">[<a href="{% nurl object.event %}invite/?manage&host={{ object.id }}">Manage Existing Invitations</a>]</span>
+  <span style="font-size: small;">[<a href="{% nurl object.event %}invite/?host={{ object.id }}">Invite More Artists to Dinner</a>]</span>
+{% endif %}
+<br><br>
+<table class="mealTable">
+  <colgroup width="130px"></colgroup>
+  <colgroup width="400px"></colgroup>
+  <thead>
+    <tr>
+      <th class="head"></th>
+      <th>Invitations</th>
+    </tr>
+  </thead>
+
+  <tbody>
+  {% for date in dates %}
+    {% if 1 %}
+      <tr>
+        <td><span class="eventDate">{{ date|date:"N j" }} <em>({{ date|date:"D." }})</em></span></td>
+        <td>
+          <ul style="margin: 2px; padding: 0; list-style: none;">
+            {% for invite in invites_sent %}
+              {% if invite.date == date %}
+                <li>
+                  <a href="{% nurl invite.guest_eg %}">{{invite.guest_eg.group.name}}</a> 
+                  <em>({{invite.meal.members}} diners)</em> -
+                  {% if invite.state == 'N' %}
+                    <strong>Pending</strong>
+                  {% endif %}
+                  {% if invite.state == 'S' %}
+                    <strong>Selected</strong>
+                  {% endif %}
+                  {% if invite.state == 'C' %}
+                    <strong>Confirmed</strong>
+                  {% endif %}
+                  {% if invite.state == 'R' %}
+                    <strong>Declined</strong>
+                  {% endif %}
+                </li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+        </td>
+      </tr>
+    {% endif %}
+  {% endfor %}
+ </tbody>
+</table>
+<br/>
+<br/>
+<br/>

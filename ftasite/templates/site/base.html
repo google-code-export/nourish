@@ -1,0 +1,123 @@
+{% load nourish %}
+{% load cms %}
+{% load media %}
+<!DOCTYPE html 
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    dir="{% if LANGUAGE_BIDI %}rtl{% else %}ltr{% endif %}"
+    xml:lang="{% firstof LANGUAGE_CODE 'en' %}"
+    lang="{% firstof LANGUAGE_CODE 'en' %}"
+    xmlns:og="http://ogp.me/ns#"
+    xmlns:fb="http://www.facebook.com/2008/fbml"
+  >
+  <head>
+    <title>{% block sitetitle %}{% block title %}{% endblock %} - Feed The Artists{% endblock %}</title>
+    <link rel="icon" href="/static/images/favicon.ico">
+
+    {% block main-css %}{% endblock %}
+    <!-- Google Font for headers -->
+    <link href='http://fonts.googleapis.com/css?family=Special+Elite' rel='stylesheet' type='text/css'>
+      
+    <!-- Base HTML is shared between FB and Site views. -->
+    {% include_media 'base.css' %}
+      
+    <!-- Choose between canvas.css for FB viewing or site.css for onsite viewing -->  
+    {% if canvas %}
+      {% include_media 'canvas.css' %}
+    {% else %}
+      {% include_media 'site.css' %}
+    {% endif %}
+ 
+    {% block css %}
+        {% include_media 'main.css' %}
+    {% endblock %}
+    {% block content-css %}{% endblock %}
+    {% block preload_js %}{% endblock %}
+    {% block extra-head %}{% endblock %}
+    {% block og %}
+      <meta property="og:title" content="{% block og_title %}Feed The Artists{% endblock %}" />
+      <meta property="og:type" content="{% block og_type %}activity{% endblock %}" />
+      <meta property="og:image" content="{% block og_image %}http://www.feedtheartists.net/static/fta/FeedTheArtistsLogo.png{% endblock %}" />
+      <meta property="og:url" content="{% block og_url %}http://www.feedtheartists.net{{ request.path }}{% endblock %}" />
+      <meta property="og:site_name" content="Feed The Artists" />
+      <meta property="og:description" content="{% block og_desc %}Feed The Artists helps organize meal gifting at Burning Man and related events.{% endblock %}" />
+      <meta property="fb:app_id" content="194618953915167" />
+    
+    {% endblock %}
+
+    {% include "site/ga.html" %}
+  </head>
+
+  {% if canvas %}
+    <body onLoad="FB.Canvas.setSize();">
+      <div id="fb-root"></div>
+      <script src="http://connect.facebook.net/en_US/all.js"></script>
+  {% else %}
+    <body>
+  {% endif %}
+    <div id="content_main">
+      
+      <div id="site_wrap">
+        <div id="site_top">
+        {% if not canvas %}
+        <div id="site_auth">
+          {% if user.is_authenticated %}
+          {% userlink user %}[<a href="{% url logout %}">logout</a>]
+          {% else %} 
+            [<a href="{% url login %}">login</a>]
+          {% endif %}
+        </div>
+        <div class="headerLink" style="left: 118px; top: 63px; width: 82px; height: 0;"><a style="height:43px;" href="/vision" title="Our Vision"></a></div>
+        <div class="headerLink" style="left: 220px; top: 43px; width: 94px; height: 0;"><a style="height:40px;" href="/history" title="FtA History"></a></div>
+        <div class="headerLink" style="left: 337px; top: 34px; width: 59px; height: 0;"><a style="height:30px;" href="/fta2011" title="FtA-2011"></a></div>
+        <div class="headerLink" style="left: 431px; top: 27px; width: 62px; height: 0;"><a style="height:35px;" href="/questionanswer" title="Question and Answer"></a></div>
+        <div class="headerLink" style="left: 513px; top: 25px; width: 124px; height: 0;"><a style="height:40px;" href="/archives" title="Archives"></a></div>
+        <div class="headerLink" style="left: 659px; top: 39px; width: 79px; height: 0;"><a style="height:39px;" href="/whatpeoplearesaying" title="What people are saying about FtA"></a></div>
+        <div class="headerLink" style="left: 759px; top: 54px; width: 141px; height: 0;"><a style="height:60px;" href="/contactus" title="Contact us!!!"></a></div>
+        {% endif %}
+      </div>
+      <div id="site_content">
+        <div id="site_header">
+          {% block header %}
+            {% include "site/header.html" %}
+          {% endblock %}
+        </div>
+        {% block content-header %}{% endblock %}
+        {% block content-messages %}
+          {% if error %}<div class="error">{{ error }}</div>{% endif %}
+          {% if info %}<div class="info">{{ info }}</div>{% endif %}
+          {% if messages %}
+            {% for message in messages %}
+              <div class="info">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endblock %}
+        {% block content %}{% endblock %}
+      </div>
+      {% block mainsidebar %}
+      <div id="site_sidebar">
+        {% if canvas %}
+            {% include "site/canvas_sidebar_header.html" %}
+        {% else %}
+            {% include "site/sidebar_header.html" %}
+        {% endif %}
+        {% block content-sidebar %}{% endblock %}
+        {% block sidebar %}
+          {% include "site/sidebar.html" %}
+        {% endblock %}
+      </div>
+      {% endblock %}
+      <div id="site_footer">
+        <div style="height: 50px"></div>
+        {% block content-footer %}{% endblock %}
+        {% block footer %}
+          {% include "site/footer.html" %}
+        {% endblock %}
+      </div>
+      <div id="site_bottom"></div>
+    </div>
+    </div>
+    {% block js %}{% endblock %}
+  </body>
+</html>

@@ -1,0 +1,147 @@
+{% extends "nourish/base.html" %}
+
+{% load facebook_tags %}
+{% load nourish %}
+{% load media %}
+
+{% block sitetitle %}Reports for {{ object.name }}{% endblock %}
+
+{% block main-css %}
+  {{ block.super }}
+  <link rel="stylesheet" type="text/css" href="/static/resources/css/ext-all-gray.css">
+{% endblock %}
+
+{% block content-css %}
+  {{ block.super }}
+  <style>
+    #site_content {
+      width:900px;
+      margin-left: 120px;
+      float: none;
+    }
+  </style>
+{% endblock %}
+
+<!-- Remove the sidebar from the screen -->
+{% block mainsidebar %}{% endblock %}
+
+{% block preload_js %}
+  {{ block.super }}
+  <script type="text/javascript" src="/static/js/ext-all.js"></script>
+  {% include_media 'reports.js' %}
+
+  <script type="text/javascript">
+    var registeredGuests = [ ];
+    var admins = [ ];
+    var adminString = [ ];
+    
+    {% for eg in object.guest_groups %}
+      admins[{{ eg.group.id }}] = [];
+      adminString[{{ eg.group.id }}] = "";
+      {% for admin in eg.group.admins %}
+        admins[{{ eg.group.id }}].push({
+          "name": "{{ admin.get_profile.fullname|escapejs }}",
+          "email": "{{ admin.email }}",
+          "dateJoined": "{{ admin.date_joined|date:"d M Y" }}"
+        });
+        adminString[{{ eg.group.id }}] += "{{ admin.get_profile.fullname|escapejs|default:" " }} &lt;{{ admin.email }}&gt;"
+      {% endfor %}
+
+      registeredGuests.push({
+        "id" : "{{ eg.group.id }}",
+        "name" : "{{ eg.group.name|escapejs }}",
+        "url" : "{% nurl eg %}",
+        "admins" : admins[{{ eg.group.id }}],
+        "adminString" : adminString[{{ eg.group.id }}]
+      });
+    {% endfor %}
+
+    var registeredHosts = [ ];
+    var hostAdmins = [ ];
+    var hostAdminString = [ ];
+
+    {% for eg in object.host_groups %}
+      hostAdmins[{{ eg.group.id }}] = [];
+      hostAdminString[{{ eg.group.id }}] = "";
+      {% for admin in eg.group.admins %}
+        hostAdmins[{{ eg.group.id }}].push({
+          "name": "{{ admin.get_profile.fullname|escapejs }}",
+          "email": "{{ admin.email }}"
+        });
+        hostAdminString[{{ eg.group.id }}] += "{{ admin.get_profile.fullname|escapejs|default:" " }} &lt;{{ admin.email }}&gt;"
+      {% endfor %}
+
+      registeredHosts.push({
+        "id" : "{{ eg.group.id }}",
+        "name" : "{{ eg.group.name|escapejs }}",
+        "url" : "{% nurl eg %}",
+        "admins" : hostAdmins[{{ eg.group.id }}],
+        "adminString" : hostAdminString[{{ eg.group.id }}]
+      });
+    {% endfor %}
+
+    var unconfirmedGuests = [ ];
+    var ugAdmins = [];
+    var ugAdminString = [];
+
+    {% for eg, count in unconfirmed_guests.items %}
+      ugAdmins[{{ eg.group.id }}] = [];
+      ugAdminString[{{ eg.group.id }}] = "";
+      {% for admin in eg.group.admins %}
+        ugAdmins[{{ eg.group.id }}].push({
+          "name": "{{ admin.get_profile.fullname|escapejs }}",
+          "email": "{{ admin.email }}"
+        });
+        ugAdminString[{{ eg.group.id }}] += "{{ admin.get_profile.fullname|escapejs|default:" " }} &lt;{{ admin.email }}&gt;"
+      {% endfor %}
+
+      unconfirmedGuests.push({
+        "id" : "{{ eg.group.id }}",
+        "name" : "{{ eg.group.name|escapejs }} ({{count}} unconfirmed)",
+        "url" : "{% nurl eg %}",
+        "admins" : ugAdmins[{{ eg.group.id }}],
+        "adminString" : ugAdminString[{{ eg.group.id }}]
+      });
+    {% endfor %}
+
+  </script>
+{% endblock %}
+{% block content %}
+  <div style="float:left">
+  <a href="/">
+    <img border="0" src="/static/fta/FeedTheArtistsLogo.png">
+  </a>
+  </div>
+
+  <div style="float:left; padding: 15px 0 0 20px; width: 500px">
+    <h2>Reports for {{ object.name }}</h2>
+
+    <br/>
+    <p>
+      <a href="{% nurl event %}" style="float: right">
+        <img src="/static/images/leftArrow.png" style="vertical-align:middle"/>
+        &nbsp;Go back to event page
+      </a>
+    </p>
+  </div>
+
+  <div style="clear: both; padding-bottom: 10px"></div>
+
+  <div id="registeredGuests" style="padding: 15px 0 50px 0">
+  </div>
+
+  <div id="registeredHosts" style="padding: 15px 0 50px 0">
+  </div>
+
+  <div id="unconfirmedGuests" style="padding: 15px 0 50px 0">
+  </div>
+
+  <div id="noMealArtists" style="padding: 15px 0 50px 0">
+  </div>
+
+  <div id="noInviteThemeCamp" style="padding: 15px 0 50px 0">
+  </div>
+
+
+{% endblock %}
+
