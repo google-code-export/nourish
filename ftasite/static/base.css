@@ -23,6 +23,13 @@ h1, h2 {
     font-weight: 700;
 }
 
+h1 *, h2 * {
+    font-family: 'Special Elite', arial, sans-serif !important;
+    text-shadow: 4px 4px 4px #ccc;
+    font-style: normal;
+    font-weight: 700;
+}
+
 #site_sidebar A {
     color: #700;
 }
