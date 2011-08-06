@@ -4,7 +4,7 @@ Ext.application({
   // wrapped in closure to prevent global vars.
   Ext.define('RegisteredGuests', {
       extend: 'Ext.data.Model',
-      fields: ['id', 'name', 'url', 'admins', 'adminString']
+      fields: ['id', 'name', 'url', 'invite', 'confirmed', 'admins', 'adminString']
   });
 
   var RegisteredGuestsStore = Ext.create('Ext.data.Store', {
@@ -88,12 +88,22 @@ Ext.application({
           flex: 2,
           menuDisabled: true,
           dataIndex: 'adminString'
+      },{
+          text: 'Invites',
+          flex: 0,
+          menuDisabled: true,
+          dataIndex: 'invite'
+      },{
+          text: 'Confirmed',
+          flex: 0,
+          menuDisabled: true,
+          dataIndex: 'confirmed'
       }]
   });
 
   Ext.define('RegisteredHosts', {
       extend: 'Ext.data.Model',
-      fields: ['id', 'name', 'url', 'admins', 'adminString']
+      fields: ['id', 'name', 'url',  'invite', 'confirmed', 'admins', 'adminString']
   });
 
   var RegisteredHostsStore = Ext.create('Ext.data.Store', {
@@ -143,6 +153,16 @@ Ext.application({
           flex: 2,
           menuDisabled: true,
           dataIndex: 'adminString'
+      },{
+          text: 'Invites',
+          flex: 0,
+          menuDisabled: true,
+          dataIndex: 'invite'
+      },{
+          text: 'Confirmed',
+          flex: 0,
+          menuDisabled: true,
+          dataIndex: 'confirmed'
       }]
   });
 

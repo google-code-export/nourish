@@ -35,24 +35,26 @@
     var admins = [ ];
     var adminString = [ ];
     
-    {% for eg in object.guest_groups %}
-      admins[{{ eg.group.id }}] = [];
-      adminString[{{ eg.group.id }}] = "";
-      {% for admin in eg.group.admins %}
-        admins[{{ eg.group.id }}].push({
+    {% for guest in guest_list %}
+      admins[{{ guest.eg.group.id }}] = [];
+      adminString[{{ guest.eg.group.id }}] = "";
+      {% for admin in guest.eg.group.admins %}
+        admins[{{ guest.eg.group.id }}].push({
           "name": "{{ admin.get_profile.fullname|escapejs }}",
           "email": "{{ admin.email }}",
           "dateJoined": "{{ admin.date_joined|date:"d M Y" }}"
         });
-        adminString[{{ eg.group.id }}] += "{{ admin.get_profile.fullname|escapejs|default:" " }} &lt;{{ admin.email }}&gt;"
+        adminString[{{ guest.eg.group.id }}] += '{{ admin.get_profile.fullname|escapejs|default:" " }} {% if admin.email != "" %}&lt;<a href="mailto:{{ admin.email }}"">{{ admin.email }}</a>&gt;{% endif %}'
       {% endfor %}
 
       registeredGuests.push({
-        "id" : "{{ eg.group.id }}",
-        "name" : "{{ eg.group.name|escapejs }}",
-        "url" : "{% nurl eg %}",
-        "admins" : admins[{{ eg.group.id }}],
-        "adminString" : adminString[{{ eg.group.id }}]
+        "id" : "{{ guest.eg.group.id }}",
+        "name" : "{{ guest.eg.group.name|escapejs }}",
+        "url" : "{% nurl guest.eg %}",
+        "invite": '{{ guest.inv|default:"" }}',
+        "confirmed": '{{ guest.con|default:"" }}',
+        "admins" : admins[{{ guest.eg.group.id }}],
+        "adminString" : adminString[{{ guest.eg.group.id }}]
       });
     {% endfor %}
 
@@ -60,23 +62,25 @@
     var hostAdmins = [ ];
     var hostAdminString = [ ];
 
-    {% for eg in object.host_groups %}
-      hostAdmins[{{ eg.group.id }}] = [];
-      hostAdminString[{{ eg.group.id }}] = "";
-      {% for admin in eg.group.admins %}
-        hostAdmins[{{ eg.group.id }}].push({
+    {% for host in host_list %}
+      hostAdmins[{{ host.eg.group.id }}] = [];
+      hostAdminString[{{ host.eg.group.id }}] = "";
+      {% for admin in host.eg.group.admins %}
+        hostAdmins[{{ host.eg.group.id }}].push({
           "name": "{{ admin.get_profile.fullname|escapejs }}",
           "email": "{{ admin.email }}"
         });
-        hostAdminString[{{ eg.group.id }}] += "{{ admin.get_profile.fullname|escapejs|default:" " }} &lt;{{ admin.email }}&gt;"
+        hostAdminString[{{ host.eg.group.id }}] += '{{ admin.get_profile.fullname|escapejs|default:" " }} {% if admin.email != "" %}&lt;<a href="mailto:{{ admin.email }}"">{{ admin.email }}</a>&gt;{% endif %}'
       {% endfor %}
 
       registeredHosts.push({
-        "id" : "{{ eg.group.id }}",
-        "name" : "{{ eg.group.name|escapejs }}",
-        "url" : "{% nurl eg %}",
-        "admins" : hostAdmins[{{ eg.group.id }}],
-        "adminString" : hostAdminString[{{ eg.group.id }}]
+        "id" : "{{ host.eg.group.id }}",
+        "name" : "{{ host.eg.group.name|escapejs }}",
+        "url" : "{% nurl host.eg %}",
+        "invite": '{{ host.inv|default:"" }}',
+        "confirmed": '{{ host.con|default:"" }}',
+        "admins" : hostAdmins[{{ host.eg.group.id }}],
+        "adminString" : hostAdminString[{{ host.eg.group.id }}]
       });
     {% endfor %}
 
@@ -92,7 +96,7 @@
           "name": "{{ admin.get_profile.fullname|escapejs }}",
           "email": "{{ admin.email }}"
         });
-        ugAdminString[{{ eg.group.id }}] += "{{ admin.get_profile.fullname|escapejs|default:" " }} &lt;{{ admin.email }}&gt;"
+        ugAdminString[{{ eg.group.id }}] += '{{ admin.get_profile.fullname|escapejs|default:" " }} {% if admin.email != "" %}&lt;<a href="mailto:{{ admin.email }}"">{{ admin.email }}</a>&gt;{% endif %}'
       {% endfor %}
 
       unconfirmedGuests.push({
