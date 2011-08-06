@@ -14,25 +14,38 @@ Ext.application({
   });
 
   var getGuestEmails = function() {
-    getEmails(RegisteredGuestsStore);
+    getEmails(agsm);
   }
 
   var getHostEmails = function() {
-      getEmails(RegisteredHostsStore);
+      getEmails(tcsm);
   }
 
   var getUnconfirmedEmails = function() {
-      getEmails(UnconfirmedGuestsStore);
+      getEmails(ucsm);
   }
 
-  var getEmails = function(store) {
+  var agsm = Ext.create('Ext.selection.CheckboxModel', {
+    checkOnly: true
+  });
+
+  var tcsm = Ext.create('Ext.selection.CheckboxModel', {
+    checkOnly: true
+  });
+
+  var ucsm = Ext.create('Ext.selection.CheckboxModel', {
+    checkOnly: true
+  });
+
+  var getEmails = function(selModel) {
     var emails = "";
-    store.each(function(record) {
-      var admins = record.get("admins");
-      for (adminRecord in admins) {
-        emails += admins[adminRecord].email + ', ';
+    
+    var selections = selModel.getSelection()
+    for (var i = 0; i < selections.length; i++) {
+      for (adminRecord in selections[i].data.admins) {
+        emails += selections[i].data.admins[adminRecord].email + ', ';
       }
-    });
+    }
 
     Ext.create('Ext.Window', {
         title: 'Copy emails addresses below',
@@ -54,8 +67,8 @@ Ext.application({
       minHeight: 50,
       title: 'Registered Artists',
       store: RegisteredGuestsStore,
-      //selModel: sm,
-      width: 775,
+      selModel: agsm,
+      width: 950,
       dockedItems: [{
         xtype: 'toolbar',
         items: [{
@@ -89,13 +102,13 @@ Ext.application({
           menuDisabled: true,
           dataIndex: 'adminString'
       },{
-          text: 'Invites',
-          flex: 0,
+          text: 'Inv',
+          width: 40,
           menuDisabled: true,
           dataIndex: 'invite'
       },{
-          text: 'Confirmed',
-          flex: 0,
+          text: 'ConF',
+          width: 40,
           menuDisabled: true,
           dataIndex: 'confirmed'
       }]
@@ -119,8 +132,8 @@ Ext.application({
       minHeight: 50,
       title: 'Registered Theme Camps',
       store: RegisteredHostsStore,
-      //selModel: sm,
-      width: 775,
+      selModel: tcsm,
+      width: 950,
       features: [{
           ftype: 'summary'
       }],
@@ -154,13 +167,13 @@ Ext.application({
           menuDisabled: true,
           dataIndex: 'adminString'
       },{
-          text: 'Invites',
-          flex: 0,
+          text: 'Inv',
+          width: 40,
           menuDisabled: true,
           dataIndex: 'invite'
       },{
-          text: 'Confirmed',
-          flex: 0,
+          text: 'ConF',
+          width: 40,
           menuDisabled: true,
           dataIndex: 'confirmed'
       }]
@@ -184,8 +197,8 @@ Ext.application({
       minHeight: 50,
       title: 'Artists Groups with Unconfirmed Invitations',
       store: UnconfirmedGuestsStore,
-      //selModel: sm,
-      width: 775,
+      selModel: ucsm,
+      width: 950,
       features: [{
           ftype: 'summary'
       }],
@@ -218,6 +231,111 @@ Ext.application({
           flex: 2,
           menuDisabled: true,
           dataIndex: 'adminString'
+      }]
+  });
+
+  // MEAL CHART
+  Ext.define('Artist', {
+      extend: 'Ext.data.Model',
+      fields: ['name', 'desc', 'date', 'dateFormat',
+        'url', 'numPeople', 'invited', 'inviteGroup', 'adminString']
+  });
+
+  var ArtistStore = Ext.create('Ext.data.Store', {
+      storeId: 'artists',
+      model: 'Artist',
+      sorters: [{property: 'numPeople', direction: 'DESC'}, 'name'],
+      groupField: 'dateFormat',
+      data: meals
+  });
+
+  var groupingFeature = Ext.create('Ext.grid.feature.GroupingSummary',{
+      groupHeaderTpl: '{name} ({rows.length} Artist Group{[values.rows.length > 1 ? "s" : ""]})'
+  });
+
+  var grid = Ext.create('Ext.grid.Panel', {
+      renderTo: 'meals',
+      frame: true,
+      title: "All Meals",
+      border: false,
+      minHeight: 50,
+      store: ArtistStore,
+      //selModel: sm,
+      width: 1200,
+      autoHeight: true,
+      viewConfig: {
+        getRowClass: function(record, rowIndex, rowParams, store){
+          if(record.get("invited").match("New") != null) {
+            return "newRow";
+          } else if (record.get("invited").match("Invited") != null) {
+            return "pendingRow";
+          } else if (record.get("invited").match("Confirmed") != null) {
+            return "confirmedRow";
+          }
+
+          return "";
+        },
+        emptyText: "There are no Artists currently registered for {{ object.name}}. Spread the word!",
+        minHeight: 50
+      },
+      features: [groupingFeature],
+      columns: [{
+          text: 'Artist Group',
+          flex: 2,
+          tdCls: 'artistNameColumn',
+          menuDisabled: true,
+          dataIndex: 'name',
+          xtype: 'templatecolumn',
+          tpl: '<a href="{url}"><span title="{name}">{name:ellipsis(45)}</span></a>',
+          summaryType: 'count',
+          summaryRenderer: function(value, summaryData, dataIndex) {
+            return ((value === 0 || value > 1) ? '(' + value + ' Dinners)' : '(1 Dinner)');
+          }
+      },{
+          text: 'Members',
+          flex: 0,
+          width: 58,
+          menuDisabled: true,
+          dataIndex: 'numPeople',
+          summaryType: 'sum',
+          summaryRenderer: function(value, summaryData, dataIndex) {
+              return value + ' Total';
+          },
+          field: { xtype: 'numberfield' }
+      },{
+          text: 'Artist Contact',
+          flex: 2,
+          menuDisabled: true,
+          dataIndex: 'guestMealAdminString'
+      },{
+          text: 'Invitation Status',
+          flex: 1,
+          menuDisabled: true,
+          dataIndex: 'invited',
+          xtype: 'templatecolumn',
+          tpl: '{invited}'
+      },{
+          text: 'Theme Camp Group',
+          flex: 1,
+          menuDisabled: true,
+          dataIndex: 'invited',
+          xtype: 'templatecolumn',
+          tpl: '{inviteGroup}'
+      },{
+          text: 'Theme Camp Contact',
+          flex: 2,
+          menuDisabled: true,
+          dataIndex: 'hostMealAdminString'
+      },{
+          text: 'Address',
+          flex: 1,
+          menuDisabled: true,
+          dataIndex: 'address'
+      },{
+          text: 'Dinner Time',
+          flex: 1,
+          menuDisabled: true,
+          dataIndex: 'dinnerTime'
       }]
   });
 }});
