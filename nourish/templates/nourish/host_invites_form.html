@@ -1,0 +1,86 @@
+{% load nourish %}
+
+  {% for d in invite_dates %}
+    {% if d.form.dinner_time.errors %}
+      <span>
+        <ul class="errorlist">
+          <li>You forgot to specify a dinner time for <a href="#{{d.date|date:"Mj"}}">{{ d.date|date:"M. j" }}</a>.  Scroll down to that date and enter one!</li>
+        </ul>
+      </span>
+      <br/><br/>
+    {% endif %}
+  {% endfor %}
+
+{{ meal_formset.management_form }}
+{{ day_formset.management_form }}
+{% if not manage %}
+  <p>Invite artist groups to dinner by clicking the checkbox next to the artist group name on the day that you are having the dinner.</p>
+  <p><strong>Scroll all the way to the bottom and click the "Send Invites" link when finished.</strong></p>
+{% endif %}
+<p>
+  Jump To 
+  {% for d in invite_dates %}
+    | <a href="#{{d.date|date:"Mj"}}">{{ d.date|date:"M. j" }}</a>
+  {% endfor %}
+</p>
+<ul>
+  {% for d in invite_dates %}
+    <li>
+      <a name="{{d.date|date:"Mj"}}"></a>
+      <span>
+      {{ d.date|date:"M j" }} <em>({{ d.date|date:"D" }})</em>
+      </span>
+      {% for field in d.form.hidden_fields %}
+        {{ field }}
+      {% endfor %}
+      <ul>
+        <li>
+          <span>
+          Dinner Time: 
+          {{ d.form.dinner_time }}
+          {% if d.form.dinner_time.errors %}
+            <ul class="errorlist">
+              {% for error in d.form.dinner_time.errors %}
+                <li>{{ error }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+          </span>
+        </li>
+        {% for m in d.meals %}
+          <li>
+            <label class="meal_list" for="id_{{ m.form.invited.html_name}}">
+              {% for field in m.form.hidden_fields %}
+                {{ field }}
+              {% endfor %}
+              {% if manage or m.meal.state = 'N' %}
+                  {{ m.form.invited }}
+              {% else %}
+                <input type="checkbox" disabled="disabled">
+              {% endif %}
+              {% if not manage and m.meal.state != 'N' %}
+                 <span class="alreadyInvitedListItem">
+              {% endif %}
+              <a href="{% nurl m.meal.eg %}">{{ m.meal.eg.group.name }}</a>
+              <em>&nbsp;({{ m.meal.members }} diners)</em>
+              {% if m.meal.features %}
+                &nbsp;<strong>{{ m.meal.notes|escape}}</strong>
+              {% endif %}
+              {% if manage %}
+                <strong>[{{m.meal.get_state_display}}]</strong>
+              {% else %}
+                {% if m.meal.state != 'N' %}
+                  </span><em><strong>(Already Invited)</strong></em>
+                {% endif %}
+              {% endif %}
+            </label>
+          </li>
+        {% endfor %}
+      </ul>
+    </li>
+  {% empty %}
+    <li style="font-weight: bold">
+      No dates available to invite artist to dinner.  They may have already been invited for all the nights they registered for.  <a href="{% nurl object %}artistchart/">Try another artist!</a>
+    </li>
+  {% endfor %}
+</ul>
