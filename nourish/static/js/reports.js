@@ -244,7 +244,7 @@ Ext.application({
   var ArtistStore = Ext.create('Ext.data.Store', {
       storeId: 'artists',
       model: 'Artist',
-      sorters: [{property: 'numPeople', direction: 'DESC'}, 'name'],
+      sorters: [{property: 'invited', direction: 'ASC'}, {property: 'numPeople', direction: 'DESC'}, 'name'],
       groupField: 'dateFormat',
       data: meals
   });
