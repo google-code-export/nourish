@@ -434,12 +434,9 @@ class EventGroup(models.Model):
                 except:
                     sys.stderr.write("[ERROR] Cannot send FB notification")
             else:
-                try:
-                    msg = render_to_string("nourish/notif/%sEmailBody.html" % action, { 'object' : objects[0] })
-                    subject = render_to_string("nourish/notif/%sEmailSubject.html" % action, { 'object' : objects[0] })
-                    gu.user.email_user(subject, msg, 'feed.the.artists.2011@gmail.com')
-                except:
-                    sys.stderr.write("[ERROR] Cannot send email message\n")
+                msg = render_to_string("nourish/notif/%sEmailBody.html" % action, { 'object' : objects[0] })
+                subject = render_to_string("nourish/notif/%sEmailSubject.html" % action, { 'object' : objects[0] })
+                gu.user.email_user(subject, msg, 'feed.the.artists.2011@gmail.com')
     # host group sends invitations to guest groups
     def send_invites(self, meals):
         invites_by_eg = { }
