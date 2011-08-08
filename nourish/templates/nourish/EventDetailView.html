@@ -1,0 +1,74 @@
+{% extends "nourish/base.html" %}
+
+{% load facebook_tags %}
+{% load nourish %}
+
+{% block title %}{{ event.name }} - Events{% endblock %}
+{% block og_title %}{{ event.name }} - Feed The Artists{% endblock %}
+{% block og_desc %}{{ event.guest_groups.count }} artist groups have registered for {{ event.summary.1.tot_meals }} dinner invitations at {{ event.name }}.  {{ event.host_groups.count }} theme camps have invited them to {{ event.summary.1.inv_meals}} dinners so far.  Register with Feed The Artists to give or receive meals at the event!{% endblock %}
+
+{% block content-logo %}
+  {% if event.image_url %}
+    <a target="_parent" href="{{ event.url }}"><img width=100 src="{{event.image_url}}?type=normal" border=0></a>
+  {% endif %}
+{% endblock %}
+
+{% block content-title %}
+    <h2 style="display: inline;">{{ event.name }}</h2>
+    {% if is_admin %}
+      [<a href="{% nurl event %}edit/">Edit Event</a>]
+    {% endif %}
+    <br>
+    {{ event.start_date }} thru {{ event.end_date }}
+    <br>
+    <span class="site_ext_link">Event website: {{event.url|urlizetrunc:40}}</span>
+{% endblock %}
+
+{% block content-body %}
+
+<h2>Register Your Artist Group or Theme Camp</h2>
+<p>Click on one of the hearts below to register your artist group or theme camp with FtA at {{ event.name }}.</p>
+  <div style="clear: both;"></div>
+  <div style="float: left;">
+    <a href="{% nurl event %}register/guest">
+      <img width=250 src="/static/fta/home-artists.jpg" alt="Register New Artist Group" border=0>
+    </a>
+  </div>
+
+  <div style="float: left;">
+    <a href="{% nurl event %}invite/">
+      <img width=250 src="/static/fta/burningman2.jpg" alt="Register New Theme Camp" border=0>
+    </a>
+  </div>
+  <div style="clear: both;"></div>
+
+<h2>About FtA @ {{ event.name }}</h2>
+<p><a href="/">Feed The Artists</a> is helping to coordinate meal gifting at <a href="{{ event.url }}">{{ event.name }}</a>.  
+The short story is this: <strong><em>Artists register to get invited to dinner, and then theme camps invite them to dinner.</em></strong>  To learn more about FtA, check out our <a href="/vision">Vision Statement</a>.
+<p>There are currently <strong><a href="{% nurl event %}groups/#guest">{{ event.guest_groups.count }} artists groups</a></strong> registered, hoping to be invited to a total of <a href="{% nurl event %}artistchart/">{{ event.summary.1.tot_meals }} dinners</a> over the course of the event.  
+So far, <strong><a href="{% nurl event %}groups/#host">{{ event.host_groups.count }} theme camps</a></strong> have invited them to <strong>{{ event.summary.1.inv_meals}} dinners</strong>, resulting in <strong><a href="{% nurl event %}summary/">{{ event.summary.1.inv_crew}} gifted meals</a></strong>.
+
+  
+  <h2>Who's already registered</h2>
+  <p>Check out the <a href="{% nurl event %}artistchart/">Artists' Availability Chart</a> for a day-by-day overview of who wants to come to dinner, and who has invited them.</p>
+  <div style="margin-top: 10px; text-align: center">
+    <a href="{% nurl event %}artistchart/">
+      <img src="/static/images/checkOutArtistChart.jpg" title="Artist availability chart for " />
+    </a>
+  </div>
+
+  {% if request.user.is_staff %}
+    <a href="{% nurl event %}reports/"><h3>Admin Reports</h3></a>
+    <br/>
+    <br/>
+  {% endif %}
+
+  <h2>Spread the word!</h2>
+  <ul>
+  {% include "nourish/fb/event_share_link.html" with event=event %}
+  <li>{% include "nourish/fb/event_guest_siteinvite_link.html" with event=event %}</li>
+  <li>{% include "nourish/fb/event_host_siteinvite_link.html" with event=event %}</li>
+  </ul>
+
+  {% facebook_js %}
+{% endblock %}

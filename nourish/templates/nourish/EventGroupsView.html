@@ -1,0 +1,71 @@
+{% extends "nourish/EventDetailView.html" %}
+
+{% load facebook_tags %}
+{% load nourish %}
+
+{% block title %}Groups at {{ event.name }} - Events{% endblock %}
+{% block og_title %}Groups at {{ event.name }} - Feed The Artists{% endblock %}
+{% block og_desc %}{{ event.host_groups.count }} theme camps and {{ event.guest_groups.count }} artist groups are participating in meal gifting at {{ event.name }}.  Sign up to give or receive meals at the event!{% endblock %}
+
+{% block content-body %}
+  <div style="clear: both;"></div>
+
+  <h4><a name="guest"></a>Registered Artist Groups</h4>
+  <table class="summary">
+    <tr>
+      <th rowspan=2>Artist Group</th>
+      <th colspan=3 class="leftborder">Meals</th>
+      <th rowspan=2 class="leftborder">Crew Size</th>
+    </tr>
+    <tr class="bottomborder">
+      <td class="leftborder">Total</td><td>Invited</td><td>Confirmed</td>
+    </tr>
+    {% for guest in guests %}
+      <tr>
+        <td><a href="{% nurl guest.eg %}">{{ guest.eg.group.short_name }}</a></td>
+        <td class="leftborder">{{ guest.tot|default:"" }}</td>
+        <td>{{ guest.inv|default:"" }}</td>
+        <td>{{ guest.con|default:"" }}</td>
+        <td class="leftborder">{{ guest.eg.crew_size|default:"" }}</td>
+      </tr>
+    {% endfor %}
+    <tr class="total topborder">
+     <td>Totals</td>
+     <td class="leftborder">{{ guest_totals.tot }}</td>
+     <td>{{ guest_totals.inv }}</td>
+     <td>{{ guest_totals.con }}</td>
+     <td class="leftborder">{{ guest_totals.crew }}</td>
+    </tr>
+  </table>
+  <p><a href="{% nurl event %}register/guest">Register an artist group</a></p>
+
+  <h4><a name="host"></a>Registered Theme Camps</h4>
+  <table class="summary">
+    <tr>
+      <th rowspan=2>Theme Camp</th>
+      <th colspan=2 class="leftborder">Invitations</th>
+      <th rowspan=2 class="leftborder">Address at Event</th>
+    </tr>
+    <tr class="bottomborder">
+      <td class="leftborder">Sent</td><td>Confirmed</td>
+    </tr>
+    {% for host in hosts %}
+      <tr>
+        <td><a href="{% nurl host.eg %}">{{ host.eg.group.short_name }}</a></td>
+        <td class="leftborder">{{ host.inv|default:"" }}</td>
+        <td>{{ host.con|default:"" }}</td>
+        <td class="leftborder">{{ host.eg.playa_address }}</td>
+      </tr>
+    {% endfor %}
+  </table>
+  <p><a href="{% nurl event %}register/host">Register a theme camp</a></p>
+
+  <h4>Spread the word!</h4>
+  <ul>
+  {% include "nourish/fb/event_share_link.html" with event=event %}
+  <li>{% include "nourish/fb/event_guest_siteinvite_link.html" with event=event %}</li>
+  <li>{% include "nourish/fb/event_host_siteinvite_link.html" with event=event %}</li>
+  </ul>
+
+  {% facebook_js %}
+{% endblock %}

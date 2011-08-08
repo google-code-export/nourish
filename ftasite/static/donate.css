@@ -1,0 +1,19 @@
+.reward-images {
+    margin-top: 30px;
+}
+
+.reward-images img {
+    padding: 10px;
+}
+
+.reward-images h3 {
+    text-align: center;
+}
+
+.address-text {
+    color: #660000
+}
+.small-hint {
+    font-size: smaller;
+    color: #660000;
+}

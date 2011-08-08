@@ -1,0 +1,262 @@
+{% load nourish %}
+{% load cms %}
+{% load media %}
+
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    dir="{% if LANGUAGE_BIDI %}rtl{% else %}ltr{% endif %}"
+    xml:lang="{% firstof LANGUAGE_CODE 'en' %}"
+    lang="{% firstof LANGUAGE_CODE 'en' %}"
+    xmlns:og="http://ogp.me/ns#"
+    xmlns:fb="http://www.facebook.com/2008/fbml"
+  >
+  <head>
+    <title>Reports for {{ object.name }}</title>
+    <link rel="icon" href="/static/images/favicon.ico">
+
+    {% block main-css %}{% endblock %}
+
+    {% block css %}
+        <link rel="stylesheet" type="text/css" href="/static/resources/css/ext-all-gray.css">
+        <style>
+          body {
+            padding: 10px;
+          }
+
+          .newRow, .newRow * {
+            background-color: #db7093 !important;
+          }
+
+          .pendingRow, .pendingRow * {
+            background-color: #eee8aa !important;
+          }
+
+          .confirmedRow, .confirmedRow * {
+            background-color: #98fb98 !important;
+          }
+        </style>
+    {% endblock %}
+
+    {% block og %}
+      <meta property="og:title" content="{% block og_title %}Feed The Artists{% endblock %}" />
+      <meta property="og:type" content="{% block og_type %}activity{% endblock %}" />
+      <meta property="og:image" content="{% block og_image %}http://www.feedtheartists.net/static/fta/FeedTheArtistsLogo.png{% endblock %}" />
+      <meta property="og:url" content="{% block og_url %}http://www.feedtheartists.net{{ request.path }}{% endblock %}" />
+      <meta property="og:site_name" content="Feed The Artists" />
+      <meta property="og:description" content="{% block og_desc %}Feed The Artists helps organize meal gifting at Burning Man and related events.{% endblock %}" />
+      <meta property="fb:app_id" content="194618953915167" />
+
+    {% endblock %}
+
+    {% include "site/ga.html" %}
+  </head>
+
+  {% if canvas %}
+    <body onLoad="FB.Canvas.setSize();">
+      <div id="fb-root"></div>
+      <script src="http://connect.facebook.net/en_US/all.js"></script>
+  {% else %}
+    <body>
+  {% endif %}
+
+      <div>
+
+      <div>
+        <div style="float:left">
+        <a href="/">
+          <img border="0" src="/static/fta/FeedTheArtistsLogo.png">
+        </a>
+        </div>
+
+        <div style="float:left; padding: 15px 0 0 20px; width: 500px">
+          <h2>Reports for {{ object.name }}</h2>
+          {{ object.start_date }} thru {{ object.end_date }}
+          <br/>
+          <br/>
+          
+          <p>
+            <a href="{% nurl event %}" style="float: right">
+              <img src="/static/images/leftArrow.png" style="vertical-align:middle"/>
+              &nbsp;Go back to event page
+            </a>
+          </p>
+
+          <div style="clear: both; padding-bottom: 10px"></div>
+
+          <p>
+            These are the report pages.  Use them to get email addresses of all or select artist groups and theme camps.
+            Use the checkboxes on the left of each row to select which artists/theme camps you want to get emails for.  Then click the "get emails"
+            button to generate a comma separated list of email addresses.
+          </p>
+        </div>
+
+        <div style="clear: both; padding-bottom: 10px"></div>
+
+        <div id="registeredGuests" style="padding: 15px 0 50px 0">
+        </div>
+
+        <div id="registeredHosts" style="padding: 15px 0 50px 0">
+        </div>
+
+        <div id="unconfirmedGuests" style="padding: 15px 0 50px 0">
+        </div>
+
+      {#  <div id="noMealArtists" style="padding: 15px 0 50px 0">#}
+      {#  </div>#}
+      {##}
+      {#  <div id="noInviteThemeCamp" style="padding: 15px 0 50px 0">#}
+      {#  </div>#}
+
+        <div style="border: 1px solid black; width: 400px; font-size: 115%">
+          <h2>Key:</h2>
+          <span class="newRow">Not Invited</span>
+          <span class="pendingRow">Waiting Confirmation</span>
+          <span class="confirmedRow">Confirmed Dinner</span>
+        </div>
+
+        <div id="meals" style="padding: 15px 0 50px 0">
+        </div>
+
+      </div>
+
+      <div>
+        <div style="height: 50px"></div>
+        {% block content-footer %}{% endblock %}
+        {% block footer %}
+          {% include "site/footer.html" %}
+        {% endblock %}
+      </div>
+    </div>
+    <script type="text/javascript" src="/static/js/ext-all.js"></script>
+    {% include_media 'reports.js' %}
+
+    <script type="text/javascript">
+      var registeredGuests = [ ];
+      var admins = [ ];
+      var adminString = [ ];
+
+      {% for guest in guest_list %}
+        admins[{{ guest.eg.group.id }}] = [];
+        adminString[{{ guest.eg.group.id }}] = "";
+        {% for admin in guest.eg.group.admins %}
+          admins[{{ guest.eg.group.id }}].push({
+            "name": "{{ admin.get_profile.fullname|escapejs }}",
+            "email": "{{ admin.email }}",
+            "dateJoined": "{{ admin.date_joined|date:"d M Y" }}"
+          });
+          adminString[{{ guest.eg.group.id }}] += '{{ admin.get_profile.fullname|escapejs|default:" " }} {% if admin.email != "" %}&lt;<a href="mailto:{{ admin.email }}"">{{ admin.email }}</a>&gt;{% endif %}'
+        {% endfor %}
+
+        registeredGuests.push({
+          "id" : "{{ guest.eg.group.id }}",
+          "name" : "{{ guest.eg.group.name|escapejs }}",
+          "url" : "{% nurl guest.eg %}",
+          "invite": '{{ guest.inv|default:"" }}',
+          "confirmed": '{{ guest.con|default:"" }}',
+          "admins" : admins[{{ guest.eg.group.id }}],
+          "adminString" : adminString[{{ guest.eg.group.id }}]
+        });
+      {% endfor %}
+
+      var registeredHosts = [ ];
+      var hostAdmins = [ ];
+      var hostAdminString = [ ];
+
+      {% for host in host_list %}
+        hostAdmins[{{ host.eg.group.id }}] = [];
+        hostAdminString[{{ host.eg.group.id }}] = "";
+        {% for admin in host.eg.group.admins %}
+          hostAdmins[{{ host.eg.group.id }}].push({
+            "name": "{{ admin.get_profile.fullname|escapejs }}",
+            "email": "{{ admin.email }}"
+          });
+          hostAdminString[{{ host.eg.group.id }}] += '{{ admin.get_profile.fullname|escapejs|default:" " }} {% if admin.email != "" %}&lt;<a href="mailto:{{ admin.email }}"">{{ admin.email }}</a>&gt;{% endif %}'
+        {% endfor %}
+
+        registeredHosts.push({
+          "id" : "{{ host.eg.group.id }}",
+          "name" : "{{ host.eg.group.name|escapejs }}",
+          "url" : "{% nurl host.eg %}",
+          "invite": '{{ host.inv|default:"" }}',
+          "confirmed": '{{ host.con|default:"" }}',
+          "admins" : hostAdmins[{{ host.eg.group.id }}],
+          "adminString" : hostAdminString[{{ host.eg.group.id }}]
+        });
+      {% endfor %}
+
+      var unconfirmedGuests = [ ];
+      var ugAdmins = [];
+      var ugAdminString = [];
+
+      {% for eg, count in unconfirmed_guests.items %}
+        ugAdmins[{{ eg.group.id }}] = [];
+        ugAdminString[{{ eg.group.id }}] = "";
+        {% for admin in eg.group.admins %}
+          ugAdmins[{{ eg.group.id }}].push({
+            "name": "{{ admin.get_profile.fullname|escapejs }}",
+            "email": "{{ admin.email }}"
+          });
+          ugAdminString[{{ eg.group.id }}] += '{{ admin.get_profile.fullname|escapejs|default:" " }} {% if admin.email != "" %}&lt;<a href="mailto:{{ admin.email }}"">{{ admin.email }}</a>&gt;{% endif %}'
+        {% endfor %}
+
+        unconfirmedGuests.push({
+          "id" : "{{ eg.group.id }}",
+          "name" : "{{ eg.group.name|escapejs }} ({{count}} unconfirmed)",
+          "url" : "{% nurl eg %}",
+          "admins" : ugAdmins[{{ eg.group.id }}],
+          "adminString" : ugAdminString[{{ eg.group.id }}]
+        });
+      {% endfor %}
+
+      var meals = [];
+      var guestMealAdminString = [];
+      var hostMealAdminString = [];
+
+      {% for meal in meals %}
+
+        guestMealAdminString[{{ meal.eg.group.id }}] = "";
+        {% for admin in meal.eg.group.admins %}
+          guestMealAdminString[{{ meal.eg.group.id }}] += '{{ admin.get_profile.fullname|escapejs|default:" " }} {% if admin.email != "" %}&lt;<a href="mailto:{{ admin.email }}"">{{ admin.email }}</a>&gt;{% endif %}'
+        {% endfor %}
+
+        hostMealAdminString[{{ meal.id }}] = "";
+        {% for invite in meal.invites %}
+          {% for admin in invite.host_eg.group.admins %}
+            hostMealAdminString[{{ meal.id }}] += '{{ admin.get_profile.fullname|escapejs|default:" " }} {% if admin.email != "" %}&lt;<a href="mailto:{{ admin.email }}"">{{ admin.email }}</a>&gt;{% endif %} '
+          {% endfor %}
+        {% endfor %}
+
+        meals.push({
+          "id" : "{{ meal.id }}",
+          "name" : "{{ meal.eg.group.name|escapejs }}",
+          "date" : new Date("{{ meal.date.isoformat }}"),
+          "dateFormat" : "{{ meal.date|date:'m-d (l)' }}",
+          "url" : "{% nurl meal.eg %}",
+          "numPeople" : {{ meal.members }},
+          {% if meal.invites %}
+            "inviteGroup" : "{% for invite in meal.invites %}<a href='{% nurl invite.host_eg %}'>{{ invite.host_eg.group.name|escapejs }}</a> {% endfor %}",
+          {% else %}
+            "inviteGroup" : "",
+          {% endif %}
+          "invited" : "{{ meal.get_state_display }}",
+          "guestMealAdminString" : guestMealAdminString[{{ meal.eg.group.id }}],
+          "hostMealAdminString" : hostMealAdminString[{{ meal.id }}],
+          "address": "{{ meal.invite.host_eg.playa_address|escapejs }}",
+          "dinnerTime": "{{ meal.invite.dinner_time|escapejs }}"
+        });
+      {% endfor %}
+
+      var registeredThemeCamps = [];
+
+      {% for eg in host_event_groups %}
+        registeredThemeCamps.push({
+          id: {{ eg.id }},
+          name: '{{ eg.group.name|escapejs }}'
+        });
+      {% endfor %}
+
+    </script>
+  </body>
+</html>
