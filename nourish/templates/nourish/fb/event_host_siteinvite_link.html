@@ -1,6 +1,6 @@
 <a href="#" onClick="FB.ui({
   method: 'apprequests', 
-  message: '{{ event.guest_groups.count }} have registered for {{ event.summary.1.tot_meals }} dinners at {{ event.name }}.  You should register your theme camp so you can invite some artists to dinner!',
+  message: '{{ event.guest_groups.count }} artist groups have registered for {{ event.summary.1.tot_meals }} dinners at {{ event.name }}.  You should register your theme camp so you can invite some artists to dinner!',
   data: { type: 'notif', action: 'event_host_siteinvite', ot: 'Event', objects: [{{ event.id }}] }
 });">Know someone who is organizing a theme camp at {{ event.name }}? Suggest this to them!</a>
 <br>
