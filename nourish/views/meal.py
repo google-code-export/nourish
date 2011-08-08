@@ -11,6 +11,8 @@ from django.contrib.auth.decorators import user_passes_test
 from django.utils.decorators import method_decorator
 from django.core.exceptions import PermissionDenied
 
+import string
+
 class EventArtistChart(HybridCanvasView, DetailView):
     template_name='nourish/artistchart.html'
     context_object_name = 'event'
@@ -45,20 +47,68 @@ class EventReports(HybridCanvasView, DetailView):
     def get_context_data(self, **kwargs):
         context = super(EventReports, self).get_context_data(**kwargs)
 
-        context['host_list'] = []
-        context['guest_list'] = []
+        guests = { }
+        guest_totals = {
+           'tot' : 0,
+           'inv' : 0,
+           'con' : 0,
+           'crew' : 0,
+        }
+
+        for meal in Meal.objects.filter(event=self.object):
+            if meal.eg not in guests:
+                guests[meal.eg] = {
+                    'eg' : meal.eg,
+                    'tot' : 0,
+                    'inv' : 0,
+                    'con' : 0,
+                }
+            guest_totals['crew'] += meal.members
+            guests[meal.eg]['tot'] += 1
+            guest_totals['tot'] += 1
+            if meal.state == 'I':
+                guests[meal.eg]['inv'] += 1
+                guest_totals['inv'] += 1
+            elif meal.state == 'C':
+                guests[meal.eg]['inv'] += 1
+                guest_totals['inv'] += 1
+                guests[meal.eg]['con'] += 1
+                guest_totals['con'] += 1
+
+        hosts = { }
+        host_totals = {
+            'inv' : 0,
+            'con' : 0,
+        }
+
+        for invite in MealInvite.objects.filter(event=self.object):
+            if invite.host_eg not in hosts:
+                hosts[invite.host_eg] = {
+                   'eg' : invite.host_eg,
+                   'inv' : 0,
+                   'con' : 0,
+                }
+            hosts[invite.host_eg]['inv'] += 1
+            host_totals['inv'] += 1
+            if invite.state == 'C':
+                hosts[invite.host_eg]['con'] += 1
+                host_totals['con'] += 1
+
+        context['host_list'] = sorted(hosts.values(), key=lambda a:string.lower(a['eg'].group.name))
+        context['host_totals'] = host_totals
+        context['guest_list'] = sorted(guests.values(), key=lambda a:string.lower(a['eg'].group.name))
+        context['guest_totals'] = guest_totals
+
         context['eventuser_list'] = EventUser.objects.filter(event=self.object,admin=True)
-        for eg in EventGroup.objects.filter(event=self.object):
-            if eg.group.role == 'T':
-                context['host_list'].append(eg)
-            if eg.group.role == 'A':
-                context['guest_list'].append(eg)
 
         unconfirmed_guests = {}
 
         for invite in MealInvite.objects.filter(event=self.object):
             if invite.state != 'C':
-                unconfirmed_guests[invite.guest_eg] = 1
+                if invite.guest_eg in unconfirmed_guests:
+                    unconfirmed_guests[invite.guest_eg] = unconfirmed_guests[invite.guest_eg] + 1
+                else:
+                    unconfirmed_guests[invite.guest_eg] = 1
 
         context['unconfirmed_guests'] = unconfirmed_guests
 
