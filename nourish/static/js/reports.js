@@ -190,7 +190,7 @@ Ext.application({
       data: unconfirmedGuests
   });
     
-  var hostGrid = Ext.create('Ext.grid.Panel', {
+  var unconfirmedGuestsGrid = Ext.create('Ext.grid.Panel', {
       renderTo: 'unconfirmedGuests',
       frame: true,
       border: false,
@@ -253,12 +253,68 @@ Ext.application({
       groupHeaderTpl: '{name} ({rows.length} Artist Group{[values.rows.length > 1 ? "s" : ""]})'
   });
 
+  var filterFn = function() {
+    ArtistStore.clearFilter();
+    ArtistStore.filter({
+      filterFn: function(item) {
+        var keep = false;
+        if (newBox.getValue()) {
+          keep = keep || (item.data.invited == "New");
+        }
+        if (inviteBox.getValue()) {
+          keep = keep || (item.data.invited == "Invited");
+        }
+        if (confirmBox.getValue()) {
+          keep = keep || (item.data.invited == "Confirmed");
+        }
+        return keep;
+      }
+    })
+    grid.doLayout();
+  }
+
+  /**
+   * Convenience function for creating filter configs for checkboxes
+   * @param {Object} config Optional config object
+   * @return {Object} The new Button configuration
+   */
+  function cfg(config) {
+      config = config || {};
+      Ext.applyIf(config, {
+          listeners: {
+              change: function(checkbox) {
+                  filterFn();
+              }
+          },
+          name: 'filter',
+          checked: true
+      });
+      return config;
+  }
+
+  var newBox = Ext.create('Ext.form.field.Checkbox', cfg({boxLabel: 'New', inputValue: 'New'}));
+  var inviteBox = Ext.create('Ext.form.field.Checkbox', cfg({boxLabel: 'Invited', inputValue: 'Invited'}));
+  var confirmBox = Ext.create('Ext.form.field.Checkbox', cfg({boxLabel: 'Confirmed', inputValue: 'Confirmed'}));
+
+  //create the toolbar with the 2 plugins
+  var tbar = Ext.create('Ext.toolbar.Toolbar', {
+      items : [{
+            xtype: 'tbtext',
+            text: 'Filtering:'
+        },
+        newBox,
+        inviteBox,
+        confirmBox
+      ]
+  });
+    
   var grid = Ext.create('Ext.grid.Panel', {
       renderTo: 'meals',
       frame: true,
       title: "All Meals",
       border: false,
       minHeight: 50,
+      tbar: tbar,
       store: ArtistStore,
       //selModel: sm,
       width: 1200,
@@ -275,7 +331,6 @@ Ext.application({
 
           return "";
         },
-        emptyText: "There are no Artists currently registered for {{ object.name}}. Spread the word!",
         minHeight: 50
       },
       features: [groupingFeature],
