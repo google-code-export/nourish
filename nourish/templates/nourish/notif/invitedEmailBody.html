@@ -10,8 +10,7 @@ Name: {{ object.host_eg.group.name }}
 Website: {{ object.host_eg.group.url }}
 Theme Camp Contact{{ object.host_eg.group.admins|pluralize }}:
 {% for contact in object.host_eg.group.admins %}
-    {{ contact.get_profile.fullname }} - {{contact.email}} - {{ contact.phone }}
-
+    {{ contact.get_profile.fullname }} - {{contact.email}} - {{ contact.phone }}  
 {% endfor %}
 
 Camp Location : {{ object.host_eg.group.event_location|default:"TBD"}}
