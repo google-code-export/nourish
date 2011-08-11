@@ -153,8 +153,8 @@
           "id" : "{{ guest.eg.group.id }}",
           "name" : "{{ guest.eg.group.name|escapejs }}",
           "url" : "{% nurl guest.eg %}",
-          "invite": '{{ guest.inv|default:"" }}',
-          "confirmed": '{{ guest.con|default:"" }}',
+          "invite": {{ guest.inv|default:0 }},
+          "confirmed": {{ guest.con|default:0 }},
           "admins" : admins[{{ guest.eg.group.id }}],
           "adminString" : adminString[{{ guest.eg.group.id }}]
         });
@@ -179,8 +179,8 @@
           "id" : "{{ host.eg.group.id }}",
           "name" : "{{ host.eg.group.name|escapejs }}",
           "url" : "{% nurl host.eg %}",
-          "invite": '{{ host.inv|default:"" }}',
-          "confirmed": '{{ host.con|default:"" }}',
+          "invite": {{ host.inv|default:0 }},
+          "confirmed": {{ host.con|default:0 }},
           "admins" : hostAdmins[{{ host.eg.group.id }}],
           "adminString" : hostAdminString[{{ host.eg.group.id }}]
         });
