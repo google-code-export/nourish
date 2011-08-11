@@ -85,7 +85,7 @@ Ext.application({
       features: [{
           ftype: 'summary'
       }],
-      columns: [{
+      columns: [Ext.create('Ext.grid.RowNumberer'),{
           text: 'Name',
           flex: 1,
           menuDisabled: true,
@@ -150,7 +150,7 @@ Ext.application({
         emptyText: "There are no Theme Camps currently registered for this event.",
         minHeight: 50
       },
-      columns: [{
+      columns: [Ext.create('Ext.grid.RowNumberer'), {
           text: 'Name',
           flex: 1,
           menuDisabled: true,
@@ -317,7 +317,7 @@ Ext.application({
       tbar: tbar,
       store: ArtistStore,
       //selModel: sm,
-      width: 1200,
+      width: 1400,
       autoHeight: true,
       viewConfig: {
         getRowClass: function(record, rowIndex, rowParams, store){
