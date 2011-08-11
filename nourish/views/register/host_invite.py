@@ -207,28 +207,13 @@ class EventHostInviteView(EventHostRegisterView):
             meals = Meal.objects.filter(event=self.object,eg=guest_eg).order_by('date')
         else:
             meals = Meal.objects.filter(event=self.object).order_by('date')
-        for meal in meals:
-            if meal.state == 'S' or meal.state == 'C':
-                if not meal.invite:
-#                    sys.stderr.write("no invite :(\n")
-                    continue
-            if meal.state == 'N':
-                if manage:
-                    continue
-            else:
-                invite = meal.invite
-                if meal.state == 'I':
-                    try:
-                        invite = MealInvite.objects.get(host_eg=eg, meal=meal)
-                    except MealInvite.DoesNotExist:
-                        invite = None
-                if not invite or invite.host_eg != eg:
-#                    sys.stderr.write("not mine\n")
-                    if manage:
-                        continue
-            if meal.date not in d:
-                d[meal.date] = []
-            d[meal.date].append(meal)
+        d = self.filterMeals(meals, eg, guest_eg, manage, 0)
+
+        if (len(d) == 0):
+          d = self.filterMeals(meals, eg, guest_eg, manage, 1)
+
+        if (len(d) == 0):
+          d = self.filterMeals(meals, eg, guest_eg, manage, 4)
 
         day_initial = []
         meal_initial = []
@@ -252,6 +237,43 @@ class EventHostInviteView(EventHostRegisterView):
             day_initial.append({ 'date' : date, 'dinner_time' : dinner_time })
 
         return (d, day_initial, meal_initial)
+
+    def filterMeals(self, meals, eg, guest_eg, manage, maxInvites):
+        """
+            Filters out meals to be selected
+            if guest_eg is given, then only meals with that eg will be included
+            if manage == false, and guest_eg == NONE, then this method only returns meals in which the
+                meal.eg.invites <= maxInvites
+        """
+        d = {}
+        for meal in meals:
+            if meal.state == 'S' or meal.state == 'C':
+                if not meal.invite:
+  #                    sys.stderr.write("no invite :(\n")
+                    continue
+            if meal.state == 'N':
+                if manage:
+                    continue
+            else:
+                invite = meal.invite
+                if meal.state == 'I':
+                    try:
+                        invite = MealInvite.objects.get(host_eg=eg, meal=meal)
+                    except MealInvite.DoesNotExist:
+                        invite = None
+                if not invite or invite.host_eg != eg:
+  #                    sys.stderr.write("not mine\n")
+                    if manage:
+                        continue
+
+            # This is a temporary solution for limiting the meals screen to only show artists with 1 or less invites.
+            if (not manage and not guest_eg and len(meal.eg.invites()) > maxInvites):
+                continue
+            if meal.date not in d:
+                d[meal.date] = []
+            d[meal.date].append(meal)
+          
+        return d
 
     def get_meal_dates(self, dates, day_formset, meal_formset):
         df = iter(day_formset)
