@@ -431,8 +431,8 @@ class EventGroup(models.Model):
             if gu.user.get_profile().provider == 'F':
                 try:
                     Notification.send_fb(gu.user, msg, data)
-                except:
-                    sys.stderr.write("[ERROR] Cannot send FB notification")
+                except Exception, err:
+                    sys.stderr.write("[ERROR] Cannot send FB notification: %s\n" % str(err))
             else:
                 msg = render_to_string("nourish/notif/%sEmailBody.html" % action, { 'object' : objects[0] })
                 subject = render_to_string("nourish/notif/%sEmailSubject.html" % action, { 'object' : objects[0] })
