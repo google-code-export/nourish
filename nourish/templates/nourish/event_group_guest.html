@@ -19,7 +19,7 @@
   {% endfor %}
 {% else %}
   {% if not is_group_admin %}
-  <a href="{% nurl object.event %}invite">
+  <a href="{% nurl object.event %}invite/?guest={{object.id}}">
     <img align="left" class="heart" title="Click here to invite!" src="/static/images/heart.png"/>
     <div class="inviteText" title="Click here to Invite me!">
       &nbsp;Click here to register as a Theme Camp and invite <em>{{object.group.name}}</em> to dinner during <em>{{ object.event.name }}</em>!
