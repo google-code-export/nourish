@@ -45,6 +45,7 @@ EMAIL_USE_TLS = True
 EMAIL_SUBJECT_PREFIX = "[FtA]"
 EMAIL_PORT = 2525
 
+DEFAULT_FROM_EMAIL = 'webmaster@feedtheartists.net'
 SERVER_EMAIL = 'feed.the.artists.2011@gmail.com'
 
 STATICFILES_FINDERS = (
