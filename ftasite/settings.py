@@ -43,7 +43,7 @@ EMAIL_HOST_PASSWORD = "Newuser_2233"
 #EMAIL_HOST_USER = "razor2n4@gmail.com"
 EMAIL_USE_TLS = True
 EMAIL_SUBJECT_PREFIX = "[FtA]"
-EMAIL_PORT = 25
+EMAIL_PORT = 2525
 
 SERVER_EMAIL = 'feed.the.artists.2011@gmail.com'
 
@@ -144,21 +144,17 @@ FACEBOOK_REQUEST_PERMISSIONS = ''
 
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': False,
+    'disable_existing_loggers': True,
     'handlers': {
-        'console':{
-            'level':'DEBUG',
-            'class':'logging.StreamHandler',
-        },
         'mail_admins': {
             'level': 'ERROR',
             'class': 'django.utils.log.AdminEmailHandler',
+            'include_html': True,
         }
-
     },
     'loggers': {
         'django.request': {
-            'handlers': ['console', 'mail_admins'],
+            'handlers': ['mail_admins'],
             'level': 'ERROR',
             'propagate': False,
         },
