@@ -40,14 +40,11 @@ class MealInviteAdmin(admin.ModelAdmin):
         MealInline,
     ]
 
-class UserInline(admin.TabularInline):
-    model = User
+class GroupUserInline(admin.TabularInline):
+    model = GroupUser
 
 class GroupUserAdmin(admin.ModelAdmin):
     list_per_page = 500
-    inlines = [
-        UserInline,
-    ]
 
 class MealAdmin(admin.ModelAdmin):
     list_display = ('__unicode__', 'invite', 'state', 'members')
@@ -55,6 +52,9 @@ class MealAdmin(admin.ModelAdmin):
     list_per_page = 500
 
 UserAdmin.list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff', 'last_login', 'date_joined')
+UserAdmin.inlines = [
+        GroupUserInline,
+    ]
 
 admin.site.register(Group, GroupAdmin)
 admin.site.register(GroupUser, GroupUserAdmin)
