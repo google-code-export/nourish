@@ -207,12 +207,12 @@ class EventHostInviteView(EventHostRegisterView):
             meals = Meal.objects.filter(event=self.object,eg=guest_eg).order_by('date')
         else:
             meals = Meal.objects.filter(event=self.object).order_by('date')
-        d = self.filterMeals(meals, eg, guest_eg, manage, 0)
+        d = self.filterMeals(meals, eg, guest_eg, manage, 1)
 
-        if (len(d) == 0):
-          d = self.filterMeals(meals, eg, guest_eg, manage, 1)
+        if (len(d) < 10):
+          d = self.filterMeals(meals, eg, guest_eg, manage, 2)
 
-        if (len(d) == 0):
+        if (len(d) < 10):
           d = self.filterMeals(meals, eg, guest_eg, manage, 4)
 
         day_initial = []
