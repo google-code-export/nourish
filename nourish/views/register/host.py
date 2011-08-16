@@ -51,8 +51,8 @@ class EventHostRegisterView(EventGroupRegisterView):
     def save_changes(self, formsets):
         eg = super(EventHostRegisterView, self).save_changes(formsets)
 
-        features_data = formsets['features_formset'].cleaned_data
-        grouphost_data = formsets['grouphost_formset'].cleaned_data
+        features_data = formsets['features_formset'].cleaned_data[0]
+        grouphost_data = formsets['grouphost_formset'].cleaned_data[0]
 
         if 'features' in features_data:
             eg.features = ','.join(features_data['features'])
