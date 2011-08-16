@@ -1,0 +1,17 @@
+{% extends "nourish/base.html" %}
+
+{% load nourish %}
+
+{% block content %}
+<h1>Notifications</h1>
+<p>Please respond to the notifications below as soon as possible.  After confirming a dinner, it is your responsibility to get in touch with the theme camp or artist group and organize the details of the dinner such as who is providing utensils and plates.</p>
+
+<ul style="list-style: none; margin: 0px; padding: 0px;">
+{% for notification in notifications %}
+<li style="padding-bottom: 20px; border-bottom: 1px dotted black; padding-top: 10px; padding-bottom: 10px;">
+{% include notification.template %}
+</li>
+{% endfor %}
+</ul>
+
+{% endblock %}
