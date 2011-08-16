@@ -1,0 +1,63 @@
+{% extends "nourish/EventDetailView.html" %}
+
+{% load facebook_tags %}
+{% load nourish %}
+
+{% block title %}Summary - {{ event.name }} - Events{% endblock %}
+
+{% block content-body %}
+  <h3>Summary</h3>
+  <br>
+  <ul>
+      <li><a href="{% nurl event %}groups/#guest">Registered Artists Groups</a>: {{ event.guest_groups.count }}</li>
+      <li><a href="{% nurl event %}groups/#host">Registered Theme Camps</a>: {{ event.host_groups.count }}</li>
+      <li>Meals Requested: {{ mealtotals.tot_meals }} <em>({{mealtotals.tot_crew}} diners)</em></li>
+      <li>Invitations Sent: {{ mealtotals.inv_meals }} <em>({{mealtotals.inv_crew}} diners)</em></li>
+      <li>Invitations Confirmed: {{ mealtotals.con_meals }} <em>({{mealtotals.con_crew}} diners)</em></li>
+      <li>Invite Rate: {{ invite_rate }}%</li>
+      <li>Confirm Rate: {{ confirm_rate }}%</li>
+  </ul>
+
+  <h3>Summary by Day</h3>
+  <table class="summary">
+    <tr>
+      <th rowspan=2>Date</th>
+      <th class="leftborder" colspan=3>Meals</th>
+      <th class="leftborder" colspan=3>Diners</th>
+    </tr>
+    <tr class="bottomborder">
+      <td class="leftborder">Total</td><td>Invited</td><td>Confirmed</td>
+      <td class="leftborder">Total</td><td>Invited</td><td>Confirmed</td>
+    </tr>
+    {% for d in mealdates %}
+      <tr>
+        <td>{{ d.date|date:"N j" }} <em>({{ d.date|date:"D." }})</em></td>
+        <td class="leftborder">{{ d.tot_meals }}</td>
+        <td>{{ d.inv_meals }}</td>
+        <td>{{ d.con_meals }}</td>
+        <td class="leftborder">{{ d.tot_crew }}</td>
+        <td>{{ d.inv_crew }}</td>
+        <td>{{ d.con_crew }}</td>
+      </tr>
+    {% endfor %}
+    <tr class="total topborder">
+      <th>Total</th>
+      <td class="leftborder">{{ mealtotals.tot_meals }}</td>
+      <td>{{ mealtotals.inv_meals }}</td>
+      <td>{{ mealtotals.con_meals }}</td>
+      <td class="leftborder">{{ mealtotals.tot_crew }}</td>
+      <td>{{ mealtotals.inv_crew }}</td>
+      <td>{{ mealtotals.con_crew }}</td>
+    </tr>
+  </table>
+   
+
+  <h4>Spread the word!</h4>
+  <ul>
+  {% include "nourish/fb/event_share_link.html" with event=event %}
+  <li>{% include "nourish/fb/event_guest_siteinvite_link.html" with event=event %}</li>
+  <li>{% include "nourish/fb/event_host_siteinvite_link.html" with event=event %}</li>
+  </ul>
+
+  {% facebook_js %}
+{% endblock %}

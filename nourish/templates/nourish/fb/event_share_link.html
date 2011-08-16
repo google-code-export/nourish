@@ -1,0 +1,15 @@
+{% load nourish %}
+<li><a href="#" onClick="FB.ui({
+  display: 'iframe',
+  method: 'feed',
+  message: 'If you are organizing an art project or theme camp at {{event.name}}, register with Feed The Artists!', 
+  link: 'http://www.feedtheartists.net{% nurl event %}',
+  name: 'Feed The Artists at {{ event.name }}',
+  caption: 'Online Reservation System for Artists and Theme Camps',
+  picture: 'http://www.feedtheartists.net/static/fta/FeedTheArtistsLogo.png',
+  description: '{{ event.guest_groups.count }} artist groups and {{ event.host_groups.count }} theme camps have registered with Feed The Artists at {{ event.name }}.  Over {{ event.summary.1.tot_meals }} meals have been requested so far, but only {{ event.summary.1.inv_meals }} invites have been sent.',
+  actions: [
+    { name: 'Register', link: '{{ event.fb_url }}' },
+  ],
+});">Share this event on your facebook profile</a></li>
+

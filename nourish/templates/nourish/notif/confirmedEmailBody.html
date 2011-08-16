@@ -1,0 +1,24 @@
+{% extends "nourish/notif/baseEmail.html" %}
+{% block message %}
+Hey {{ object.host_eg.group.name }}…
+
+You're Awesome!!!
+
+Thank you so much for hosting a funded artist group for dinner.
+
+Hosting: {{ object.guest_eg.group.name }}
+on: {{object.date|date:"l, F jS"}}
+at: {{object.dinner_time}}
+
+your contact person is:{% for admin in object.guest_eg.group.admins %}{{ admin.get_profile.fullname|default:" " }} {% if admin.email != "" %}<{{ admin.email }}>{% endif %}{% endfor %}
+
+
+We are so excited that you and {{ object.guest_eg.group.name}} are taking part in this year's FtA program.  You are providing a very special gift….a nourishing, heartfelt meal.  A meal that hopefully provides everyone involved with a brief respite from the stresses of playa setup, allows two groups who may not have otherwise become acquainted to "break bread" together and meet each other, and, most importantly, a meal that nourishes the bodies, minds, and souls of all its participants, and ultimately, by extension, the entire burning man community.
+
+So….take advantage of your generosity.  Get to know your guests; find out what their art project is all about (maybe even ask them for a private tour); tell them what's special about your camp, get a little crazy (or a lot), make new friends; build community; take lots of pictures, and most importantly…………HAVE FUN!!
+
+Check out our Theme Camp Guide at http://www.feedtheartists.net/static/fta/FtA-TCG.pdf  It will tell you everything you need to know to host a great FtA dinner.
+
+Most Importantly, make sure you are in contact with your guests prior to arriving on the playa and that you have discussed specifics such as any dietary restrictions they may have, what you want them to bring (ie, plates, cups, dinnerware, whips, etc) and when and how you will first meet in person on the playa to confirm arrangements.
+
+If you have any problems once you get to the playa, please find us at 5:00 and Anniversary ASAP, and we'll do whatever we can to help.{% endblock %}
