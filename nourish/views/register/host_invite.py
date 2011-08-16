@@ -9,6 +9,7 @@ from datetime import timedelta
 from fbcanvas.views import HybridCanvasView
 from nourish.views.register.host import EventHostRegisterView
 from django.forms.formsets import formset_factory
+from django.core.exceptions import PermissionDenied
 import json
 
 import sys
@@ -77,7 +78,10 @@ class EventHostInviteView(EventHostRegisterView):
 
     def save_changes(self, formsets):
         (host_eg, guest_eg) = self.get_egs()
-        if not host_eg:
+        if host_eg:
+            if not host_eg.group.is_admin(self.request.user):
+                raise PermissionDenied
+        else:
             host_eg = super(EventHostInviteView, self).save_changes(formsets)
 
         day_data = formsets['day_formset'].cleaned_data
@@ -179,6 +183,10 @@ class EventHostInviteView(EventHostRegisterView):
 
     def get_context_data(self, **kwargs):
         (host_eg, guest_eg) = self.get_egs()
+
+        if host_eg:
+            if not host_eg.group.is_admin(self.request.user):
+                raise PermissionDenied
 
         kwargs['host_eg'] = host_eg
 
