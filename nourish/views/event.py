@@ -9,6 +9,7 @@ from datetime import timedelta
 from fbcanvas.views import HybridCanvasView
 from nourish.views.register.host import EventHostRegisterView
 from django.forms.formsets import formset_factory
+from django.core.exceptions import PermissionDenied
 import json
 
 import sys
@@ -117,6 +118,7 @@ class EventSummaryView(HybridCanvasView, DetailView):
 
         return context
 
+
 class EventGroupView(HybridCanvasView, DetailView):
     context_object_name = 'event_group'
     model = EventGroup
@@ -149,6 +151,31 @@ class EventGroupView(HybridCanvasView, DetailView):
         
 #        host_egs = EventGroup.objects.filter(role='T', group__in=groups)
         context['host_event_groups'] = host_egs
+        return context
+
+class EventGroupReportsView(EventGroupView):
+    template_name='nourish/EventGroupReportsView.html'
+
+    def get_context_data(self, **kwargs):
+        if not (self.object.group.is_admin(self.request.user) or self.request.user.is_staff):
+            raise PermissionDenied
+
+        context = super(EventGroupReportsView, self).get_context_data(**kwargs)
+
+        invites_by_date = {}
+        for invite in context['invites_sent']:
+            if invite.date not in invites_by_date:
+                invites_by_date[invite.date] = []
+            invites_by_date[invite.date].append(invite)
+        context['invites_sent_by_date'] = invites_by_date
+
+        invites_sent_dates = []
+        for date in context['dates']:
+            if date in invites_by_date:
+                invites_sent_dates.append(date)
+
+        context['invites_sent_dates'] = invites_sent_dates
+
         return context
 
 class EventUpdateView(HybridCanvasView, UpdateView):
