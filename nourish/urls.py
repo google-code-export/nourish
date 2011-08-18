@@ -5,7 +5,7 @@ from django.views.generic.simple import direct_to_template
 from django.views.generic import DetailView
 
 from nourish.views.group import GroupDetailView, GroupUpdateView, GroupListView
-from nourish.views.event import EventDetailView, EventGroupView, EventUpdateView, EventListView, EventGroupUpdateView, EventSummaryView, EventGroupsView
+from nourish.views.event import EventDetailView, EventGroupView, EventUpdateView, EventListView, EventGroupUpdateView, EventSummaryView, EventGroupsView, EventGroupReportsView
 from nourish.views.notification import NotificationListView 
 from nourish.views.homepage import RootPageView, HomePageView
 from nourish.views.register.event import EventRegisterView
@@ -53,6 +53,8 @@ urlpatterns = patterns('',
         EventGroupUpdateView.as_view(), name='event-group-edit'),
     url(r'^eg/(?P<pk>\d+)(-[^\/]*)?/meals/$', 
         EventGuestManageView.as_view(), name='event-guest-manage'),
+    url(r'^eg/(?P<pk>\d+)(-[^\/]*)?/reports/$', 
+        EventGroupReportsView.as_view(), name='event-group-reports'),
 
     url(r'^groups/$', GroupListView.as_view(), name='group-list'),
     url(r'^g/(?P<pk>\d+)-(?P<slug>[^\/]*)/$', GroupDetailView.as_view(), name='group-detail'),

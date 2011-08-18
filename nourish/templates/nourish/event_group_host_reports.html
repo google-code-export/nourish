@@ -1,0 +1,57 @@
+<br/>
+
+{% load nourish %}
+
+<h2>Invitations By Day</h2>
+  <span style="font-size: small;">[<a href="{% nurl object.event %}invite/?manage&host={{ object.id }}">Manage Existing Invitations</a>]</span>
+  <span style="font-size: small;">[<a href="{% nurl object.event %}invite/?host={{ object.id }}">Invite More Artists to Dinner</a>]</span>
+
+<br><br>
+<table class="mealTable">
+  <thead>
+    <tr>
+      <th class="head">Date</th>
+      <th>State</th>
+      <th>Artist Group</th>
+      <th>Diners</th>
+      <th>Notes</th>
+    </tr>
+  </thead>
+
+  <tbody>
+  {% for date in invites_sent_dates %}
+    <tr>
+      <td colspan=5><span class="eventDate">{{ date|date:"N j" }} <em>({{ date|date:"D." }})</em></span></td>
+    </tr>
+    {% for invite in invites_sent %}
+      {% if invite.date == date %}
+        <tr>
+          <td></td>
+          <td>
+            {% if invite.state == 'N' %}
+              <strong>Pending</strong>
+            {% endif %}
+            {% if invite.state == 'S' %}
+              <strong>Selected</strong>
+            {% endif %}
+            {% if invite.state == 'C' %}
+              <strong>Confirmed</strong>
+            {% endif %}
+            {% if invite.state == 'R' %}
+              <strong>Declined</strong>
+            {% endif %}
+          </td>
+          <td>
+            <a href="{% nurl invite.guest_eg %}">{{invite.guest_eg.group.name}}</a> 
+          </td>
+          <td>{{invite.meal.members}}</td>
+          <td>{{invite.meal.notes}}</td>
+        </tr>
+      {% endif %}
+    {% endfor %}
+  {% endfor %}
+ </tbody>
+</table>
+<br/>
+<br/>
+<br/>
